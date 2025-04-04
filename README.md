@@ -1,7 +1,5 @@
 # IPTV Streamer
 
-![IPTV Streamer Logo](public/favicon.png)
-
 IPTV Streamer is a modern, web-based application for accessing and managing publicly available IPTV channels. Built with privacy in mind, it runs entirely in your browser and stores all data locally on your device.
 
 ## Features
