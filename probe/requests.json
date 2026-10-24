@@ -1,11 +1,77 @@
 [
-  {"name": "page-all", "url": "https://video.i24news.tv/r/all/page/69f250bfaa852e43acd716b9"},
-  {"name": "layout", "url": "https://video.i24news.tv/_next/static/chunks/app/layout-998b8ce1a54b2694.js"},
-  {"name": "c1184", "url": "https://video.i24news.tv/_next/static/chunks/1184-c2edb55e23c78033.js"},
-  {"name": "c2995", "url": "https://video.i24news.tv/_next/static/chunks/2995-a0515128d07b38b7.js"},
-  {"name": "c1746", "url": "https://video.i24news.tv/_next/static/chunks/1746-42692bb2eddcaffa.js"},
-  {"name": "c4161", "url": "https://video.i24news.tv/_next/static/chunks/4161-981e88325cc4fc8e.js"},
-  {"name": "pageid", "url": "https://video.i24news.tv/_next/static/chunks/app/(dynamicLayout)/r/%5Bregion%5D/page/%5Bid%5D/page-5594d48821ed593b.js"},
-  {"name": "config-all", "url": "https://insight-api-shared.univtec.com/interface/customers/config", "headers": {"regioncode": "all", "x-tenant-id": "i24israel", "platform": "web", "x-device-type": "web"}},
-  {"name": "knesset-master", "url": "https://kneset.gostreaming.tv/p2-kneset/_definst_/myStream/playlist.m3u8"}
+ {
+  "name": "page-all",
+  "url": "https://insight-api-shared.univtec.com/interface/pages/69f250bfaa852e43acd716b9",
+  "headers": {
+   "platform": "web",
+   "x-device-type": "web",
+   "x-tenant-id": "i24israel",
+   "regioncode": "all"
+  }
+ },
+ {
+  "name": "page-all-items",
+  "url": "https://insight-api-shared.univtec.com/interface/pages/69f250bfaa852e43acd716b9",
+  "headers": {
+   "platform": "web",
+   "x-device-type": "web",
+   "x-tenant-id": "i24israel",
+   "regioncode": "all",
+   "x-no-items": "0"
+  }
+ },
+ {
+  "name": "page-french",
+  "url": "https://insight-api-shared.univtec.com/interface/pages/69f250caaa852e43acd716bc",
+  "headers": {
+   "platform": "web",
+   "x-device-type": "web",
+   "x-tenant-id": "i24israel",
+   "regioncode": "french"
+  }
+ },
+ {
+  "name": "page-french-items",
+  "url": "https://insight-api-shared.univtec.com/interface/pages/69f250caaa852e43acd716bc",
+  "headers": {
+   "platform": "web",
+   "x-device-type": "web",
+   "x-tenant-id": "i24israel",
+   "regioncode": "french"
+  }
+ },
+ {
+  "name": "page-arabic",
+  "url": "https://insight-api-shared.univtec.com/interface/pages/69f250d1aa852e43acd716bf",
+  "headers": {
+   "platform": "web",
+   "x-device-type": "web",
+   "x-tenant-id": "i24israel",
+   "regioncode": "arabic"
+  }
+ },
+ {
+  "name": "page-arabic-items",
+  "url": "https://insight-api-shared.univtec.com/interface/pages/69f250d1aa852e43acd716bf",
+  "headers": {
+   "platform": "web",
+   "x-device-type": "web",
+   "x-tenant-id": "i24israel",
+   "regioncode": "arabic"
+  }
+ },
+ {
+  "name": "config-hebrew",
+  "url": "https://insight-api-shared.univtec.com/interface/customers/config",
+  "headers": {
+   "platform": "web",
+   "x-device-type": "web",
+   "x-tenant-id": "i24israel",
+   "regioncode": "hebrew"
+  }
+ },
+ {
+  "name": "video-hebrew",
+  "url": "https://video.i24news.tv/r/hebrew"
+ }
 ]
