@@ -5,6 +5,8 @@ name: verify-streams
 # Set the ADDON_URL variable and ADMIN_TOKEN secret to push results to a deployed add-on.
 on:
   workflow_dispatch:
+  push:
+    branches: ["claude/probe-verify"]
   schedule:
     - cron: "17 5 * * *"
 
