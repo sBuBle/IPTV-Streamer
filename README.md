@@ -14,30 +14,29 @@ The add-on only hands Stremio streams that come straight from each broadcaster. 
 | Storage: SQLite (Node) and D1 (Workers) | Done, tested |
 | Playback verifier (real video and audio decode with ffprobe) | Done, tested against generated HLS |
 | Health probes (scheduled), diagnostics, coverage report | Done |
-| i24NEWS live (EN/FR/AR/HE) via Brightcove Playback API | Code done. **Not verified**: needs ids from `npm run discover` |
-| Knesset Channel live | Code done. **Not verified**: needs the stream or page URL from `npm run discover` |
+| i24NEWS live: English, Français, عربي, עברית | **Verified** from the US on 24 Oct 2026 (H.264 360p to 1080p, AAC) |
+| Knesset Channel live | **Verified** from the US on 24 Oct 2026 (H.264 720p, AAC) |
 | Kan, Reshet 13, Keshet 12, Channel 14, VOD | Not started (roadmap phases 3 to 5) |
 
-No broadcaster stream has been verified yet. The machine this was built on could not reach Israeli hosts, so verification has to run on the deployed host.
+"Verified" means a real decode of video and audio, run by the `verify-streams` GitHub workflow from GitHub's US network. Both providers work with no setup. The other Israeli broadcasters block viewers outside Israel, so they will need a host in Israel.
 
 ## Quick start (Node)
 
 ```bash
 npm install
-cp .env.example .env      # fill in the provider settings
+cp .env.example .env      # optional; every setting has a default
 npm run dev               # http://localhost:7000
 ```
 
 Open `http://localhost:7000/` for the install link, or add `http://localhost:7000/manifest.json` in Stremio. Stremio needs HTTPS for anything other than localhost, so a remote install needs a domain with TLS or a Cloudflare Tunnel.
 
-## Setting up the first channels
+## Checking the channels
 
-1. On the host that will serve the add-on, run `npm run discover`. It fetches the i24NEWS and Knesset pages from that machine and prints the manifest URLs, Brightcove player ids and live video ids it finds. If the default pages have moved, pass page URLs: `npm run discover -- https://...`.
-2. Put the values in `.env` (`I24_BRIGHTCOVE_PLAYER_ID`, `I24_LIVE_VIDEO_IDS`, `KNESSET_LIVE_URL` or `KNESSET_LIVE_PAGE`).
-3. Run `npm run verify -- --location IL` (use your real location). It resolves each channel, probes it, decodes a few seconds of video and audio, and records the result.
-4. Check `/coverage`. A channel counts as working only after step 3 passes.
+`npm run discover` lists what each provider finds from the machine it runs on (channels and stream URLs). `npm run verify -- --location IL` (use your real location) resolves each channel, probes it, decodes a few seconds of video and audio, and records the result in the add-on's database. `/coverage` then shows which channels count as working.
 
-A provider with missing settings is switched off and listed under `/diagnostics`. It never stops the rest of the add-on.
+The `verify-streams` GitHub workflow does the same every day from GitHub's network. Set the repository variable `ADDON_URL` and secret `ADMIN_TOKEN` to push its results to your deployed add-on, so viewers see "✅ Playback verified".
+
+A provider with broken settings is switched off and listed under `/diagnostics`. It never stops the rest of the add-on.
 
 ## What "verified" means
 
@@ -69,6 +68,10 @@ docker compose exec addon node dist/scripts/verify-streams.js --location IL
 For HTTPS without opening ports, create a Cloudflare Tunnel that points at `http://addon:7000`, set `CLOUDFLARE_TUNNEL_TOKEN` and `BASE_URL`, then `docker compose --profile tunnel up -d`.
 
 ## Deploy to Cloudflare Workers
+
+From GitHub: add the repository secrets `CLOUDFLARE_API_TOKEN` (a token with the "Edit Cloudflare Workers" template) and `CLOUDFLARE_ACCOUNT_ID`, then run the `deploy-workers` workflow. It deploys `main` to `https://israeli-tv-addon.<your-subdomain>.workers.dev`.
+
+From your computer:
 
 ```bash
 npx wrangler login
