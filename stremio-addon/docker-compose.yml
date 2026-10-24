@@ -1,0 +1,24 @@
+services:
+  addon:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "7000:7000"
+    volumes:
+      - addon-data:/data
+
+  # Optional: HTTPS for Stremio through a free Cloudflare Tunnel.
+  # Create a tunnel in the Cloudflare dashboard, point it at http://addon:7000, put the token in .env.
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN:-}
+    profiles: ["tunnel"]
+    depends_on:
+      - addon
+
+volumes:
+  addon-data:
