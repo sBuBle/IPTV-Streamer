@@ -1,14 +1,9 @@
-name: stremio-addon
+name: ci
 
 on:
   push:
-    paths: ["stremio-addon/**", ".github/workflows/stremio-addon.yml"]
+    branches: [main]
   pull_request:
-    paths: ["stremio-addon/**", ".github/workflows/stremio-addon.yml"]
-
-defaults:
-  run:
-    working-directory: stremio-addon
 
 jobs:
   test:
@@ -19,8 +14,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: stremio-addon/package-lock.json
-      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+      - run: sudo apt-get install -y --no-install-recommends ffmpeg || (sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg)
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
@@ -36,7 +30,7 @@ jobs:
       - run: docker build -t israeli-tv-addon .
       - name: Smoke test the image
         run: |
-          docker run -d --name addon -p 7000:7000 -e KNESSET_LIVE_URL=https://example.com/live.m3u8 -e HEALTH_PROBE_INTERVAL_MIN=0 israeli-tv-addon
+          docker run -d --name addon -p 7000:7000 -e HEALTH_PROBE_INTERVAL_MIN=0 israeli-tv-addon
           for i in $(seq 1 20); do curl -fs localhost:7000/health && break; sleep 1; done
           curl -fs localhost:7000/manifest.json
           curl -fs localhost:7000/catalog/tv/iltv-live.json | grep -q knesset-99

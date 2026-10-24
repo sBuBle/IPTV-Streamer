@@ -20,6 +20,8 @@ export interface LiveChannel {
   language: string;
   logo?: string;
   website?: string;
+  /** XMLTV guide for the channel, when the broadcaster publishes one. */
+  epgUrl?: string;
   geo: GeoAvailability;
 }
 

@@ -1,103 +1,128 @@
-# IPTV Streamer
+# Israeli TV for Stremio
 
-IPTV Streamer is a modern, web-based application for accessing and managing publicly available IPTV channels. Built with privacy in mind, it runs entirely in your browser and stores all data locally on your device.
+A Stremio add-on for Israeli live TV, with VOD to follow. It runs on Cloudflare Workers (free plan) or on any server with Node 22 or Docker.
 
-## Features
+The add-on only hands Stremio streams that come straight from each broadcaster. It does not proxy or relay video, and it does not work around DRM, logins or geo-blocking. Streams that only play in Israel are labeled as such.
 
-- **Playlist Management**: Add and manage M3U8 playlists from various sources
-- **Channel Organization**: Browse channels by country, category, or language
-- **Favorites Collection**: Save your preferred channels for quick access
-- **Watch History**: Keep track of recently watched channels
-- **Picture-in-Picture Support**: Continue watching while browsing other content
-- **Privacy-Focused**: All data is stored locally, no tracking or analytics
-- **Cross-Platform**: Works on desktop and mobile devices
-- **Responsive Design**: Adapts to any screen size
-- **Stream Quality Selection**: Choose stream quality where available
-- **Customizable Interface**: Grid and list views for channel browsing
+## Status
 
-## Getting Started
+| Area | State |
+| --- | --- |
+| Stremio manifest, catalog, meta, stream routes | Done, tested |
+| Live TV catalog with genre filter, Hebrew/English search, paging | Done, tested |
+| Provider adapters with failure isolation and timeouts | Done, tested |
+| Storage: SQLite (Node) and D1 (Workers) | Done, tested |
+| Playback verifier (real video and audio decode with ffprobe) | Done, tested against generated HLS |
+| Health probes (scheduled), diagnostics, coverage report | Done |
+| i24NEWS live (EN/FR/AR/HE) via Brightcove Playback API | Code done. **Not verified**: needs ids from `npm run discover` |
+| Knesset Channel live | Code done. **Not verified**: needs the stream or page URL from `npm run discover` |
+| Kan, Reshet 13, Keshet 12, Channel 14, VOD | Not started (roadmap phases 3 to 5) |
 
-### Installation
+No broadcaster stream has been verified yet. The machine this was built on could not reach Israeli hosts, so verification has to run on the deployed host.
 
-#### Option 1: Use the live version
+## Quick start (Node)
 
-The application is available at [https://your-deployment-url.com](https://your-deployment-url.com)
+```bash
+npm install
+cp .env.example .env      # fill in the provider settings
+npm run dev               # http://localhost:7000
+```
 
-#### Option 2: Run locally
+Open `http://localhost:7000/` for the install link, or add `http://localhost:7000/manifest.json` in Stremio. Stremio needs HTTPS for anything other than localhost, so a remote install needs a domain with TLS or a Cloudflare Tunnel.
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/iptv-streamer.git
-   cd iptv-streamer
-   ```
+## Setting up the first channels
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+1. On the host that will serve the add-on, run `npm run discover`. It fetches the i24NEWS and Knesset pages from that machine and prints the manifest URLs, Brightcove player ids and live video ids it finds. If the default pages have moved, pass page URLs: `npm run discover -- https://...`.
+2. Put the values in `.env` (`I24_BRIGHTCOVE_PLAYER_ID`, `I24_LIVE_VIDEO_IDS`, `KNESSET_LIVE_URL` or `KNESSET_LIVE_PAGE`).
+3. Run `npm run verify -- --location IL` (use your real location). It resolves each channel, probes it, decodes a few seconds of video and audio, and records the result.
+4. Check `/coverage`. A channel counts as working only after step 3 passes.
 
-3. Start the development server:
-   ```bash
-   npm run dev
-   ```
+A provider with missing settings is switched off and listed under `/diagnostics`. It never stops the rest of the add-on.
 
-4. Build for production:
-   ```bash
-   npm run build
-   ```
+## What "verified" means
 
-## Usage
+Each channel has one of four states, shown to viewers in the channel description and stream title:
 
-### Adding Playlists
+- **verified**: a playback check decoded real video frames (and audio) within `VERIFIED_MAX_AGE_HOURS`. Only `npm run verify` writes these.
+- **reachable**: a probe downloaded the playlist, a variant and a media segment that looks like video. That is not playback, so it is not "verified".
+- **failing**: the newest check failed.
+- **unverified**: no recent check.
 
-1. Navigate to the Settings page
-2. Enter the URL of an M3U8 playlist
-3. Give the playlist a name
-4. Click "Add Playlist"
+An HTTP 200 or a valid playlist is never treated as proof of playback. With `STREAM_POLICY=verified-only`, Stremio only sees verified channels.
 
-### Browsing Channels
+Checks record where they ran from (`--location`). A geo-blocked stream verified from Israel can still fail abroad.
 
-- Use the "Browse by Country" page to find channels by region
-- Use categories to filter by content type (News, Sports, Entertainment, etc.)
-- Search for specific channels using the search bar
+## Deploy with Docker
 
-### Watching Channels
+```bash
+cp .env.example .env
+docker compose up -d --build
+```
 
-- Click on any channel to start streaming
-- Use the player controls to adjust volume, enter fullscreen, or enable PiP mode
-- Add channels to favorites by clicking the heart icon
+The image includes ffmpeg, so discovery and verification run inside the container and write to the same database:
 
-## Technical Details
+```bash
+docker compose exec addon node dist/scripts/discover.js
+docker compose exec addon node dist/scripts/verify-streams.js --location IL
+```
 
-IPTV Streamer is built using:
+For HTTPS without opening ports, create a Cloudflare Tunnel that points at `http://addon:7000`, set `CLOUDFLARE_TUNNEL_TOKEN` and `BASE_URL`, then `docker compose --profile tunnel up -d`.
 
-- **Preact**: A lightweight alternative to React
-- **HLS.js**: For streaming video content
-- **IndexedDB**: For local data persistence
-- **TailwindCSS**: For responsive styling
-- **Lucide Icons**: For clean, minimal UI icons
+## Deploy to Cloudflare Workers
 
-The application is designed as a Progressive Web App (PWA), allowing it to work offline and be installed on supported devices.
+```bash
+npx wrangler login
+npx wrangler d1 create israeli-tv-addon         # paste the id into wrangler.toml and uncomment [[d1_databases]]
+npx wrangler secret put ADMIN_TOKEN
+# put the provider settings under [vars] in wrangler.toml
+npm run worker:deploy
+```
 
-## Legal Notice
+The Worker runs health probes from Cloudflare's network every 30 minutes. It cannot run ffprobe, so playback verification runs elsewhere and is pushed in: `npm run verify -- --location IL --push https://israeli-tv-addon.<you>.workers.dev`.
 
-IPTV Streamer only provides links to publicly available streams. We do not host, upload, or store any content. Users are responsible for ensuring they have the legal right to access content in their jurisdiction.
+Whether broadcasters accept requests from Cloudflare's network is not known yet. If the Israeli providers refuse it, use the Docker setup on a server in Israel.
 
-## Contributing
+## Endpoints
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+| Path | Purpose |
+| --- | --- |
+| `/manifest.json` | Stremio manifest |
+| `/catalog/tv/iltv-live[/genre=..&search=..&skip=..].json` | Live TV catalog |
+| `/meta/tv/<id>.json`, `/stream/tv/<id>.json` | Channel details and fresh stream URLs |
+| `/coverage` | Per provider: discovered, verified, reachable, failing, unchecked, verified coverage % |
+| `/diagnostics` | Provider health, config issues, last checks per channel |
+| `/health` | Liveness |
+| `POST /admin/checks`, `POST /admin/probe` | Record checks / run probes now (Bearer `ADMIN_TOKEN`) |
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+Ids look like `iltv:live:<provider>:<channel>` and never change once released.
 
-## License
+## Architecture
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+```
+src/
+  entry/node.ts, entry/worker.ts   runtime entry points (same app)
+  bootstrap.ts, app.ts             wiring and Hono routes
+  config.ts, logger.ts             Zod-validated env config, JSON-lines logs
+  stremio/                         protocol schemas, ids, extra parsing
+  services/addon.ts                catalog aggregation, caching, stream policy, health probes
+  services/health.ts               check results -> verified / reachable / failing / unverified
+  providers/                       one adapter per broadcaster + registry (timeouts, isolation)
+  media/                           HLS parsing, DRM detection, probing, manifest extraction
+  verify/playback.ts               ffprobe decode check (Node only)
+  storage/                         Store interface; memory, node:sqlite and D1 drivers
+scripts/                           discover and verify CLIs
+test/                              Vitest: unit, protocol and end-to-end with real HLS media
+```
 
-## Acknowledgments
+### Adding a broadcaster
 
-- [IPTV-Org](https://github.com/iptv-org) for providing a comprehensive database of publicly available IPTV channels
-- All the developers of the open-source libraries used in this project
+Write a class that implements `ProviderAdapter` (`src/providers/types.ts`), register it in `src/providers/index.ts`, and add its settings to `src/config.ts`. Return config problems from `issues()` instead of throwing. `resolveStreams` should fetch fresh URLs every time and set `expiresAt` for signed URLs, so caching stops before tokens expire. Mark `geo: "israel-only"` where the broadcaster restricts playback; skip DRM sources and log them.
+
+## Tests
+
+```bash
+npm test          # needs ffmpeg/ffprobe for the end-to-end tests (skipped without them)
+npm run typecheck
+```
+
+The end-to-end test generates a real HLS stream with ffmpeg, serves it locally and walks Stremio → Live TV → channel → stream → decoded video and audio. It also checks that a web page served as `.m3u8`, a stream without audio and a missing stream all fail.

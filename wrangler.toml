@@ -12,10 +12,7 @@ crons = ["*/30 * * * *"]
 LOG_LEVEL = "info"
 STREAM_POLICY = "all-labeled"
 VERIFIER_LOCATION = "cloudflare"
-# I24_LIVE_VIDEO_IDS = "en:<id>,fr:<id>,ar:<id>,he:<id>"
-# I24_BRIGHTCOVE_PLAYER_ID = "<player id>"
-# KNESSET_LIVE_URL = "https://..."
-# KNESSET_LIVE_PAGE = "https://..."
+# Provider settings have working defaults; see .env.example to override them.
 # Secrets: `npx wrangler secret put ADMIN_TOKEN`
 
 # Create with `npx wrangler d1 create israeli-tv-addon`, then paste the id here.

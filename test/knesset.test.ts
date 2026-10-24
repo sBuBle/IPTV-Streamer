@@ -11,7 +11,8 @@ function setup(env: Record<string, string>, routes: Parameters<typeof fakeFetch>
 
 describe("Knesset adapter", () => {
   it("needs a URL or a page", () => {
-    expect(setup({}).a.issues()[0]?.severity).toBe("error");
+    expect(setup({ KNESSET_LIVE_URL: "none", KNESSET_LIVE_PAGE: "none" }).a.issues()[0]?.severity).toBe("error");
+    expect(setup({}).a.issues()).toEqual([]);
   });
 
   it("reads the manifest from the live page and keeps the configured URL as backup", async () => {
@@ -33,7 +34,7 @@ describe("Knesset adapter", () => {
   });
 
   it("returns nothing for unknown channels", async () => {
-    const { a, ctx } = setup({ KNESSET_LIVE_URL: "https://backup.example/live.m3u8" });
+    const { a, ctx } = setup({ KNESSET_LIVE_PAGE: "none", KNESSET_LIVE_URL: "https://backup.example/live.m3u8" });
     expect(await a.live.resolveStreams("other", ctx)).toEqual([]);
   });
 });

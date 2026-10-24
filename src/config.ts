@@ -38,6 +38,16 @@ const optionalString = z
   .optional()
   .transform((v) => (v && v.trim() ? v.trim() : undefined));
 
+/** "none" or an empty value turns a default URL off. */
+const urlOrNone = z
+  .string()
+  .transform((v) => v.trim())
+  .refine((v) => v === "" || v === "none" || z.url().safeParse(v).success, "expected a URL or \"none\"");
+
+function disabledOrUrl(v: string): string | undefined {
+  return v === "" || v === "none" ? undefined : v;
+}
+
 export const envSchema = z.object({
   PORT: z.coerce.number().int().min(1).max(65535).default(7000),
   HOST: z.string().default("0.0.0.0"),
@@ -62,16 +72,16 @@ export const envSchema = z.object({
   /** Label stored with checks run from this host, e.g. "IL" or "DE". */
   VERIFIER_LOCATION: optionalString,
 
-  I24_BRIGHTCOVE_ACCOUNT: z.string().default("5377161796001"),
-  I24_BRIGHTCOVE_PLAYER_ID: optionalString,
-  I24_BRIGHTCOVE_POLICY_KEY: optionalString,
-  /** Live feed video ids per language: "en:<id>,fr:<id>,ar:<id>,he:<id>". */
-  I24_LIVE_VIDEO_IDS: keyValueList,
+  /** Insight API behind video.i24news.tv. */
+  I24_API_URL: z.url().default("https://insight-api-shared.univtec.com"),
+  I24_TENANT: z.string().default("i24israel"),
+  /** Region home pages that list the live channels, as region:pageId. */
+  I24_PAGES: keyValueList.prefault("all:69f250bfaa852e43acd716b9,french:69f250caaa852e43acd716bc,arabic:69f250d1aa852e43acd716bf"),
 
-  /** Direct HLS manifest for the Knesset channel. */
-  KNESSET_LIVE_URL: optionalUrl,
-  /** A page that embeds the Knesset player; the manifest URL is read from it at request time. */
-  KNESSET_LIVE_PAGE: optionalUrl,
+  /** Direct HLS manifest for the Knesset channel, used as backup. "none" disables it. */
+  KNESSET_LIVE_URL: urlOrNone.default("https://kneset.gostreaming.tv/p2-kneset/_definst_/myStream/playlist.m3u8"),
+  /** A page that embeds the Knesset player; the manifest URL is read from it at request time. "none" disables it. */
+  KNESSET_LIVE_PAGE: urlOrNone.default("https://www.knesset.tv/"),
 });
 
 export type Env = Record<string, string | undefined>;
@@ -92,10 +102,9 @@ export interface Config {
   verifierLocation?: string;
   providers: {
     i24news: {
-      account: string;
-      playerId?: string;
-      policyKey?: string;
-      liveVideoIds: Record<string, string>;
+      apiUrl: string;
+      tenant: string;
+      pages: Record<string, string>;
     };
     knesset: {
       liveUrl?: string;
@@ -133,14 +142,13 @@ export function loadConfig(env: Env): Config {
     verifierLocation: e.VERIFIER_LOCATION,
     providers: {
       i24news: {
-        account: e.I24_BRIGHTCOVE_ACCOUNT,
-        playerId: e.I24_BRIGHTCOVE_PLAYER_ID,
-        policyKey: e.I24_BRIGHTCOVE_POLICY_KEY,
-        liveVideoIds: e.I24_LIVE_VIDEO_IDS,
+        apiUrl: e.I24_API_URL,
+        tenant: e.I24_TENANT,
+        pages: e.I24_PAGES,
       },
       knesset: {
-        liveUrl: e.KNESSET_LIVE_URL,
-        livePage: e.KNESSET_LIVE_PAGE,
+        liveUrl: disabledOrUrl(e.KNESSET_LIVE_URL),
+        livePage: disabledOrUrl(e.KNESSET_LIVE_PAGE),
       },
     },
   };
