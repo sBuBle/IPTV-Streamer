@@ -24,7 +24,7 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: stremio-addon/package-lock.json
-      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+      - run: sudo apt-get install -y --no-install-recommends ffmpeg || (sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg)
       - run: npm ci
       - name: Where is this runner
         run: curl -fsS https://ipinfo.io/json || true
@@ -33,4 +33,7 @@ jobs:
       - name: Dump pages for analysis
         run: npx tsx scripts/dump-pages.ts
       - name: Verify playback
+        env:
+          KNESSET_LIVE_PAGE: https://www.knesset.tv/
+          KNESSET_LIVE_URL: https://kneset.gostreaming.tv/p2-kneset/_definst_/myStream/playlist.m3u8
         run: npm run verify -- --location "GH-$(curl -fsS https://ipinfo.io/country || echo XX)" || true

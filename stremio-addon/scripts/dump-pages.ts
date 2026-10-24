@@ -1,38 +1,41 @@
-/** Prints the parts of broadcaster pages and scripts that mention players or manifests. Diagnostic only. */
+/** Diagnostic: finds how i24NEWS's player loads its live streams (page data and JS chunks). */
 const UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130 Safari/537.36";
-const PAGES = process.argv.slice(2).length
-  ? process.argv.slice(2)
-  : [
-      "https://www.i24news.tv/en/tv/live",
-      "https://www.i24news.tv/he/tv/live",
-      "https://www.i24news.tv/en",
-      "https://main.knesset.gov.il/news/broadcast/pages/live.aspx",
-      "https://main.knesset.gov.il/",
-      "https://www.knesset.tv/",
-      "https://knesset.tv/",
-    ];
-const NEEDLE = /m3u8|mpd|brightcove|data-account|data-video|videoId|policyKey|gostreaming|player|live/gi;
+const get = async (url: string, headers: Record<string, string> = {}) => {
+  const res = await fetch(url, { headers: { "user-agent": UA, ...headers }, redirect: "follow", signal: AbortSignal.timeout(20_000) });
+  return { status: res.status, url: res.url, text: await res.text(), type: res.headers.get("content-type") };
+};
+const NEEDLE = /univtec|insight-api|m3u8|\.mpd|playback|manifest|streamUrl|liveUrl|channelId|assetId|entitlement|playUrl|getPlay|\/live/gi;
 
-for (const url of PAGES) {
-  console.log(`\n######## ${url}`);
+function snippets(label: string, text: string, max = 30) {
+  const seen = new Set<string>();
+  let n = 0;
+  for (const m of text.matchAll(NEEDLE)) {
+    const snip = text.slice(Math.max(0, m.index! - 160), m.index! + 220).replace(/\s+/g, " ");
+    const key = snip.slice(120, 260);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    console.log(`  [${label}] …${snip}…`);
+    if (++n >= max) break;
+  }
+}
+
+for (const page of ["https://video.i24news.tv/r/all/page/69f250bfaa852e43acd716b9", "https://video.i24news.tv/r/hebrew", "https://video.i24news.tv/"]) {
+  console.log(`\n######## ${page}`);
   try {
-    const res = await fetch(url, { headers: { "user-agent": UA }, redirect: "follow", signal: AbortSignal.timeout(20_000) });
-    const text = await res.text();
-    console.log(`HTTP ${res.status} final=${res.url} bytes=${text.length}`);
-    const scripts = [...text.matchAll(/<script[^>]+src=["']([^"']+)["']/gi)].map((m) => m[1]);
-    console.log(`scripts: ${scripts.slice(0, 40).join(" ")}`);
-    const iframes = [...text.matchAll(/<iframe[^>]+src=["']([^"']+)["']/gi)].map((m) => m[1]);
-    console.log(`iframes: ${iframes.join(" ")}`);
-    const seen = new Set<string>();
-    let n = 0;
-    for (const m of text.matchAll(NEEDLE)) {
-      const start = Math.max(0, m.index! - 150);
-      const snippet = text.slice(start, m.index! + 200).replace(/\s+/g, " ");
-      const key = snippet.slice(100, 220);
-      if (seen.has(key)) continue;
-      seen.add(key);
-      console.log(`  …${snippet}…`);
-      if (++n >= 40) break;
+    const p = await get(page);
+    console.log(`HTTP ${p.status} ${p.url} ${p.text.length}`);
+    const urls = [...new Set([...p.text.matchAll(/https?:\\?\/\\?\/[a-z0-9.-]+(?:univtec|immergo|i24)[a-z0-9.-]*[^"'\s\\]*/gi)].map((m) => m[0]))];
+    console.log(`hosts/urls: ${urls.slice(0, 50).join("\n   ")}`);
+    snippets("page", p.text, 40);
+    if (page.includes("69f2")) {
+      const chunks = [...new Set([...p.text.matchAll(/\/_next\/static\/chunks\/[^"'\s]+\.js/g)].map((m) => m[0]))];
+      for (const c of chunks) {
+        const js = await get(new URL(c, page).toString());
+        if (/univtec|insight-api|m3u8|playback|manifest/i.test(js.text)) {
+          console.log(`\n--- chunk ${c} (${js.text.length})`);
+          snippets("js", js.text, 25);
+        }
+      }
     }
   } catch (err) {
     console.log(`failed: ${(err as Error).message}`);
