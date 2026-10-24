@@ -1,0 +1,36 @@
+name: probe-streams
+
+# Runs discovery and playback verification from GitHub's network (outside Israel).
+# Useful for worldwide-open channels; Israel-only channels are expected to fail here.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["claude/probe-*"]
+  schedule:
+    - cron: "17 5 * * *"
+
+defaults:
+  run:
+    working-directory: stremio-addon
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: stremio-addon/package-lock.json
+      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+      - run: npm ci
+      - name: Where is this runner
+        run: curl -fsS https://ipinfo.io/json || true
+      - name: Discover
+        run: npm run discover
+      - name: Dump pages for analysis
+        run: npx tsx scripts/dump-pages.ts
+      - name: Verify playback
+        run: npm run verify -- --location "GH-$(curl -fsS https://ipinfo.io/country || echo XX)" || true
