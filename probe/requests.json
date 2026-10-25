@@ -1,22 +1,18 @@
 [
  {
-  "name": "kan-p12832",
-  "url": "https://www.kan.org.il/content/kan/kan-11/p-12832/"
+  "name": "kan-js-seasons",
+  "url": "https://www.kan.org.il/sb/kan-program-seasons-js.js.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75"
  },
  {
-  "name": "kan-p682519",
-  "url": "https://www.kan.org.il/content/kan/kan-11/p-682519/"
+  "name": "kan-js-program",
+  "url": "https://www.kan.org.il/sb/kan-program-js.js.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75"
  },
  {
-  "name": "kan-archive-ep",
-  "url": "https://www.kan.org.il/content/archive1/vod/p-670735/943600/"
+  "name": "kan-p12832-s6",
+  "url": "https://www.kan.org.il/content/kan/kan-11/p-12832/s6/"
  },
  {
-  "name": "kan-digital-prog",
-  "url": "https://www.kan.org.il/content/dig/digital/p-11297/"
- },
- {
-  "name": "knesset-shows-more",
-  "url": "https://www.knesset.tv/tv-shows/the-scale/?page=2"
+  "name": "kan-p12832-s1",
+  "url": "https://www.kan.org.il/content/kan/kan-11/p-12832/s1/"
  }
 ]

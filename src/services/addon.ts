@@ -66,7 +66,7 @@ export class AddonService {
 
   async channel(stremioId: string): Promise<Channel | undefined> {
     const parsed = parseItemId(stremioId);
-    if (!parsed) return undefined;
+    if (parsed?.kind !== "live") return undefined;
     return (await this.channels()).find((c) => c.provider === parsed.provider && c.id === parsed.channelId);
   }
 
