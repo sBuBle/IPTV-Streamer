@@ -1,58 +1,173 @@
 [
   {
-    "name": "13954.html",
-    "url": "https://www.kan.org.il/content/kan/kan-11/p-13954/",
+    "name": "hero-vod-carousel-js.js",
+    "url": "https://www.kan.org.il/sb/hero-vod-carousel-js.js.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75",
     "status": 200,
-    "final": "https://www.kan.org.il/content/kan/kan-11/p-13954/",
-    "len": 183518
+    "final": "https://www.kan.org.il/sb/hero-vod-carousel-js.js.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75",
+    "len": 5673,
+    "items": 0,
+    "s1": 0
   },
   {
-    "name": "13954-c2.html",
-    "url": "https://www.kan.org.il/content/kan/kan-11/p-13954/?currentPage=2",
+    "name": "kan-swiper-js.js",
+    "url": "https://www.kan.org.il/sb/kan-swiper-js.js.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75",
     "status": 200,
-    "final": "https://www.kan.org.il/content/kan/kan-11/p-13954/?currentPage=2",
-    "len": 183670
+    "final": "https://www.kan.org.il/sb/kan-swiper-js.js.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75",
+    "len": 254835,
+    "items": 0,
+    "s1": 0
   },
   {
-    "name": "546636.html",
-    "url": "https://www.kan.org.il/content/kan/kan-11/p-546636/",
+    "name": "redge-player-js.js",
+    "url": "https://www.kan.org.il/sb/redge-player-js.js.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75",
     "status": 200,
-    "final": "https://www.kan.org.il/content/kan/kan-11/p-546636/",
-    "len": 191794
+    "final": "https://www.kan.org.il/sb/redge-player-js.js.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75",
+    "len": 15298,
+    "items": 0,
+    "s1": 0
   },
   {
-    "name": "546636-s1.html",
-    "url": "https://www.kan.org.il/content/kan/kan-11/p-546636/s1/",
+    "name": "kan-timelocalization-js.js",
+    "url": "https://www.kan.org.il/sb/kan-timelocalization-js.js.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75",
     "status": 200,
-    "final": "https://www.kan.org.il/content/kan/kan-11/p-546636/s1/",
-    "len": 191323
+    "final": "https://www.kan.org.il/sb/kan-timelocalization-js.js.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75",
+    "len": 21249,
+    "items": 0,
+    "s1": 0
   },
   {
-    "name": "546636-s1-c2.html",
+    "name": "kan-mobileshare-js.js",
+    "url": "https://www.kan.org.il/sb/kan-mobileshare-js.js.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75",
+    "status": 200,
+    "final": "https://www.kan.org.il/sb/kan-mobileshare-js.js.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75",
+    "len": 688,
+    "items": 0,
+    "s1": 0
+  },
+  {
+    "name": "q-_seasonId_822728.html",
+    "url": "https://www.kan.org.il/content/kan/kan-11/p-546636/?seasonId=822728",
+    "status": 200,
+    "final": "https://www.kan.org.il/content/kan/kan-11/p-546636/?seasonId=822728",
+    "len": 191946,
+    "items": 50,
+    "s1": 0
+  },
+  {
+    "name": "qx-_seasonId_822728.html",
+    "url": "https://www.kan.org.il/content/kan/kan-11/p-546636/?seasonId=822728",
+    "status": 200,
+    "final": "https://www.kan.org.il/content/kan/kan-11/p-546636/?seasonId=822728",
+    "len": 191008,
+    "items": 50,
+    "s1": 0
+  },
+  {
+    "name": "q-_seasonId_822728_currentPage_2.html",
+    "url": "https://www.kan.org.il/content/kan/kan-11/p-546636/?seasonId=822728&currentPage=2",
+    "status": 200,
+    "final": "https://www.kan.org.il/content/kan/kan-11/p-546636/?seasonId=822728&currentPage=2",
+    "len": 192126,
+    "items": 50,
+    "s1": 0
+  },
+  {
+    "name": "qx-_seasonId_822728_currentPage_2.html",
+    "url": "https://www.kan.org.il/content/kan/kan-11/p-546636/?seasonId=822728&currentPage=2",
+    "status": 200,
+    "final": "https://www.kan.org.il/content/kan/kan-11/p-546636/?seasonId=822728&currentPage=2",
+    "len": 191188,
+    "items": 50,
+    "s1": 0
+  },
+  {
+    "name": "q-_currentPage_2.html",
+    "url": "https://www.kan.org.il/content/kan/kan-11/p-546636/?currentPage=2",
+    "status": 200,
+    "final": "https://www.kan.org.il/content/kan/kan-11/p-546636/?currentPage=2",
+    "len": 191946,
+    "items": 50,
+    "s1": 0
+  },
+  {
+    "name": "qx-_currentPage_2.html",
+    "url": "https://www.kan.org.il/content/kan/kan-11/p-546636/?currentPage=2",
+    "status": 200,
+    "final": "https://www.kan.org.il/content/kan/kan-11/p-546636/?currentPage=2",
+    "len": 191008,
+    "items": 50,
+    "s1": 0
+  },
+  {
+    "name": "q-_page_2.html",
+    "url": "https://www.kan.org.il/content/kan/kan-11/p-546636/?page=2",
+    "status": 200,
+    "final": "https://www.kan.org.il/content/kan/kan-11/p-546636/?page=2",
+    "len": 191883,
+    "items": 50,
+    "s1": 0
+  },
+  {
+    "name": "qx-_page_2.html",
+    "url": "https://www.kan.org.il/content/kan/kan-11/p-546636/?page=2",
+    "status": 200,
+    "final": "https://www.kan.org.il/content/kan/kan-11/p-546636/?page=2",
+    "len": 190945,
+    "items": 50,
+    "s1": 0
+  },
+  {
+    "name": "q-_seasonId_0.html",
+    "url": "https://www.kan.org.il/content/kan/kan-11/p-546636/?seasonId=0",
+    "status": 200,
+    "final": "https://www.kan.org.il/content/kan/kan-11/p-546636/?seasonId=0",
+    "len": 191916,
+    "items": 50,
+    "s1": 0
+  },
+  {
+    "name": "qx-_seasonId_0.html",
+    "url": "https://www.kan.org.il/content/kan/kan-11/p-546636/?seasonId=0",
+    "status": 200,
+    "final": "https://www.kan.org.il/content/kan/kan-11/p-546636/?seasonId=0",
+    "len": 190978,
+    "items": 50,
+    "s1": 0
+  },
+  {
+    "name": "q-s1__currentPage_2.html",
     "url": "https://www.kan.org.il/content/kan/kan-11/p-546636/s1/?currentPage=2",
     "status": 200,
     "final": "https://www.kan.org.il/content/kan/kan-11/p-546636/s1/?currentPage=2",
-    "len": 191435
+    "len": 191435,
+    "items": 50,
+    "s1": 50
   },
   {
-    "name": "833724.html",
-    "url": "https://www.kan.org.il/content/kan/kan-11/p-833724/",
+    "name": "qx-s1__currentPage_2.html",
+    "url": "https://www.kan.org.il/content/kan/kan-11/p-546636/s1/?currentPage=2",
     "status": 200,
-    "final": "https://www.kan.org.il/content/kan/kan-11/p-833724/",
-    "len": 132022
+    "final": "https://www.kan.org.il/content/kan/kan-11/p-546636/s1/?currentPage=2",
+    "len": 190497,
+    "items": 50,
+    "s1": 50
   },
   {
-    "name": "851048.html",
-    "url": "https://www.kan.org.il/content/kan/kan-11/p-851048/",
-    "status": 404,
-    "final": "https://www.kan.org.il/content/kan/kan-11/p-851048/",
-    "len": 104130
-  },
-  {
-    "name": "11534.html",
-    "url": "https://www.kan.org.il/content/kan/kan-11/p-11534/",
+    "name": "q-s1__page_2_itemsToShow_500_lastLoadedSeasonId_0.html",
+    "url": "https://www.kan.org.il/content/kan/kan-11/p-546636/s1/?page=2&itemsToShow=500&lastLoadedSeasonId=0",
     "status": 200,
-    "final": "https://www.kan.org.il/content/kan/kan-11/p-11534/",
-    "len": 183617
+    "final": "https://www.kan.org.il/content/kan/kan-11/p-546636/s1/?page=2&itemsToShow=500&lastLoadedSeasonId=0",
+    "len": 191746,
+    "items": 50,
+    "s1": 50
+  },
+  {
+    "name": "qx-s1__page_2_itemsToShow_500_lastLoadedSeasonId_0.html",
+    "url": "https://www.kan.org.il/content/kan/kan-11/p-546636/s1/?page=2&itemsToShow=500&lastLoadedSeasonId=0",
+    "status": 200,
+    "final": "https://www.kan.org.il/content/kan/kan-11/p-546636/s1/?page=2&itemsToShow=500&lastLoadedSeasonId=0",
+    "len": 190808,
+    "items": 50,
+    "s1": 50
   }
 ]
