@@ -4,6 +4,7 @@
  * Each step is timed; a step slower than --slow-ms counts as a failure, because Stremio gives up on slow add-ons.
  *
  *   npm run smoke -- [--url http://localhost:7000] [--items 3] [--decode] [--location US] [--slow-ms 15000] [--out smoke.json]
+ *                    [--ids iltv:vod:knesset:39011,...]   (also checks these programs, e.g. the longest ones)
  *
  * --decode also decodes a few seconds of each stream with ffprobe (needs ffmpeg). Without it, streams are probed
  * (playlist, variant and first segment). Israel-only streams are not fetched when --location is not IL.
@@ -22,6 +23,7 @@ const decode = process.argv.includes("--decode");
 const location = argValue("location");
 const slowMs = Number(argValue("slow-ms") ?? 15000);
 const out = argValue("out");
+const extraIds = (argValue("ids") ?? "").split(",").map((s) => s.trim()).filter(Boolean);
 
 interface Step {
   step: string;
@@ -101,22 +103,27 @@ for (const cat of manifest.body.catalogs) {
   const search = await get<{ metas: MetaPreview[] }>(`/catalog/${cat.type}/${enc(cat.id)}/search=${enc(word)}.json`);
   record(`${label} search "${word}"`, search.ok && (search.body?.metas.length ?? 0) > 0, search.ms, `${search.body?.metas.length ?? 0} results`);
 
-  for (const item of metas.slice(0, itemsPerCatalog)) {
-    const itemLabel = `${label} ${item.name}`;
-    const meta = await get<{ meta: Meta | null }>(`/meta/${item.type}/${enc(item.id)}.json`);
-    const m = meta.body?.meta;
-    const videos = m?.videos ?? [];
-    record(`${itemLabel} meta`, meta.ok && !!m && (item.type !== "series" || videos.length > 0), meta.ms, meta.error ?? (m ? (item.type === "series" ? `${videos.length} episodes` : "ok") : `HTTP ${meta.status}`));
-    if (!m) continue;
-    // Stremio opens the newest episode most often, so that is the one checked.
-    const newest = [...videos].sort((a, b) => (a.released && b.released ? b.released.localeCompare(a.released) : (b.season ?? 0) - (a.season ?? 0) || (b.episode ?? 0) - (a.episode ?? 0)))[0];
-    const streamId = item.type === "series" ? newest?.id : item.id;
-    if (!streamId) continue;
-    const streams = await get<{ streams: Stream[] }>(`/stream/${item.type}/${enc(streamId)}.json`);
-    const list = streams.body?.streams ?? [];
-    record(`${itemLabel} streams`, streams.ok && list.length > 0, streams.ms, streams.error ?? `${list.length} streams`);
-    if (list.length) await checkStreams(itemLabel, list);
-  }
+  for (const item of metas.slice(0, itemsPerCatalog)) await checkItem(label, item);
+}
+
+for (const id of extraIds) await checkItem("[--ids]", { id, type: "series", name: id });
+
+/** Opens one catalog item: meta, then the streams of its newest episode (or of the film itself). */
+async function checkItem(label: string, item: Pick<MetaPreview, "id" | "type" | "name">): Promise<void> {
+  const itemLabel = `${label} ${item.name}`;
+  const meta = await get<{ meta: Meta | null }>(`/meta/${item.type}/${enc(item.id)}.json`);
+  const m = meta.body?.meta;
+  const videos = m?.videos ?? [];
+  record(`${itemLabel} meta`, meta.ok && !!m && (item.type !== "series" || videos.length > 0), meta.ms, meta.error ?? (m ? (item.type === "series" ? `${videos.length} episodes` : "ok") : `HTTP ${meta.status}`));
+  if (!m) return;
+  // Stremio opens the newest episode most often, so that is the one checked.
+  const newest = [...videos].sort((a, b) => (a.released && b.released ? b.released.localeCompare(a.released) : (b.season ?? 0) - (a.season ?? 0) || (b.episode ?? 0) - (a.episode ?? 0)))[0];
+  const streamId = item.type === "series" ? newest?.id : item.id;
+  if (!streamId) return;
+  const streams = await get<{ streams: Stream[] }>(`/stream/${item.type}/${enc(streamId)}.json`);
+  const list = streams.body?.streams ?? [];
+  record(`${itemLabel} streams`, streams.ok && list.length > 0, streams.ms, streams.error ?? `${list.length} streams`);
+  if (list.length) await checkStreams(itemLabel, list);
 }
 
 const failed = steps.filter((s) => !s.ok);

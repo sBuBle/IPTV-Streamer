@@ -22,6 +22,16 @@ async function main() {
     logger.info("listening", { port: info.port, manifest: `${config.baseUrl ?? `http://localhost:${info.port}`}/manifest.json` }),
   );
 
+  // Loads channel and program lists before the first viewer asks, and again before they expire,
+  // so Stremio rarely waits on a broadcaster. Failures are logged by the registry and never stop the server.
+  const warm = () =>
+    Promise.all([service.channels(), service.vod.allPrograms()])
+      .then(([channels, programs]) => logger.info("caches warmed", { channels: channels.length, programs: programs.length }))
+      .catch((err) => logger.error("cache warm-up failed", { error: err }));
+  void warm();
+  const warmTimer = setInterval(warm, 9 * 60_000);
+  warmTimer.unref();
+
   let timer: NodeJS.Timeout | undefined;
   if (config.healthProbeIntervalMs > 0) {
     const run = () =>
@@ -37,6 +47,7 @@ async function main() {
   const shutdown = (signal: string) => {
     logger.info("shutting down", { signal });
     clearInterval(timer);
+    clearInterval(warmTimer);
     server.close(() => {
       void store.close().finally(() => process.exit(0));
     });

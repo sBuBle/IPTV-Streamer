@@ -19,6 +19,7 @@ export const PAGE_SIZE = 100;
 const CHANNEL_LIST_TTL_MS = 10 * 60_000;
 const STREAM_TTL_MS = 5 * 60_000;
 const STREAM_EXPIRY_MARGIN_MS = 60_000;
+const FAILURE_TTL_MS = 60_000;
 
 export interface Channel extends LiveChannel {
   stremioId: string;
@@ -62,9 +63,16 @@ export class AddonService {
         try {
           return await this.channelLists.getOrLoad(p.id, async () => {
             const r = await this.deps.registry.call(p, "listChannels", (ctx) => p.live!.listChannels(ctx));
+            if (r.ok && r.value.length > 0) {
+              this.channelLists.remember(p.id, r.value);
+              return { value: r.value, ttlMs: CHANNEL_LIST_TTL_MS };
+            }
+            // Keep showing the channels the provider listed last time; retry soon.
+            const stale = this.channelLists.lastGood(p.id);
+            if (stale) return { value: stale, ttlMs: FAILURE_TTL_MS };
             if (!r.ok) throw new Error(r.error);
-            return { value: r.value, ttlMs: CHANNEL_LIST_TTL_MS };
-          });
+            return { value: r.value, ttlMs: FAILURE_TTL_MS };
+          }, { staleWhileRevalidate: true });
         } catch {
           return [];
         }

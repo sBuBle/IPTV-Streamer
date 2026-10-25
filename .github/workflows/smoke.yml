@@ -27,9 +27,11 @@ jobs:
           HEALTH_PROBE_INTERVAL_MIN=0 DATABASE_PATH=/tmp/addon.db nohup node dist/src/entry/node.js > /tmp/addon.log 2>&1 &
           for i in $(seq 1 30); do curl -fs localhost:7000/health && break; sleep 1; done
       - name: Smoke test
+        # Big Kan and Knesset programs come from the sitemaps, which the add-on reads in the background after it starts.
         run: |
+          sleep 120
           COUNTRY=$(curl -fsS https://ipinfo.io/country || echo XX)
-          npx tsx scripts/smoke.ts --url http://localhost:7000 --items 3 --decode --location "$COUNTRY" --out smoke.json
+          npx tsx scripts/smoke.ts --url http://localhost:7000 --items 3 --decode --location "$COUNTRY" --out smoke.json --ids iltv:vod:knesset:39011,iltv:vod:knesset:hazira-hamerkazit,iltv:vod:kan:11544,iltv:vod:kan:963853,iltv:vod:i24news:69dd53d308729d93535c6f34
       - name: Add-on log (errors and slow requests)
         if: always()
         run: grep -E '"level":"(warn|error)"|"ms":[0-9]{4,}' /tmp/addon.log | tail -200 || true

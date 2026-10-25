@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { buildAddon } from "../src/bootstrap.js";
 import type { Env } from "../src/config.js";
 import type { ResolvedStream } from "../src/domain/types.js";
@@ -160,5 +160,30 @@ describe("VOD in Stremio", () => {
 
     const coverage = (await get(app, "/coverage")).body.providers.find((p: any) => p.provider === "tvco");
     expect(coverage).toMatchObject({ vodProgramsDiscovered: 2, vodSeriesDiscovered: 1, vodMoviesDiscovered: 1, vodEpisodesChecked: 1, vodEpisodesVerified: 1, vodSampleStatus: "verified" });
+  });
+
+  describe("during a provider outage", () => {
+    afterEach(() => vi.useRealTimers());
+
+    it("keeps serving the last good catalog and series page", async () => {
+      vi.useFakeTimers({ toFake: ["Date"] });
+      let up = true;
+      const flaky = vodProvider("flaky", [{ ...SHOW, provider: "flaky" }], {});
+      const listPrograms = flaky.vod!.listPrograms;
+      const getProgram = flaky.vod!.getProgram;
+      flaky.vod!.listPrograms = async (ctx) => (up ? listPrograms(ctx) : []);
+      flaky.vod!.getProgram = async (id, ctx) => {
+        if (!up) throw new Error("HTTP 503");
+        return getProgram(id, ctx);
+      };
+      const { app } = setup({}, [flaky]);
+      expect((await get(app, "/catalog/series/iltv-vod-flaky.json")).body.metas).toHaveLength(1);
+      expect((await get(app, "/meta/series/iltv:vod:flaky:show-1.json")).body.meta.videos).toHaveLength(2);
+
+      up = false;
+      vi.setSystemTime(Date.now() + 2 * 3600_000); // past every cache lifetime
+      expect((await get(app, "/catalog/series/iltv-vod-flaky.json")).body.metas).toHaveLength(1);
+      expect((await get(app, "/meta/series/iltv:vod:flaky:show-1.json")).body.meta.videos).toHaveLength(2);
+    });
   });
 });

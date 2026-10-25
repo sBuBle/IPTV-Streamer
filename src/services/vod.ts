@@ -74,8 +74,13 @@ export class VodService {
     try {
       const list = await this.programLists.getOrLoad(p.id, async () => {
         const r = await this.deps.registry.call(p, "listPrograms", (ctx) => p.vod!.listPrograms(ctx));
-        return r.ok ? { value: r.value, ttlMs: PROGRAM_LIST_TTL_MS } : { value: [], ttlMs: FAILURE_TTL_MS };
-      });
+        // An empty list from a provider that listed programs before is an outage, not a real catalog.
+        if (r.ok && r.value.length > 0) {
+          this.programLists.remember(p.id, r.value);
+          return { value: r.value, ttlMs: PROGRAM_LIST_TTL_MS };
+        }
+        return { value: this.programLists.lastGood(p.id) ?? (r.ok ? r.value : []), ttlMs: FAILURE_TTL_MS };
+      }, { staleWhileRevalidate: true });
       return list.map((prog) => ({ ...prog, stremioId: vodProgramId(prog.provider, prog.id) }));
     } catch {
       return [];
@@ -98,9 +103,11 @@ export class VodService {
     try {
       const detail = await this.details.getOrLoad(key, async () => {
         const r = await this.deps.registry.call(p, "getProgram", (ctx) => p.vod!.getProgram(programId, ctx));
-        if (!r.ok) return { value: null, ttlMs: FAILURE_TTL_MS };
+        // During an outage, the last good copy keeps the series page and its episode list working.
+        if (!r.ok) return { value: this.details.lastGood(key) ?? null, ttlMs: FAILURE_TTL_MS };
+        if (r.value) this.details.remember(key, r.value);
         return { value: r.value ?? null, ttlMs: PROGRAM_DETAIL_TTL_MS };
-      });
+      }, { staleWhileRevalidate: true });
       return detail ?? undefined;
     } catch {
       return undefined;
