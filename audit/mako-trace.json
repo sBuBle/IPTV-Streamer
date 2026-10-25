@@ -1,9 +1,0 @@
-[
- {
-  "u": "https://www.mako.co.il/mako-vod-keshet/morning_news?platform=responsive",
-  "status": 200,
-  "final": "https://validate.perfdrive.com/?ssa=b38dd3ca-7c9b-4566-b4b2-24b76f81373c&ssb=54671329595&ssc=https%3A%2F%2Fwww.mako.co.il%2Fmako-vod-keshet%2Fmorning_news%3Fplatform%3Dresponsive&ssi=09b7b4d7-cj2j-4f24-ae26-9d941e03f0bb&ssk=botmanager_support@radware.com&ssm=61856390472920825109297828306116&ssn=d1f0f324981b3fc599511a7d22e7bf5a0084d532f6e6-915b-4b32-847a30&sso=3d90bfa1-e07ff269c0f13d99e9babcb4501130a273711c232939c572&ssp=75720219741792996140179295212931896&ssq=75443533646071611749136460548260738602777&ssr=MTcyLjIwOC4xNTguMjEx&sst=node&ssu=&ssv=&ssw=&ssx=eyJ1em14IjoiN2ZjMDAwM2Y2MzRkMDYtM2RhYy00MzVhLWJlYzUtZTI4NzYyNzgyYTFkMS0xNzkyOTM2NDYwNDIwMC0wMGE0N2E1ZjZmNTNkYjNlY2YwMTAiLCJfX3V6bWYiOiI3ZjkwMDBkNTMyZjZlNi05MTViLTRiMzItOGZhMS1lMDdmZjI2OWMwZjExLTE3OTI5MzY0NjA0MjAwLTAwNTcyZWRlNGI3YjFmOTczY2YxMCIsInJkIjoibWFrby5jby5pbCJ9",
-  "head": "<!DOCTYPE html>\n<html lang=\"en\">\n     <head>\n          <title>Radware Block Page</title>\n          <meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<link rel=\"stylesheet\" href=\"https://captcha.perfdrive.com/captcha-public/css/shieldsquare_styles.min.css\">\n "
- },
- "SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
-]
