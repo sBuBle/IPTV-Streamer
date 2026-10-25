@@ -1,52 +1,22 @@
 [
  {
-  "name": "kan-hls",
-  "url": "https://r.il.cdn-redge.media/webcache/gorigin/hls/oil/kancdn/vod/2250837/LIBCODER_SMOOTH_1080_KAN/Manifest.ism/playlist.m3u8?fmp4"
+  "name": "kan-p12832",
+  "url": "https://www.kan.org.il/content/kan/kan-11/p-12832/"
  },
  {
-  "name": "kan-dash",
-  "url": "https://r.il.cdn-redge.media/webcache/gorigin/dash/oil/kancdn/vod/2250837/LIBCODER_SMOOTH_1080_KAN/Manifest.ism"
+  "name": "kan-p682519",
+  "url": "https://www.kan.org.il/content/kan/kan-11/p-682519/"
  },
  {
-  "name": "kan-hls-decode",
-  "decode": true,
-  "url": "https://r.il.cdn-redge.media/webcache/gorigin/hls/oil/kancdn/vod/2250837/LIBCODER_SMOOTH_1080_KAN/Manifest.ism/playlist.m3u8?fmp4"
+  "name": "kan-archive-ep",
+  "url": "https://www.kan.org.il/content/archive1/vod/p-670735/943600/"
  },
  {
-  "name": "knesset-decode",
-  "decode": true,
-  "url": "https://api.bynetcdn.com/Redirector/knesset/manifest/KNS028370/HLS/playlist.m3u8"
+  "name": "kan-digital-prog",
+  "url": "https://www.kan.org.il/content/dig/digital/p-11297/"
  },
  {
-  "name": "i24-decode",
-  "decode": true,
-  "url": "https://i24israel.vod.immergo.tv/i24israel/transcoded/038aee8f-22cd-41c9-98c8-14747c35bd5c/hls/master.m3u8"
- },
- {
-  "name": "mako-akamai",
-  "url": "https://mako-vod.akamaized.net/i/VOD/KESHET/Hazamar_Bemasecha/S05/EP/Hazamar_Bemasecha5_03_241026_VOD_WBY810/Hazamar_Bemasecha5_03_241026_VOD_WBY810_,550,850,1400,2200,.mp4.csmil/master.m3u8"
- },
- {
-  "name": "kan-archive-ep-prog",
-  "url": "https://www.kan.org.il/content/archive1/vod/p-670735/"
- },
- {
-  "name": "i24-shows-section",
-  "url": "https://insight-api-shared.univtec.com/interface/pages/section/6a15800ed7dd65c210d2d0c1?page=1&limit=100",
-  "headers": {
-   "platform": "web",
-   "x-device-type": "web",
-   "x-tenant-id": "i24israel",
-   "regioncode": "all",
-   "x-no-verbose-items": "ok"
-  }
- },
- {
-  "name": "knesset-show-scale",
-  "url": "https://www.knesset.tv/tv-shows/the-scale/"
- },
- {
-  "name": "knesset-show-24842",
-  "url": "https://www.knesset.tv/tv-shows/24842/"
+  "name": "knesset-shows-more",
+  "url": "https://www.knesset.tv/tv-shows/the-scale/?page=2"
  }
 ]
