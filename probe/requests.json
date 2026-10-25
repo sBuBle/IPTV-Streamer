@@ -1,210 +1,116 @@
 [
  {
-  "name": "i24-chunk-0",
-  "url": "https://video.i24news.tv/_next/static/chunks/0b8e744a-e47862cb875f6c28.js"
+  "name": "i24-series",
+  "url": "https://insight-api-shared.univtec.com/interface/pages/series/69dd53ce08729d93535c6f12",
+  "headers": {
+   "platform": "web",
+   "x-device-type": "web",
+   "x-tenant-id": "i24israel",
+   "regioncode": "all"
+  }
  },
  {
-  "name": "i24-chunk-1",
-  "url": "https://video.i24news.tv/_next/static/chunks/1184-c2edb55e23c78033.js"
+  "name": "i24-series-fr",
+  "url": "https://insight-api-shared.univtec.com/interface/pages/series/69dd53ce08729d93535c6f12",
+  "headers": {
+   "platform": "web",
+   "x-device-type": "web",
+   "x-tenant-id": "i24israel",
+   "regioncode": "french"
+  }
  },
  {
-  "name": "i24-chunk-2",
-  "url": "https://video.i24news.tv/_next/static/chunks/1186-221cbdc419463273.js"
+  "name": "i24-section",
+  "url": "https://insight-api-shared.univtec.com/interface/pages/section/69fb07922af0171ced6f156e?page=1&limit=50",
+  "headers": {
+   "platform": "web",
+   "x-device-type": "web",
+   "x-tenant-id": "i24israel",
+   "regioncode": "all",
+   "x-no-verbose-items": "ok"
+  }
  },
  {
-  "name": "i24-chunk-3",
-  "url": "https://video.i24news.tv/_next/static/chunks/1730-fb86430a8ce22f66.js"
+  "name": "i24-section-p2",
+  "url": "https://insight-api-shared.univtec.com/interface/pages/section/69fb07922af0171ced6f156e?page=2&limit=50",
+  "headers": {
+   "platform": "web",
+   "x-device-type": "web",
+   "x-tenant-id": "i24israel",
+   "regioncode": "all",
+   "x-no-verbose-items": "ok"
+  }
  },
  {
-  "name": "i24-chunk-4",
-  "url": "https://video.i24news.tv/_next/static/chunks/1746-42692bb2eddcaffa.js"
+  "name": "i24-vod",
+  "url": "https://insight-api-shared.univtec.com/interface/pages/vod/6ada5121e17ae9effa0880c5",
+  "headers": {
+   "platform": "web",
+   "x-device-type": "web",
+   "x-tenant-id": "i24israel",
+   "regioncode": "all"
+  }
  },
  {
-  "name": "i24-chunk-5",
-  "url": "https://video.i24news.tv/_next/static/chunks/1930-653d5c3175ba9610.js"
+  "name": "i24-search",
+  "url": "https://insight-api-shared.univtec.com/interface/search/search?q=rundown",
+  "headers": {
+   "platform": "web",
+   "x-device-type": "web",
+   "x-tenant-id": "i24israel",
+   "regioncode": "all"
+  }
  },
  {
-  "name": "i24-chunk-6",
-  "url": "https://video.i24news.tv/_next/static/chunks/2995-a0515128d07b38b7.js"
+  "name": "i24-vod-m3u8",
+  "url": "https://i24israel.vod.immergo.tv/i24israel/transcoded/038aee8f-22cd-41c9-98c8-14747c35bd5c/hls/master.m3u8"
  },
  {
-  "name": "i24-chunk-7",
-  "url": "https://video.i24news.tv/_next/static/chunks/3072-172e0eeae3cfeb2a.js"
+  "name": "kan-ep",
+  "url": "https://www.kan.org.il/content/kan/kan-11/p-1075348/s1/1104559/"
  },
  {
-  "name": "i24-chunk-8",
-  "url": "https://video.i24news.tv/_next/static/chunks/3084-e0d685c5c879b626.js"
+  "name": "kan-prog-1075348",
+  "url": "https://www.kan.org.il/content/kan/kan-11/p-1075348/"
  },
  {
-  "name": "i24-chunk-9",
-  "url": "https://video.i24news.tv/_next/static/chunks/3211-f361c213284af859.js"
+  "name": "kan-sitemap0",
+  "url": "https://www.kan.org.il/media/sitemap/general/sitemap0.xml"
  },
  {
-  "name": "i24-chunk-10",
-  "url": "https://video.i24news.tv/_next/static/chunks/3534-e591a9b7f6fec27c.js"
+  "name": "kan-archive-vod",
+  "url": "https://www.kan.org.il/content/archive1/vod/p-670851/"
  },
  {
-  "name": "i24-chunk-11",
-  "url": "https://video.i24news.tv/_next/static/chunks/4022-95566ced83d4c8f4.js"
+  "name": "mako-ep-json",
+  "url": "https://www.mako.co.il/mako-vod-keshet/the_singer_in_a_mask-s5/VOD-3b3c47ace7f21a1027.htm?platform=responsive"
  },
  {
-  "name": "i24-chunk-12",
-  "url": "https://video.i24news.tv/_next/static/chunks/4161-981e88325cc4fc8e.js"
+  "name": "mako-playlist",
+  "url": "https://www.mako.co.il/AjaxPage?jspName=playlist12.jsp&vcmid=3b3c47ace7f21a10VgnVCM100000700a10acRCRD&videoChannelId=b7a50ea945031a10VgnVCM200000650a10acRCRD&galleryChannelId=3b3c47ace7f21a10VgnVCM100000700a10acRCRD&isGallery=false&consumer=web_html5&encryption=no"
  },
  {
-  "name": "i24-chunk-13",
-  "url": "https://video.i24news.tv/_next/static/chunks/5335-0da5d06e47182e0b.js"
+  "name": "mako-season-json",
+  "url": "https://www.mako.co.il/mako-vod-keshet/the_singer_in_a_mask-s2?platform=responsive"
  },
  {
-  "name": "i24-chunk-14",
-  "url": "https://video.i24news.tv/_next/static/chunks/5690-0cfa6f4c5c107dec.js"
+  "name": "knesset-video-page",
+  "url": "https://www.knesset.tv/tv-shows/88938/video/88941/"
  },
  {
-  "name": "i24-chunk-15",
-  "url": "https://video.i24news.tv/_next/static/chunks/5722-03144a0281877ed8.js"
+  "name": "knesset-vod-m3u8",
+  "url": "https://api.bynetcdn.com/Redirector/knesset/manifest/KNS028370/HLS/playlist.m3u8?tn=&ts=1768501538&"
  },
  {
-  "name": "i24-chunk-16",
-  "url": "https://video.i24news.tv/_next/static/chunks/5949-a788b8d1bcb679a6.js"
+  "name": "knesset-vod-m3u8-bare",
+  "url": "https://api.bynetcdn.com/Redirector/knesset/manifest/KNS028370/HLS/playlist.m3u8"
  },
  {
-  "name": "i24-chunk-17",
-  "url": "https://video.i24news.tv/_next/static/chunks/6385-477e3757c645c31b.js"
+  "name": "knesset-show-88938",
+  "url": "https://www.knesset.tv/tv-shows/88938/"
  },
  {
-  "name": "i24-chunk-18",
-  "url": "https://video.i24news.tv/_next/static/chunks/6950-923a1118d0b0cb24.js"
- },
- {
-  "name": "i24-chunk-19",
-  "url": "https://video.i24news.tv/_next/static/chunks/7208-f8abb920e0391df9.js"
- },
- {
-  "name": "i24-chunk-20",
-  "url": "https://video.i24news.tv/_next/static/chunks/7811-b9e64a63d567128a.js"
- },
- {
-  "name": "i24-chunk-21",
-  "url": "https://video.i24news.tv/_next/static/chunks/8716-17215422e261ee20.js"
- },
- {
-  "name": "i24-chunk-22",
-  "url": "https://video.i24news.tv/_next/static/chunks/9368-c108020f635f1503.js"
- },
- {
-  "name": "i24-chunk-23",
-  "url": "https://video.i24news.tv/_next/static/chunks/9778-49107fc4800eba1b.js"
- },
- {
-  "name": "i24-chunk-24",
-  "url": "https://video.i24news.tv/_next/static/chunks/ae6cfabb-ccfaf7418c7a3798.js"
- },
- {
-  "name": "i24-chunk-25",
-  "url": "https://video.i24news.tv/_next/static/chunks/app/(staticLayout)/error-da4adf85576af91d.js"
- },
- {
-  "name": "i24-chunk-26",
-  "url": "https://video.i24news.tv/_next/static/chunks/app/(staticLayout)/layout-30767b7b9890a27b.js"
- },
- {
-  "name": "i24-chunk-27",
-  "url": "https://video.i24news.tv/_next/static/chunks/app/(staticLayout)/serie/%5Bid%5D/page-7e2c0adfce539182.js"
- },
- {
-  "name": "i24-chunk-28",
-  "url": "https://video.i24news.tv/_next/static/chunks/app/error-933ea1a67af353ab.js"
- },
- {
-  "name": "i24-chunk-29",
-  "url": "https://video.i24news.tv/_next/static/chunks/app/layout-998b8ce1a54b2694.js"
- },
- {
-  "name": "i24-chunk-30",
-  "url": "https://video.i24news.tv/_next/static/chunks/app/not-found-14394aae5c6d4ced.js"
- },
- {
-  "name": "i24-chunk-31",
-  "url": "https://video.i24news.tv/_next/static/chunks/b27dc69b-fe23697f6bbe1009.js"
- },
- {
-  "name": "i24-chunk-32",
-  "url": "https://video.i24news.tv/_next/static/chunks/main-app-7d26a5ffa65e8f55.js"
- },
- {
-  "name": "i24-chunk-33",
-  "url": "https://video.i24news.tv/_next/static/chunks/polyfills-78c92fac7aa8fdd8.js"
- },
- {
-  "name": "i24-chunk-34",
-  "url": "https://video.i24news.tv/_next/static/chunks/webpack-2479d29a535c9e6f.js"
- },
- {
-  "name": "kan-siteindex",
-  "url": "https://www.kan.org.il/media/sitemap/general/siteindex.xml"
- },
- {
-  "name": "kan-lobby-kanbox",
-  "url": "https://www.kan.org.il/lobby/kan-box/"
- },
- {
-  "name": "kan-lobby-series2",
-  "url": "https://www.kan.org.il/lobby/series/"
- },
- {
-  "name": "kan-lobby-archive",
-  "url": "https://www.kan.org.il/lobby/archive/"
- },
- {
-  "name": "kan-prog-11894",
-  "url": "https://www.kan.org.il/content/kan-news/newstv/p-11894/"
- },
- {
-  "name": "kan-reka-10800",
-  "url": "https://www.kan.org.il/content/kan/kan-reka/p-10800/"
- },
- {
-  "name": "mako-prog-json",
-  "url": "https://www.mako.co.il/mako-vod-keshet/avri_and_sherki?platform=responsive"
- },
- {
-  "name": "mako-prog-html",
-  "url": "https://www.mako.co.il/mako-vod-keshet/avri_and_sherki"
- },
- {
-  "name": "mako-prog2-json",
-  "url": "https://www.mako.co.il/mako-vod-keshet/the_singer_in_a_mask?platform=responsive"
- },
- {
-  "name": "knesset-tvshows",
-  "url": "https://www.knesset.tv/tv-shows/"
- },
- {
-  "name": "knesset-vod",
-  "url": "https://www.knesset.tv/vod/"
- },
- {
-  "name": "knesset-show-the-scale",
-  "url": "https://www.knesset.tv/tv-shows/the-scale/"
- },
- {
-  "name": "knesset-show-24842",
-  "url": "https://www.knesset.tv/tv-shows/24842/"
- },
- {
-  "name": "knesset-video-84973",
-  "url": "https://www.knesset.tv/committees/financecommittee/video/84973/"
- },
- {
-  "name": "knesset-sm-videos-1",
-  "url": "https://www.knesset.tv/sitemap/sitemap-videos-1.xml"
- },
- {
-  "name": "knesset-sm-standard",
-  "url": "https://www.knesset.tv/sitemap/sitemap-standard-1.xml"
- },
- {
-  "name": "knesset-sitemap",
-  "url": "https://www.knesset.tv/sitemap.xml"
+  "name": "knesset-sm-videos-20",
+  "url": "https://www.knesset.tv/sitemap/sitemap-videos-20.xml"
  }
 ]
