@@ -1,0 +1,578 @@
+[
+  {
+    "name": "i24-series.json",
+    "url": "https://insight-api-shared.univtec.com/interface/pages/series/69dd53ce08729d93535c6f12",
+    "status": 200,
+    "type": "application/json; charset=utf-8",
+    "final": "https://insight-api-shared.univtec.com/interface/pages/series/69dd53ce08729d93535c6f12",
+    "len": 1107746,
+    "head": "{\"id\":\"69dd53ce08729d93535c6f12\",\"title\":\"THE RUNDOWN\",\"seriesType\":\"program\",\"paginate\":true,\"image\":\"https://i24israel.vod.immergo.tv/i24israel/uploaded/b43eb13b-0549-408b-b6c9-91e9b22c5317.jpeg\",\"o"
+  },
+  {
+    "name": "i24-series-p2.json",
+    "url": "https://insight-api-shared.univtec.com/interface/pages/series/69dd53ce08729d93535c6f12?page=2",
+    "status": 200,
+    "type": "application/json; charset=utf-8",
+    "final": "https://insight-api-shared.univtec.com/interface/pages/series/69dd53ce08729d93535c6f12?page=2",
+    "len": 1107746,
+    "head": "{\"id\":\"69dd53ce08729d93535c6f12\",\"title\":\"THE RUNDOWN\",\"seriesType\":\"program\",\"paginate\":true,\"image\":\"https://i24israel.vod.immergo.tv/i24israel/uploaded/b43eb13b-0549-408b-b6c9-91e9b22c5317.jpeg\",\"o"
+  },
+  {
+    "name": "i24-series-lim.json",
+    "url": "https://insight-api-shared.univtec.com/interface/pages/series/69dd53ce08729d93535c6f12?page=1&limit=1000",
+    "status": 200,
+    "type": "application/json; charset=utf-8",
+    "final": "https://insight-api-shared.univtec.com/interface/pages/series/69dd53ce08729d93535c6f12?page=1&limit=1000",
+    "len": 1107746,
+    "head": "{\"id\":\"69dd53ce08729d93535c6f12\",\"title\":\"THE RUNDOWN\",\"seriesType\":\"program\",\"paginate\":true,\"image\":\"https://i24israel.vod.immergo.tv/i24israel/uploaded/b43eb13b-0549-408b-b6c9-91e9b22c5317.jpeg\",\"o"
+  },
+  {
+    "name": "i24-series-fr.json",
+    "url": "https://insight-api-shared.univtec.com/interface/pages/series/6a27b62ae6d6a82bed4ff792",
+    "status": 200,
+    "type": "application/json; charset=utf-8",
+    "final": "https://insight-api-shared.univtec.com/interface/pages/series/6a27b62ae6d6a82bed4ff792",
+    "len": 501201,
+    "head": "{\"id\":\"6a27b62ae6d6a82bed4ff792\",\"title\":\"Les Décrypteurs\",\"seriesType\":\"program\",\"paginate\":false,\"image\":\"https://i24israel.vod.immergo.tv/i24israel/uploaded/729cb6bd-dd8a-4e74-9a4c-2562d5f7511c.jpe"
+  },
+  {
+    "name": "mako-index.json",
+    "url": "https://www.mako.co.il/mako-vod-index?platform=responsive",
+    "status": 200,
+    "type": "text/html;charset=UTF-8",
+    "final": "https://www.mako.co.il/mako-vod-index?platform=responsive",
+    "len": 382616,
+    "head": "{\"lastUpdate\":\"Sun, 25 Oct 2026 08:23:55 +0200\",\"timestamp\":1792909435152,\"pageType\":\"SubVertical\",\"mako_ref_comp\":\"AllPrograms_Slider\",\"vcmid\":\"AllPrograms_Slider\",\"channelVcmId\":\"05c2e4caebbe3210Vgn"
+  },
+  {
+    "name": "mako-prog0.json",
+    "url": "https://www.mako.co.il/mako-vod-keshet/morning_news?platform=responsive",
+    "status": 200,
+    "type": "text/html;charset=UTF-8",
+    "final": "https://www.mako.co.il/mako-vod-keshet/morning_news?platform=responsive",
+    "len": 183475,
+    "head": "{\"lastUpdate\":\"Sun, 25 Oct 2026 14:35:41 +0200\",\"timestamp\":1792931741259,\"pageType\":\"Subvertical\",\"channelId\":\"c2819bf60855b910VgnVCM200000650a10acRCRD\",\"sch\":\"c2819bf60855b910\",\"channelName\":\"2026\","
+  },
+  {
+    "name": "mako-prog0-noua.json",
+    "url": "https://www.mako.co.il/mako-vod-keshet/morning_news?platform=responsive",
+    "status": 200,
+    "type": "text/html;charset=UTF-8",
+    "final": "https://www.mako.co.il/mako-vod-keshet/morning_news?platform=responsive",
+    "len": 183475,
+    "head": "{\"lastUpdate\":\"Sun, 25 Oct 2026 14:35:41 +0200\",\"timestamp\":1792931741259,\"pageType\":\"Subvertical\",\"channelId\":\"c2819bf60855b910VgnVCM200000650a10acRCRD\",\"sch\":\"c2819bf60855b910\",\"channelName\":\"2026\","
+  },
+  {
+    "name": "mako-prog0.html",
+    "url": "https://www.mako.co.il/mako-vod-keshet/morning_news",
+    "status": 200,
+    "type": "text/html;charset=utf-8",
+    "final": "https://www.mako.co.il/mako-vod-keshet/morning_news",
+    "len": 515458,
+    "head": "<!DOCTYPE html><html><head><script>(function(){\"use strict\";var __webpack_modules__={348:function(e,t,r){r.d(t,{IP:function(){return i},Pz:function(){return a},Sg:function(){return l},XV:function(){re"
+  },
+  {
+    "name": "mako-prog1.json",
+    "url": "https://www.mako.co.il/mako-vod-keshet/avri_and_sherki?platform=responsive",
+    "status": 200,
+    "type": "text/html;charset=UTF-8",
+    "final": "https://www.mako.co.il/mako-vod-keshet/avri_and_sherki?platform=responsive",
+    "len": 136164,
+    "head": "{\"lastUpdate\":\"Sun, 25 Oct 2026 10:25:56 +0200\",\"timestamp\":1792916756010,\"pageType\":\"Subvertical\",\"channelId\":\"277862799df4b910VgnVCM100000700a10acRCRD\",\"sch\":\"277862799df4b910\",\"channelName\":\"2026\","
+  },
+  {
+    "name": "mako-prog1-noua.json",
+    "url": "https://www.mako.co.il/mako-vod-keshet/avri_and_sherki?platform=responsive",
+    "status": 200,
+    "type": "text/html;charset=UTF-8",
+    "final": "https://www.mako.co.il/mako-vod-keshet/avri_and_sherki?platform=responsive",
+    "len": 136164,
+    "head": "{\"lastUpdate\":\"Sun, 25 Oct 2026 10:25:56 +0200\",\"timestamp\":1792916756010,\"pageType\":\"Subvertical\",\"channelId\":\"277862799df4b910VgnVCM100000700a10acRCRD\",\"sch\":\"277862799df4b910\",\"channelName\":\"2026\","
+  },
+  {
+    "name": "mako-prog1.html",
+    "url": "https://www.mako.co.il/mako-vod-keshet/avri_and_sherki",
+    "status": 200,
+    "type": "text/html;charset=utf-8",
+    "final": "https://www.mako.co.il/mako-vod-keshet/avri_and_sherki",
+    "len": 395729,
+    "head": "<!DOCTYPE html><html><head><script>(function(){\"use strict\";var __webpack_modules__={348:function(e,t,r){r.d(t,{IP:function(){return i},Pz:function(){return a},Sg:function(){return l},XV:function(){re"
+  },
+  {
+    "name": "mako-prog2.json",
+    "url": "https://www.mako.co.il/mako-vod-keshet/the_singer_in_a_mask?platform=responsive",
+    "status": 200,
+    "type": "text/html;charset=UTF-8",
+    "final": "https://www.mako.co.il/mako-vod-keshet/the_singer_in_a_mask?platform=responsive",
+    "len": 13726,
+    "head": "{\"lastUpdate\":\"Sun, 25 Oct 2026 01:30:44 +0200\",\"timestamp\":1792884644353,\"pageType\":\"Subvertical\",\"channelId\":\"b7a50ea945031a10VgnVCM200000650a10acRCRD\",\"sch\":\"b7a50ea945031a10\",\"channelName\":\"עונה 5"
+  },
+  {
+    "name": "mako-prog2-noua.json",
+    "url": "https://www.mako.co.il/mako-vod-keshet/the_singer_in_a_mask?platform=responsive",
+    "status": 200,
+    "type": "text/html;charset=UTF-8",
+    "final": "https://www.mako.co.il/mako-vod-keshet/the_singer_in_a_mask?platform=responsive",
+    "len": 13726,
+    "head": "{\"lastUpdate\":\"Sun, 25 Oct 2026 01:30:44 +0200\",\"timestamp\":1792884644353,\"pageType\":\"Subvertical\",\"channelId\":\"b7a50ea945031a10VgnVCM200000650a10acRCRD\",\"sch\":\"b7a50ea945031a10\",\"channelName\":\"עונה 5"
+  },
+  {
+    "name": "mako-prog2.html",
+    "url": "https://www.mako.co.il/mako-vod-keshet/the_singer_in_a_mask",
+    "status": 200,
+    "type": "text/html;charset=utf-8",
+    "final": "https://www.mako.co.il/mako-vod-keshet/the_singer_in_a_mask",
+    "len": 70815,
+    "head": "<!DOCTYPE html><html><head><script>(function(){\"use strict\";var __webpack_modules__={348:function(e,t,r){r.d(t,{IP:function(){return i},Pz:function(){return a},Sg:function(){return l},XV:function(){re"
+  },
+  {
+    "name": "kan-sitemap0.xml",
+    "url": "https://www.kan.org.il/media/sitemap/general/sitemap0.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.kan.org.il/media/sitemap/general/sitemap0.xml",
+    "len": 6132486,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\r\n  <url>\r\n    <loc>https://www.kan.org.il/content/kan/kan-11/</loc>\r\n    <lastmod>2026-10-22</lastm"
+  },
+  {
+    "name": "kan-sitemap1.xml",
+    "url": "https://www.kan.org.il/media/sitemap/general/sitemap1.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.kan.org.il/media/sitemap/general/sitemap1.xml",
+    "len": 5724887,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\r\n  <url>\r\n    <loc>https://www.kan.org.il/content/kan-news/newstv/p-591147/152491/</loc>\r\n    <last"
+  },
+  {
+    "name": "kan-sitemap2.xml",
+    "url": "https://www.kan.org.il/media/sitemap/general/sitemap2.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.kan.org.il/media/sitemap/general/sitemap2.xml",
+    "len": 5826165,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\r\n  <url>\r\n    <loc>https://www.kan.org.il/content/kan-news/global/287032/</loc>\r\n    <lastmod>2023-"
+  },
+  {
+    "name": "kan-sitemap3.xml",
+    "url": "https://www.kan.org.il/media/sitemap/general/sitemap3.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.kan.org.il/media/sitemap/general/sitemap3.xml",
+    "len": 6108469,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\r\n  <url>\r\n    <loc>https://www.kan.org.il/content/kan-news/defense/live-750545/liveid-750710/</loc>"
+  },
+  {
+    "name": "kan-sitemap4.xml",
+    "url": "https://www.kan.org.il/media/sitemap/general/sitemap4.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.kan.org.il/media/sitemap/general/sitemap4.xml",
+    "len": 6118562,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\r\n  <url>\r\n    <loc>https://www.kan.org.il/content/kan-news/culture/live-1041695/liveid-1041850/</lo"
+  },
+  {
+    "name": "kan-siteindex.xml",
+    "url": "https://www.kan.org.il/media/sitemap/general/siteindex.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.kan.org.il/media/sitemap/general/siteindex.xml",
+    "len": 628,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\r\n  <sitemap>\r\n    <loc>https://www.kan.org.il/media/sitemap/general/sitemap0.xml</loc>\r\n  </s"
+  },
+  {
+    "name": "kan-11486.html",
+    "url": "https://www.kan.org.il/content/kan/kan-11/p-11486/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/content/kan/kan-11/p-11486/",
+    "len": 141051,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"11486\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n        enableUserTracking: true,\r\n        track"
+  },
+  {
+    "name": "kan-963853.html",
+    "url": "https://www.kan.org.il/content/kan/kan-11/p-963853/",
+    "status": 404,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/content/kan/kan-11/p-963853/",
+    "len": 104130,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"1519\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n        enableUserTracking: true,\r\n        tracki"
+  },
+  {
+    "name": "kan-682519.html",
+    "url": "https://www.kan.org.il/content/kan/kan-11/p-682519/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/content/kan/kan-11/p-682519/",
+    "len": 132632,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"682519\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n        enableUserTracking: true,\r\n        trac"
+  },
+  {
+    "name": "knesset-sitemap.xml",
+    "url": "https://www.knesset.tv/sitemap.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap.xml",
+    "len": 3376,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\r\n  <sitemap>\r\n    <loc>https://www.knesset.tv/sitemap/sitemap-standard-1.xml</loc>\r\n  </sitem"
+  },
+  {
+    "name": "knesset-sm-0.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-standard-1.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-standard-1.xml",
+    "len": 58833,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:schemalocation=\"http://www.google.com/schemas/sitemap/0.9http://www.sitemaps.org/schemas/sit"
+  },
+  {
+    "name": "knesset-sm-1.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-articles-1.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-articles-1.xml",
+    "len": 197794,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:image=\"http://www.google.com/schemas/sitemap-image/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-2.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-1.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-1.xml",
+    "len": 732714,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-3.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-2.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-2.xml",
+    "len": 724359,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-4.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-3.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-3.xml",
+    "len": 684372,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-5.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-4.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-4.xml",
+    "len": 695447,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-6.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-5.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-5.xml",
+    "len": 662254,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-7.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-6.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-6.xml",
+    "len": 694568,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-8.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-7.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-7.xml",
+    "len": 666713,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-9.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-8.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-8.xml",
+    "len": 681480,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-10.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-9.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-9.xml",
+    "len": 670835,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-11.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-10.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-10.xml",
+    "len": 649749,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-12.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-11.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-11.xml",
+    "len": 636045,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-13.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-12.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-12.xml",
+    "len": 638675,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-14.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-13.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-13.xml",
+    "len": 721627,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-15.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-14.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-14.xml",
+    "len": 962518,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-16.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-15.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-15.xml",
+    "len": 950838,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-17.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-16.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-16.xml",
+    "len": 874306,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-18.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-17.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-17.xml",
+    "len": 980476,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-19.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-18.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-18.xml",
+    "len": 932499,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-20.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-19.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-19.xml",
+    "len": 1111312,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-21.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-20.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-20.xml",
+    "len": 809265,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-22.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-21.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-21.xml",
+    "len": 940586,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-23.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-22.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-22.xml",
+    "len": 905579,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-24.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-23.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-23.xml",
+    "len": 1030258,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-25.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-24.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-24.xml",
+    "len": 961647,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-26.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-25.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-25.xml",
+    "len": 978164,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-27.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-26.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-26.xml",
+    "len": 885476,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-28.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-27.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-27.xml",
+    "len": 784253,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-29.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-28.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-28.xml",
+    "len": 849951,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-30.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-29.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-29.xml",
+    "len": 3261492,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-31.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-30.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-30.xml",
+    "len": 830838,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-32.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-videos-31.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-videos-31.xml",
+    "len": 505705,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-sm-33.xml",
+    "url": "https://www.knesset.tv/sitemap/sitemap-kms-1.xml",
+    "status": 200,
+    "type": "text/xml",
+    "final": "https://www.knesset.tv/sitemap/sitemap-kms-1.xml",
+    "len": 50045,
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:image=\"http://www.google.com/schemas/sitemap-image/1.1\" xmlns:schemalocation=\"http://www.goo"
+  },
+  {
+    "name": "knesset-tv-shows.html",
+    "url": "https://www.knesset.tv/tv-shows/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/",
+    "len": 55643,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n    <meta property=\"og:site_name\" conte"
+  },
+  {
+    "name": "knesset-vod.html",
+    "url": "https://www.knesset.tv/vod/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/vod/",
+    "len": 58038,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n    <meta property=\"og:site_name\" conte"
+  },
+  {
+    "name": "knesset-square.html",
+    "url": "https://www.knesset.tv/tv-shows/knesset-square/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/knesset-square/",
+    "len": 33505,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n    <meta property=\"og:site_name\" conte"
+  },
+  {
+    "name": "knesset-29732.html",
+    "url": "https://www.knesset.tv/tv-shows/29732/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows",
+    "len": 55640,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n    <meta property=\"og:site_name\" conte"
+  },
+  {
+    "name": "knesset-hazira-p10.html",
+    "url": "https://www.knesset.tv/tv-shows/hazira-hamerkazit/?page=10",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/hazira-hamerkazit/?page=10",
+    "len": 33299,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n    <meta property=\"og:site_name\" conte"
+  },
+  {
+    "name": "knesset-hazira-p60.html",
+    "url": "https://www.knesset.tv/tv-shows/hazira-hamerkazit/?page=60",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/hazira-hamerkazit/?page=60",
+    "len": 33724,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n    <meta property=\"og:site_name\" conte"
+  }
+]
