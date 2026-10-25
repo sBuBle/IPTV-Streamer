@@ -1,578 +1,1289 @@
 [
   {
-    "name": "i24-series.json",
-    "url": "https://insight-api-shared.univtec.com/interface/pages/series/69dd53ce08729d93535c6f12",
-    "status": 200,
-    "type": "application/json; charset=utf-8",
-    "final": "https://insight-api-shared.univtec.com/interface/pages/series/69dd53ce08729d93535c6f12",
-    "len": 1107746,
-    "head": "{\"id\":\"69dd53ce08729d93535c6f12\",\"title\":\"THE RUNDOWN\",\"seriesType\":\"program\",\"paginate\":true,\"image\":\"https://i24israel.vod.immergo.tv/i24israel/uploaded/b43eb13b-0549-408b-b6c9-91e9b22c5317.jpeg\",\"o"
-  },
-  {
-    "name": "i24-series-p2.json",
-    "url": "https://insight-api-shared.univtec.com/interface/pages/series/69dd53ce08729d93535c6f12?page=2",
-    "status": 200,
-    "type": "application/json; charset=utf-8",
-    "final": "https://insight-api-shared.univtec.com/interface/pages/series/69dd53ce08729d93535c6f12?page=2",
-    "len": 1107746,
-    "head": "{\"id\":\"69dd53ce08729d93535c6f12\",\"title\":\"THE RUNDOWN\",\"seriesType\":\"program\",\"paginate\":true,\"image\":\"https://i24israel.vod.immergo.tv/i24israel/uploaded/b43eb13b-0549-408b-b6c9-91e9b22c5317.jpeg\",\"o"
-  },
-  {
-    "name": "i24-series-lim.json",
-    "url": "https://insight-api-shared.univtec.com/interface/pages/series/69dd53ce08729d93535c6f12?page=1&limit=1000",
-    "status": 200,
-    "type": "application/json; charset=utf-8",
-    "final": "https://insight-api-shared.univtec.com/interface/pages/series/69dd53ce08729d93535c6f12?page=1&limit=1000",
-    "len": 1107746,
-    "head": "{\"id\":\"69dd53ce08729d93535c6f12\",\"title\":\"THE RUNDOWN\",\"seriesType\":\"program\",\"paginate\":true,\"image\":\"https://i24israel.vod.immergo.tv/i24israel/uploaded/b43eb13b-0549-408b-b6c9-91e9b22c5317.jpeg\",\"o"
-  },
-  {
-    "name": "i24-series-fr.json",
-    "url": "https://insight-api-shared.univtec.com/interface/pages/series/6a27b62ae6d6a82bed4ff792",
-    "status": 200,
-    "type": "application/json; charset=utf-8",
-    "final": "https://insight-api-shared.univtec.com/interface/pages/series/6a27b62ae6d6a82bed4ff792",
-    "len": 501201,
-    "head": "{\"id\":\"6a27b62ae6d6a82bed4ff792\",\"title\":\"Les Décrypteurs\",\"seriesType\":\"program\",\"paginate\":false,\"image\":\"https://i24israel.vod.immergo.tv/i24israel/uploaded/729cb6bd-dd8a-4e74-9a4c-2562d5f7511c.jpe"
-  },
-  {
-    "name": "mako-index.json",
-    "url": "https://www.mako.co.il/mako-vod-index?platform=responsive",
-    "status": 200,
-    "type": "text/html;charset=UTF-8",
-    "final": "https://www.mako.co.il/mako-vod-index?platform=responsive",
-    "len": 382616,
-    "head": "{\"lastUpdate\":\"Sun, 25 Oct 2026 08:23:55 +0200\",\"timestamp\":1792909435152,\"pageType\":\"SubVertical\",\"mako_ref_comp\":\"AllPrograms_Slider\",\"vcmid\":\"AllPrograms_Slider\",\"channelVcmId\":\"05c2e4caebbe3210Vgn"
-  },
-  {
-    "name": "mako-prog0.json",
-    "url": "https://www.mako.co.il/mako-vod-keshet/morning_news?platform=responsive",
-    "status": 200,
-    "type": "text/html;charset=UTF-8",
-    "final": "https://www.mako.co.il/mako-vod-keshet/morning_news?platform=responsive",
-    "len": 183475,
-    "head": "{\"lastUpdate\":\"Sun, 25 Oct 2026 14:35:41 +0200\",\"timestamp\":1792931741259,\"pageType\":\"Subvertical\",\"channelId\":\"c2819bf60855b910VgnVCM200000650a10acRCRD\",\"sch\":\"c2819bf60855b910\",\"channelName\":\"2026\","
-  },
-  {
-    "name": "mako-prog0-noua.json",
-    "url": "https://www.mako.co.il/mako-vod-keshet/morning_news?platform=responsive",
-    "status": 200,
-    "type": "text/html;charset=UTF-8",
-    "final": "https://www.mako.co.il/mako-vod-keshet/morning_news?platform=responsive",
-    "len": 183475,
-    "head": "{\"lastUpdate\":\"Sun, 25 Oct 2026 14:35:41 +0200\",\"timestamp\":1792931741259,\"pageType\":\"Subvertical\",\"channelId\":\"c2819bf60855b910VgnVCM200000650a10acRCRD\",\"sch\":\"c2819bf60855b910\",\"channelName\":\"2026\","
-  },
-  {
-    "name": "mako-prog0.html",
-    "url": "https://www.mako.co.il/mako-vod-keshet/morning_news",
-    "status": 200,
-    "type": "text/html;charset=utf-8",
-    "final": "https://www.mako.co.il/mako-vod-keshet/morning_news",
-    "len": 515458,
-    "head": "<!DOCTYPE html><html><head><script>(function(){\"use strict\";var __webpack_modules__={348:function(e,t,r){r.d(t,{IP:function(){return i},Pz:function(){return a},Sg:function(){return l},XV:function(){re"
-  },
-  {
-    "name": "mako-prog1.json",
-    "url": "https://www.mako.co.il/mako-vod-keshet/avri_and_sherki?platform=responsive",
-    "status": 200,
-    "type": "text/html;charset=UTF-8",
-    "final": "https://www.mako.co.il/mako-vod-keshet/avri_and_sherki?platform=responsive",
-    "len": 136164,
-    "head": "{\"lastUpdate\":\"Sun, 25 Oct 2026 10:25:56 +0200\",\"timestamp\":1792916756010,\"pageType\":\"Subvertical\",\"channelId\":\"277862799df4b910VgnVCM100000700a10acRCRD\",\"sch\":\"277862799df4b910\",\"channelName\":\"2026\","
-  },
-  {
-    "name": "mako-prog1-noua.json",
-    "url": "https://www.mako.co.il/mako-vod-keshet/avri_and_sherki?platform=responsive",
-    "status": 200,
-    "type": "text/html;charset=UTF-8",
-    "final": "https://www.mako.co.il/mako-vod-keshet/avri_and_sherki?platform=responsive",
-    "len": 136164,
-    "head": "{\"lastUpdate\":\"Sun, 25 Oct 2026 10:25:56 +0200\",\"timestamp\":1792916756010,\"pageType\":\"Subvertical\",\"channelId\":\"277862799df4b910VgnVCM100000700a10acRCRD\",\"sch\":\"277862799df4b910\",\"channelName\":\"2026\","
-  },
-  {
-    "name": "mako-prog1.html",
-    "url": "https://www.mako.co.il/mako-vod-keshet/avri_and_sherki",
-    "status": 200,
-    "type": "text/html;charset=utf-8",
-    "final": "https://www.mako.co.il/mako-vod-keshet/avri_and_sherki",
-    "len": 395729,
-    "head": "<!DOCTYPE html><html><head><script>(function(){\"use strict\";var __webpack_modules__={348:function(e,t,r){r.d(t,{IP:function(){return i},Pz:function(){return a},Sg:function(){return l},XV:function(){re"
-  },
-  {
-    "name": "mako-prog2.json",
-    "url": "https://www.mako.co.il/mako-vod-keshet/the_singer_in_a_mask?platform=responsive",
-    "status": 200,
-    "type": "text/html;charset=UTF-8",
-    "final": "https://www.mako.co.il/mako-vod-keshet/the_singer_in_a_mask?platform=responsive",
-    "len": 13726,
-    "head": "{\"lastUpdate\":\"Sun, 25 Oct 2026 01:30:44 +0200\",\"timestamp\":1792884644353,\"pageType\":\"Subvertical\",\"channelId\":\"b7a50ea945031a10VgnVCM200000650a10acRCRD\",\"sch\":\"b7a50ea945031a10\",\"channelName\":\"עונה 5"
-  },
-  {
-    "name": "mako-prog2-noua.json",
-    "url": "https://www.mako.co.il/mako-vod-keshet/the_singer_in_a_mask?platform=responsive",
-    "status": 200,
-    "type": "text/html;charset=UTF-8",
-    "final": "https://www.mako.co.il/mako-vod-keshet/the_singer_in_a_mask?platform=responsive",
-    "len": 13726,
-    "head": "{\"lastUpdate\":\"Sun, 25 Oct 2026 01:30:44 +0200\",\"timestamp\":1792884644353,\"pageType\":\"Subvertical\",\"channelId\":\"b7a50ea945031a10VgnVCM200000650a10acRCRD\",\"sch\":\"b7a50ea945031a10\",\"channelName\":\"עונה 5"
-  },
-  {
-    "name": "mako-prog2.html",
-    "url": "https://www.mako.co.il/mako-vod-keshet/the_singer_in_a_mask",
-    "status": 200,
-    "type": "text/html;charset=utf-8",
-    "final": "https://www.mako.co.il/mako-vod-keshet/the_singer_in_a_mask",
-    "len": 70815,
-    "head": "<!DOCTYPE html><html><head><script>(function(){\"use strict\";var __webpack_modules__={348:function(e,t,r){r.d(t,{IP:function(){return i},Pz:function(){return a},Sg:function(){return l},XV:function(){re"
-  },
-  {
-    "name": "kan-sitemap0.xml",
-    "url": "https://www.kan.org.il/media/sitemap/general/sitemap0.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.kan.org.il/media/sitemap/general/sitemap0.xml",
-    "len": 6132486,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\r\n  <url>\r\n    <loc>https://www.kan.org.il/content/kan/kan-11/</loc>\r\n    <lastmod>2026-10-22</lastm"
-  },
-  {
-    "name": "kan-sitemap1.xml",
-    "url": "https://www.kan.org.il/media/sitemap/general/sitemap1.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.kan.org.il/media/sitemap/general/sitemap1.xml",
-    "len": 5724887,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\r\n  <url>\r\n    <loc>https://www.kan.org.il/content/kan-news/newstv/p-591147/152491/</loc>\r\n    <last"
-  },
-  {
-    "name": "kan-sitemap2.xml",
-    "url": "https://www.kan.org.il/media/sitemap/general/sitemap2.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.kan.org.il/media/sitemap/general/sitemap2.xml",
-    "len": 5826165,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\r\n  <url>\r\n    <loc>https://www.kan.org.il/content/kan-news/global/287032/</loc>\r\n    <lastmod>2023-"
-  },
-  {
-    "name": "kan-sitemap3.xml",
-    "url": "https://www.kan.org.il/media/sitemap/general/sitemap3.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.kan.org.il/media/sitemap/general/sitemap3.xml",
-    "len": 6108469,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\r\n  <url>\r\n    <loc>https://www.kan.org.il/content/kan-news/defense/live-750545/liveid-750710/</loc>"
-  },
-  {
-    "name": "kan-sitemap4.xml",
-    "url": "https://www.kan.org.il/media/sitemap/general/sitemap4.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.kan.org.il/media/sitemap/general/sitemap4.xml",
-    "len": 6118562,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\r\n  <url>\r\n    <loc>https://www.kan.org.il/content/kan-news/culture/live-1041695/liveid-1041850/</lo"
-  },
-  {
-    "name": "kan-siteindex.xml",
-    "url": "https://www.kan.org.il/media/sitemap/general/siteindex.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.kan.org.il/media/sitemap/general/siteindex.xml",
-    "len": 628,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\r\n  <sitemap>\r\n    <loc>https://www.kan.org.il/media/sitemap/general/sitemap0.xml</loc>\r\n  </s"
-  },
-  {
-    "name": "kan-11486.html",
-    "url": "https://www.kan.org.il/content/kan/kan-11/p-11486/",
+    "name": "kan-lobby-kan11.html",
+    "url": "https://www.kan.org.il/lobby/kan11/",
     "status": 200,
     "type": "text/html; charset=utf-8",
-    "final": "https://www.kan.org.il/content/kan/kan-11/p-11486/",
-    "len": 141051,
-    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"11486\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n        enableUserTracking: true,\r\n        track"
+    "final": "https://www.kan.org.il/lobby/kan11/",
+    "len": 200634,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"229225\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n       "
   },
   {
-    "name": "kan-963853.html",
-    "url": "https://www.kan.org.il/content/kan/kan-11/p-963853/",
-    "status": 404,
-    "type": "text/html; charset=utf-8",
-    "final": "https://www.kan.org.il/content/kan/kan-11/p-963853/",
-    "len": 104130,
-    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"1519\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n        enableUserTracking: true,\r\n        tracki"
-  },
-  {
-    "name": "kan-682519.html",
-    "url": "https://www.kan.org.il/content/kan/kan-11/p-682519/",
+    "name": "kan-lobby-digital-lobby.html",
+    "url": "https://www.kan.org.il/lobby/digital-lobby/",
     "status": 200,
     "type": "text/html; charset=utf-8",
-    "final": "https://www.kan.org.il/content/kan/kan-11/p-682519/",
-    "len": 132632,
-    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"682519\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n        enableUserTracking: true,\r\n        trac"
+    "final": "https://www.kan.org.il/lobby/digital-lobby/",
+    "len": 168395,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"229227\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n       "
   },
   {
-    "name": "knesset-sitemap.xml",
-    "url": "https://www.knesset.tv/sitemap.xml",
+    "name": "kan-lobby-newstv.html",
+    "url": "https://www.kan.org.il/lobby/newstv/",
     "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap.xml",
-    "len": 3376,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<sitemapindex xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">\r\n  <sitemap>\r\n    <loc>https://www.knesset.tv/sitemap/sitemap-standard-1.xml</loc>\r\n  </sitem"
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/lobby/newstv/",
+    "len": 136681,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"364819\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n       "
   },
   {
-    "name": "knesset-sm-0.xml",
+    "name": "kan-lobby-news.html",
+    "url": "https://www.kan.org.il/lobby/news/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/lobby/news/",
+    "len": 359109,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"1531\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n        e"
+  },
+  {
+    "name": "kan-lobby-archive.html",
+    "url": "https://www.kan.org.il/lobby/archive/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/lobby/archive/",
+    "len": 223534,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"698409\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n       "
+  },
+  {
+    "name": "kan-lobby-archive_music.html",
+    "url": "https://www.kan.org.il/lobby/archive_music/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/lobby/archive_music/",
+    "len": 219117,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"708491\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n       "
+  },
+  {
+    "name": "kan-lobby-archive_projects.html",
+    "url": "https://www.kan.org.il/lobby/archive_projects/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/lobby/archive_projects/",
+    "len": 142658,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"712544\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n       "
+  },
+  {
+    "name": "kan-lobby-archive_treasury.html",
+    "url": "https://www.kan.org.il/lobby/archive_treasury/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/lobby/archive_treasury/",
+    "len": 235451,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"700457\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n       "
+  },
+  {
+    "name": "kan-lobby-judaism.html",
+    "url": "https://www.kan.org.il/lobby/judaism/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/lobby/judaism/",
+    "len": 136681,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"486821\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n       "
+  },
+  {
+    "name": "kan-lobby-kan-kids.html",
+    "url": "https://www.kan.org.il/lobby/kan-kids/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/lobby/kan-kids/",
+    "len": 354860,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"370587\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n       "
+  },
+  {
+    "name": "kan-lobby-%D7%A1%D7%A8%D7%98%D7%99%D7%9D.html",
+    "url": "https://www.kan.org.il/lobby/%D7%A1%D7%A8%D7%98%D7%99%D7%9D/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/lobby/%D7%A1%D7%A8%D7%98%D7%99%D7%9D/",
+    "len": 230613,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"443256\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n       "
+  },
+  {
+    "name": "kan-lobby-memorial.html",
+    "url": "https://www.kan.org.il/lobby/memorial/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/lobby/memorial/",
+    "len": 149362,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"572483\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n       "
+  },
+  {
+    "name": "kan-lobby-israelatwar.html",
+    "url": "https://www.kan.org.il/lobby/israelatwar/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/lobby/israelatwar/",
+    "len": 319874,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"575057\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n       "
+  },
+  {
+    "name": "kan-lobby-yom-kippur-war.html",
+    "url": "https://www.kan.org.il/lobby/yom-kippur-war/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/lobby/yom-kippur-war/",
+    "len": 195900,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"488233\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n       "
+  },
+  {
+    "name": "kan-lobby-idf_women.html",
+    "url": "https://www.kan.org.il/lobby/idf_women/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/lobby/idf_women/",
+    "len": 155702,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"712420\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n       "
+  },
+  {
+    "name": "kan-lobby-kidnapped.html",
+    "url": "https://www.kan.org.il/lobby/kidnapped/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/lobby/kidnapped/",
+    "len": 294049,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"580866\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n       "
+  },
+  {
+    "name": "kan-lobby-skarim.html",
+    "url": "https://www.kan.org.il/lobby/skarim/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/lobby/skarim/",
+    "len": 122308,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"1043123\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n      "
+  },
+  {
+    "name": "kan-lobby-double_activity.html",
+    "url": "https://www.kan.org.il/lobby/double_activity/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/lobby/double_activity/",
+    "len": 98609,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"1108110\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n      "
+  },
+  {
+    "name": "kan-lobby-aod.html",
+    "url": "https://www.kan.org.il/lobby/aod/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/lobby/aod/",
+    "len": 494406,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"1533\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n        e"
+  },
+  {
+    "name": "kan-lobby-kan_sport.html",
+    "url": "https://www.kan.org.il/lobby/kan_sport/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/lobby/kan_sport/",
+    "len": 281875,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"755467\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n       "
+  },
+  {
+    "name": "kan-lobby-feelings.html",
+    "url": "https://www.kan.org.il/lobby/feelings/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/lobby/feelings/",
+    "len": 138714,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"499893\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n       "
+  },
+  {
+    "name": "kan-lobby-710.html",
+    "url": "https://www.kan.org.il/lobby/710/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/lobby/710/",
+    "len": 98535,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"598275\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n       "
+  },
+  {
+    "name": "kan-lobby-hamas.html",
+    "url": "https://www.kan.org.il/lobby/hamas/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/lobby/hamas/",
+    "len": 109705,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"610376\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n       "
+  },
+  {
+    "name": "kan-lobby-80and4.html",
+    "url": "https://www.kan.org.il/lobby/80and4/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/lobby/80and4/",
+    "len": 114705,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"386280\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n       "
+  },
+  {
+    "name": "kan-lobby-l_001.html",
+    "url": "https://www.kan.org.il/lobby/l_001/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/lobby/l_001/",
+    "len": 164153,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"446090\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n       "
+  },
+  {
+    "name": "kan-lobby-kan-box.html",
+    "url": "https://www.kan.org.il/lobby/kan-box/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/lobby/kan-box/",
+    "len": 780688,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"1532\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n        e"
+  },
+  {
+    "name": "kan-lobby-series.html",
+    "url": "https://www.kan.org.il/lobby/series/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/lobby/series/",
+    "len": 610393,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"705066\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n       "
+  },
+  {
+    "name": "kan-program-js.js",
+    "url": "https://www.kan.org.il/sb/kan-program-js.js.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75",
+    "status": 200,
+    "type": "text/javascript",
+    "final": "https://www.kan.org.il/sb/kan-program-js.js.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75",
+    "len": 3203,
+    "head": "var currentPage=1;$(document).ready(function(){InitLoadMore('#podcust-show-more','.podcust-items-show-more',loadCardItems);InitLoadMore('#radio-show-more','.rad"
+  },
+  {
+    "name": "kan-custom-js.js",
+    "url": "https://www.kan.org.il/sb/kan-custom-js.js.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75",
+    "status": 200,
+    "type": "text/javascript",
+    "final": "https://www.kan.org.il/sb/kan-custom-js.js.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75",
+    "len": 29627,
+    "head": "$(document).ready(function(){if(!isDescktopDevice()){$('.burger-menu-btn').on('click',function(){$('.hidden-overlay').toggleClass('overlay');$('body').toggleCla"
+  },
+  {
+    "name": "kan-remembering.html",
+    "url": "https://www.kan.org.il/content/archive1/remembering/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.kan.org.il/content/archive1/remembering/",
+    "len": 127716,
+    "head": "\r\n\r\n<!DOCTYPE html>\r\n<html lang=\"he\" dir=\"rtl\" prefix=\"og: https://ogp.me/ns#\" data-page-id=\"695891\">\r\n<head>\r\n    \r\n<script>\r\n    window.AppConfig = {\r\n       "
+  },
+  {
+    "name": "i24-home.html",
+    "url": "https://video.i24news.tv/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://video.i24news.tv/",
+    "len": 261165,
+    "head": "<!DOCTYPE html><html><head><meta charSet=\"utf-8\"/><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/><link rel=\"stylesheet\" href=\"/_next/stati"
+  },
+  {
+    "name": "i24-js-0b8e744a-e47862cb875f6c28.js",
+    "url": "https://video.i24news.tv/_next/static/chunks/0b8e744a-e47862cb875f6c28.js",
+    "status": 200,
+    "type": "application/javascript; charset=UTF-8",
+    "final": "https://video.i24news.tv/_next/static/chunks/0b8e744a-e47862cb875f6c28.js",
+    "len": 122921,
+    "head": "!function(){try{var e=\"undefined\"!=typeof window?window:\"undefined\"!=typeof global?global:\"undefined\"!=typeof self?self:{},t=(new e.Error).stack;t&&(e._sentryDe"
+  },
+  {
+    "name": "i24-js-ae6cfabb-ccfaf7418c7a3798.js",
+    "url": "https://video.i24news.tv/_next/static/chunks/ae6cfabb-ccfaf7418c7a3798.js",
+    "status": 200,
+    "type": "application/javascript; charset=UTF-8",
+    "final": "https://video.i24news.tv/_next/static/chunks/ae6cfabb-ccfaf7418c7a3798.js",
+    "len": 173176,
+    "head": "!function(){try{var e=\"undefined\"!=typeof window?window:\"undefined\"!=typeof global?global:\"undefined\"!=typeof self?self:{},t=(new e.Error).stack;t&&(e._sentryDe"
+  },
+  {
+    "name": "i24-js-1186-221cbdc419463273.js",
+    "url": "https://video.i24news.tv/_next/static/chunks/1186-221cbdc419463273.js",
+    "status": 200,
+    "type": "application/javascript; charset=UTF-8",
+    "final": "https://video.i24news.tv/_next/static/chunks/1186-221cbdc419463273.js",
+    "len": 334212,
+    "head": "!function(){try{var e=\"undefined\"!=typeof window?window:\"undefined\"!=typeof global?global:\"undefined\"!=typeof self?self:{},t=(new e.Error).stack;t&&(e._sentryDe"
+  },
+  {
+    "name": "i24-js-main-app-7d26a5ffa65e8f55.js",
+    "url": "https://video.i24news.tv/_next/static/chunks/main-app-7d26a5ffa65e8f55.js",
+    "status": 200,
+    "type": "application/javascript; charset=UTF-8",
+    "final": "https://video.i24news.tv/_next/static/chunks/main-app-7d26a5ffa65e8f55.js",
+    "len": 1384,
+    "head": "!function(){try{var e=\"undefined\"!=typeof window?window:\"undefined\"!=typeof global?global:\"undefined\"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDe"
+  },
+  {
+    "name": "i24-js-b27dc69b-fe23697f6bbe1009.js",
+    "url": "https://video.i24news.tv/_next/static/chunks/b27dc69b-fe23697f6bbe1009.js",
+    "status": 200,
+    "type": "application/javascript; charset=UTF-8",
+    "final": "https://video.i24news.tv/_next/static/chunks/b27dc69b-fe23697f6bbe1009.js",
+    "len": 59645,
+    "head": "!function(){try{var e=\"undefined\"!=typeof window?window:\"undefined\"!=typeof global?global:\"undefined\"!=typeof self?self:{},t=(new e.Error).stack;t&&(e._sentryDe"
+  },
+  {
+    "name": "i24-js-5335-0da5d06e47182e0b.js",
+    "url": "https://video.i24news.tv/_next/static/chunks/5335-0da5d06e47182e0b.js",
+    "status": 200,
+    "type": "application/javascript; charset=UTF-8",
+    "final": "https://video.i24news.tv/_next/static/chunks/5335-0da5d06e47182e0b.js",
+    "len": 10755,
+    "head": "!function(){try{var e=\"undefined\"!=typeof window?window:\"undefined\"!=typeof global?global:\"undefined\"!=typeof self?self:{},t=(new e.Error).stack;t&&(e._sentryDe"
+  },
+  {
+    "name": "i24-js-7811-b9e64a63d567128a.js",
+    "url": "https://video.i24news.tv/_next/static/chunks/7811-b9e64a63d567128a.js",
+    "status": 200,
+    "type": "application/javascript; charset=UTF-8",
+    "final": "https://video.i24news.tv/_next/static/chunks/7811-b9e64a63d567128a.js",
+    "len": 48626,
+    "head": "!function(){try{var e=\"undefined\"!=typeof window?window:\"undefined\"!=typeof global?global:\"undefined\"!=typeof self?self:{},t=(new e.Error).stack;t&&(e._sentryDe"
+  },
+  {
+    "name": "i24-js-3072-172e0eeae3cfeb2a.js",
+    "url": "https://video.i24news.tv/_next/static/chunks/3072-172e0eeae3cfeb2a.js",
+    "status": 200,
+    "type": "application/javascript; charset=UTF-8",
+    "final": "https://video.i24news.tv/_next/static/chunks/3072-172e0eeae3cfeb2a.js",
+    "len": 5347,
+    "head": "!function(){try{var e=\"undefined\"!=typeof window?window:\"undefined\"!=typeof global?global:\"undefined\"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDe"
+  },
+  {
+    "name": "i24-js-8716-17215422e261ee20.js",
+    "url": "https://video.i24news.tv/_next/static/chunks/8716-17215422e261ee20.js",
+    "status": 200,
+    "type": "application/javascript; charset=UTF-8",
+    "final": "https://video.i24news.tv/_next/static/chunks/8716-17215422e261ee20.js",
+    "len": 12397,
+    "head": "!function(){try{var e=\"undefined\"!=typeof window?window:\"undefined\"!=typeof global?global:\"undefined\"!=typeof self?self:{},t=(new e.Error).stack;t&&(e._sentryDe"
+  },
+  {
+    "name": "i24-js-6385-477e3757c645c31b.js",
+    "url": "https://video.i24news.tv/_next/static/chunks/6385-477e3757c645c31b.js",
+    "status": 200,
+    "type": "application/javascript; charset=UTF-8",
+    "final": "https://video.i24news.tv/_next/static/chunks/6385-477e3757c645c31b.js",
+    "len": 40445,
+    "head": "!function(){try{var e=\"undefined\"!=typeof window?window:\"undefined\"!=typeof global?global:\"undefined\"!=typeof self?self:{},t=(new e.Error).stack;t&&(e._sentryDe"
+  },
+  {
+    "name": "i24-js-5690-0cfa6f4c5c107dec.js",
+    "url": "https://video.i24news.tv/_next/static/chunks/5690-0cfa6f4c5c107dec.js",
+    "status": 200,
+    "type": "application/javascript; charset=UTF-8",
+    "final": "https://video.i24news.tv/_next/static/chunks/5690-0cfa6f4c5c107dec.js",
+    "len": 83694,
+    "head": "!function(){try{var C=\"undefined\"!=typeof window?window:\"undefined\"!=typeof global?global:\"undefined\"!=typeof self?self:{},e=(new C.Error).stack;e&&(C._sentryDe"
+  },
+  {
+    "name": "i24-js-3084-e0d685c5c879b626.js",
+    "url": "https://video.i24news.tv/_next/static/chunks/3084-e0d685c5c879b626.js",
+    "status": 200,
+    "type": "application/javascript; charset=UTF-8",
+    "final": "https://video.i24news.tv/_next/static/chunks/3084-e0d685c5c879b626.js",
+    "len": 83649,
+    "head": "!function(){try{var C=\"undefined\"!=typeof window?window:\"undefined\"!=typeof global?global:\"undefined\"!=typeof self?self:{},e=(new C.Error).stack;e&&(C._sentryDe"
+  },
+  {
+    "name": "mako-season.json",
+    "url": "https://www.mako.co.il/mako-vod-keshet/eretz_nehederet?platform=responsive",
+    "status": 200,
+    "type": "text/html;charset=UTF-8",
+    "final": "https://www.mako.co.il/mako-vod-keshet/eretz_nehederet?platform=responsive",
+    "len": 23953,
+    "head": "{\"lastUpdate\":\"Thu, 22 Oct 2026 10:30:07 +0300\",\"timestamp\":1792654207635,\"pageType\":\"Subvertical\",\"channelId\":\"22062c1028a11a10VgnVCM200000650a10acRCRD\",\"sch\":"
+  },
+  {
+    "name": "knesset-standard.xml",
     "url": "https://www.knesset.tv/sitemap/sitemap-standard-1.xml",
     "status": 200,
     "type": "text/xml",
     "final": "https://www.knesset.tv/sitemap/sitemap-standard-1.xml",
     "len": 58833,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:schemalocation=\"http://www.google.com/schemas/sitemap/0.9http://www.sitemaps.org/schemas/sit"
+    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:schemalocation=\"http://www.google.com/schemas/sitema"
   },
   {
-    "name": "knesset-sm-1.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-articles-1.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-articles-1.xml",
-    "len": 197794,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:image=\"http://www.google.com/schemas/sitemap-image/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-2.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-1.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-1.xml",
-    "len": 732714,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-3.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-2.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-2.xml",
-    "len": 724359,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-4.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-3.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-3.xml",
-    "len": 684372,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-5.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-4.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-4.xml",
-    "len": 695447,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-6.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-5.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-5.xml",
-    "len": 662254,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-7.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-6.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-6.xml",
-    "len": 694568,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-8.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-7.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-7.xml",
-    "len": 666713,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-9.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-8.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-8.xml",
-    "len": 681480,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-10.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-9.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-9.xml",
-    "len": 670835,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-11.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-10.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-10.xml",
-    "len": 649749,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-12.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-11.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-11.xml",
-    "len": 636045,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-13.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-12.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-12.xml",
-    "len": 638675,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-14.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-13.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-13.xml",
-    "len": 721627,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-15.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-14.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-14.xml",
-    "len": 962518,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-16.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-15.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-15.xml",
-    "len": 950838,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-17.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-16.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-16.xml",
-    "len": 874306,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-18.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-17.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-17.xml",
-    "len": 980476,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-19.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-18.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-18.xml",
-    "len": 932499,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-20.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-19.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-19.xml",
-    "len": 1111312,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-21.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-20.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-20.xml",
-    "len": 809265,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-22.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-21.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-21.xml",
-    "len": 940586,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-23.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-22.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-22.xml",
-    "len": 905579,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-24.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-23.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-23.xml",
-    "len": 1030258,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-25.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-24.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-24.xml",
-    "len": 961647,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-26.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-25.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-25.xml",
-    "len": 978164,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-27.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-26.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-26.xml",
-    "len": 885476,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-28.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-27.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-27.xml",
-    "len": 784253,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-29.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-28.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-28.xml",
-    "len": 849951,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-30.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-29.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-29.xml",
-    "len": 3261492,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-31.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-30.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-30.xml",
-    "len": 830838,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-32.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-videos-31.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-videos-31.xml",
-    "len": 505705,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:video=\"http://www.google.com/schemas/sitemap-video/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-sm-33.xml",
-    "url": "https://www.knesset.tv/sitemap/sitemap-kms-1.xml",
-    "status": 200,
-    "type": "text/xml",
-    "final": "https://www.knesset.tv/sitemap/sitemap-kms-1.xml",
-    "len": 50045,
-    "head": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<urlset xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:image=\"http://www.google.com/schemas/sitemap-image/1.1\" xmlns:schemalocation=\"http://www.goo"
-  },
-  {
-    "name": "knesset-tv-shows.html",
-    "url": "https://www.knesset.tv/tv-shows/",
+    "name": "kn-88938.html",
+    "url": "https://www.knesset.tv/tv-shows/88938/",
     "status": 200,
     "type": "text/html; charset=utf-8",
-    "final": "https://www.knesset.tv/tv-shows/",
-    "len": 55643,
-    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n    <meta property=\"og:site_name\" conte"
+    "final": "https://www.knesset.tv/tv-shows/88938/",
+    "len": 30591,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
   },
   {
-    "name": "knesset-vod.html",
-    "url": "https://www.knesset.tv/vod/",
+    "name": "kn-87296.html",
+    "url": "https://www.knesset.tv/tv-shows/87296/",
     "status": 200,
     "type": "text/html; charset=utf-8",
-    "final": "https://www.knesset.tv/vod/",
-    "len": 58038,
-    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n    <meta property=\"og:site_name\" conte"
+    "final": "https://www.knesset.tv/tv-shows/87296/",
+    "len": 28125,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
   },
   {
-    "name": "knesset-square.html",
+    "name": "kn-87301.html",
+    "url": "https://www.knesset.tv/tv-shows/87301/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/87301/",
+    "len": 27926,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-80174.html",
+    "url": "https://www.knesset.tv/tv-shows/80174/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/80174/",
+    "len": 28310,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-74686.html",
+    "url": "https://www.knesset.tv/tv-shows/74686/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/74686/",
+    "len": 28287,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-hazira-hamerkazit.html",
+    "url": "https://www.knesset.tv/tv-shows/hazira-hamerkazit/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/hazira-hamerkazit/",
+    "len": 33291,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-39011.html",
+    "url": "https://www.knesset.tv/tv-shows/39011/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/39011/",
+    "len": 32639,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-74637.html",
+    "url": "https://www.knesset.tv/tv-shows/74637/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/74637/",
+    "len": 33441,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-74708.html",
+    "url": "https://www.knesset.tv/tv-shows/74708/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/74708/",
+    "len": 33346,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-91964.html",
+    "url": "https://www.knesset.tv/tv-shows/91964/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/91964/",
+    "len": 34830,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-67569.html",
+    "url": "https://www.knesset.tv/tv-shows/67569/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/67569/",
+    "len": 32839,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-24842.html",
+    "url": "https://www.knesset.tv/tv-shows/24842/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/24842/",
+    "len": 33864,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-36640.html",
+    "url": "https://www.knesset.tv/tv-shows/36640/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/36640/",
+    "len": 32802,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-87342.html",
+    "url": "https://www.knesset.tv/tv-shows/87342/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/87342/",
+    "len": 33335,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-30480.html",
+    "url": "https://www.knesset.tv/tv-shows/30480/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/30480/",
+    "len": 32670,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-the-scale.html",
+    "url": "https://www.knesset.tv/tv-shows/the-scale/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/the-scale/",
+    "len": 32970,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-38985.html",
+    "url": "https://www.knesset.tv/tv-shows/38985/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/38985/",
+    "len": 32586,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-black-and-white.html",
+    "url": "https://www.knesset.tv/tv-shows/black-and-white/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/black-and-white/",
+    "len": 32938,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-eretzhadasha.html",
+    "url": "https://www.knesset.tv/tv-shows/eretzhadasha/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/eretzhadasha/",
+    "len": 34214,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-71457.html",
+    "url": "https://www.knesset.tv/tv-shows/71457/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/71457/",
+    "len": 30875,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-37142.html",
+    "url": "https://www.knesset.tv/tv-shows/37142/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/37142/",
+    "len": 33235,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-arabic.html",
+    "url": "https://www.knesset.tv/tv-shows/arabic/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/arabic/",
+    "len": 33282,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-knesset-square.html",
     "url": "https://www.knesset.tv/tv-shows/knesset-square/",
     "status": 200,
     "type": "text/html; charset=utf-8",
     "final": "https://www.knesset.tv/tv-shows/knesset-square/",
     "len": 33505,
-    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n    <meta property=\"og:site_name\" conte"
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
   },
   {
-    "name": "knesset-29732.html",
+    "name": "kn-results-of-the-week-in-the-russian-language.html",
+    "url": "https://www.knesset.tv/tv-shows/results-of-the-week-in-the-russian-language/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/results-of-the-week-in-the-russian-language/",
+    "len": 34339,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-74692.html",
+    "url": "https://www.knesset.tv/tv-shows/74692/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/74692/",
+    "len": 33330,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-74299.html",
+    "url": "https://www.knesset.tv/tv-shows/74299/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/74299/",
+    "len": 28610,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-43052.html",
+    "url": "https://www.knesset.tv/tv-shows/43052/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/43052/",
+    "len": 28182,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-55675.html",
+    "url": "https://www.knesset.tv/tv-shows/55675/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/55675/",
+    "len": 29023,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-66871.html",
+    "url": "https://www.knesset.tv/tv-shows/66871/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/66871/",
+    "len": 32557,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-68585.html",
+    "url": "https://www.knesset.tv/tv-shows/68585/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/68585/",
+    "len": 33234,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-60895.html",
+    "url": "https://www.knesset.tv/tv-shows/60895/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/60895/",
+    "len": 29376,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-45575.html",
+    "url": "https://www.knesset.tv/tv-shows/45575/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/45575/",
+    "len": 29735,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-politics_in_90_minutes.html",
+    "url": "https://www.knesset.tv/tv-shows/politics_in_90_minutes/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/politics_in_90_minutes/",
+    "len": 28573,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-39358.html",
+    "url": "https://www.knesset.tv/tv-shows/39358/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/39358/",
+    "len": 30478,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-74713.html",
+    "url": "https://www.knesset.tv/tv-shows/74713/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/74713/",
+    "len": 34165,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-38947.html",
+    "url": "https://www.knesset.tv/tv-shows/38947/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/38947/",
+    "len": 32031,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-66786.html",
+    "url": "https://www.knesset.tv/tv-shows/66786/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/66786/",
+    "len": 31514,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-45467.html",
+    "url": "https://www.knesset.tv/tv-shows/45467/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/45467/",
+    "len": 33613,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-after-20-years.html",
+    "url": "https://www.knesset.tv/tv-shows/after-20-years/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/after-20-years/",
+    "len": 30218,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-speech-of-the-state.html",
+    "url": "https://www.knesset.tv/tv-shows/speech-of-the-state/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/speech-of-the-state/",
+    "len": 31754,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-66165.html",
+    "url": "https://www.knesset.tv/tv-shows/66165/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/66165/",
+    "len": 29430,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-66859.html",
+    "url": "https://www.knesset.tv/tv-shows/66859/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/66859/",
+    "len": 31072,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-political-history.html",
+    "url": "https://www.knesset.tv/tv-shows/political-history/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/political-history/",
+    "len": 34421,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-46115.html",
+    "url": "https://www.knesset.tv/tv-shows/46115/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/46115/",
+    "len": 34367,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-22577.html",
+    "url": "https://www.knesset.tv/tv-shows/22577/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/22577/",
+    "len": 32882,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-22793.html",
+    "url": "https://www.knesset.tv/tv-shows/22793/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/22793/",
+    "len": 32875,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-37217.html",
+    "url": "https://www.knesset.tv/tv-shows/37217/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/37217/",
+    "len": 32848,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-70234.html",
+    "url": "https://www.knesset.tv/tv-shows/70234/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/70234/",
+    "len": 32787,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-40447.html",
+    "url": "https://www.knesset.tv/tv-shows/40447/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/40447/",
+    "len": 33696,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-39195.html",
+    "url": "https://www.knesset.tv/tv-shows/39195/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/39195/",
+    "len": 32710,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-52944.html",
+    "url": "https://www.knesset.tv/tv-shows/52944/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/52944/",
+    "len": 32350,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-40392.html",
+    "url": "https://www.knesset.tv/tv-shows/40392/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/40392/",
+    "len": 33062,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-70245.html",
+    "url": "https://www.knesset.tv/tv-shows/70245/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/70245/",
+    "len": 33230,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-70170.html",
+    "url": "https://www.knesset.tv/tv-shows/70170/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/70170/",
+    "len": 32762,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-73634.html",
+    "url": "https://www.knesset.tv/tv-shows/73634/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/73634/",
+    "len": 32748,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-a-b-in-politics.html",
+    "url": "https://www.knesset.tv/tv-shows/a-b-in-politics/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows",
+    "len": 55640,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-civillobby.html",
+    "url": "https://www.knesset.tv/tv-shows/civillobby/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/civillobby/",
+    "len": 33299,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-the-scale-one-on-one.html",
+    "url": "https://www.knesset.tv/tv-shows/the-scale-one-on-one/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/the-scale-one-on-one/",
+    "len": 33705,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-62572.html",
+    "url": "https://www.knesset.tv/tv-shows/62572/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/62572/",
+    "len": 33316,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-34470.html",
+    "url": "https://www.knesset.tv/tv-shows/34470/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/34470/",
+    "len": 30612,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-32963.html",
+    "url": "https://www.knesset.tv/tv-shows/32963/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows",
+    "len": 55640,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-45776.html",
+    "url": "https://www.knesset.tv/tv-shows/45776/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/45776/",
+    "len": 28092,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-60314.html",
+    "url": "https://www.knesset.tv/tv-shows/60314/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/60314/",
+    "len": 31488,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-33437.html",
+    "url": "https://www.knesset.tv/tv-shows/33437/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/33437/",
+    "len": 33168,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-45571.html",
+    "url": "https://www.knesset.tv/tv-shows/45571/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/45571/",
+    "len": 30033,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-47528.html",
+    "url": "https://www.knesset.tv/tv-shows/47528/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/47528/",
+    "len": 33213,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-28268.html",
+    "url": "https://www.knesset.tv/tv-shows/28268/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows",
+    "len": 55640,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-22791.html",
+    "url": "https://www.knesset.tv/tv-shows/22791/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/22791/",
+    "len": 33023,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-37698.html",
+    "url": "https://www.knesset.tv/tv-shows/37698/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows",
+    "len": 55640,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-israel2030.html",
+    "url": "https://www.knesset.tv/tv-shows/israel2030/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/israel2030/",
+    "len": 33397,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-61125.html",
+    "url": "https://www.knesset.tv/tv-shows/61125/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/61125/",
+    "len": 33198,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-good-morning-knesset.html",
+    "url": "https://www.knesset.tv/tv-shows/good-morning-knesset/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/",
+    "len": 55643,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-29732.html",
     "url": "https://www.knesset.tv/tv-shows/29732/",
     "status": 200,
     "type": "text/html; charset=utf-8",
     "final": "https://www.knesset.tv/tv-shows",
     "len": 55640,
-    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n    <meta property=\"og:site_name\" conte"
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
   },
   {
-    "name": "knesset-hazira-p10.html",
-    "url": "https://www.knesset.tv/tv-shows/hazira-hamerkazit/?page=10",
+    "name": "kn-65994.html",
+    "url": "https://www.knesset.tv/tv-shows/65994/",
     "status": 200,
     "type": "text/html; charset=utf-8",
-    "final": "https://www.knesset.tv/tv-shows/hazira-hamerkazit/?page=10",
-    "len": 33299,
-    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n    <meta property=\"og:site_name\" conte"
+    "final": "https://www.knesset.tv/tv-shows/65994/",
+    "len": 32244,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
   },
   {
-    "name": "knesset-hazira-p60.html",
-    "url": "https://www.knesset.tv/tv-shows/hazira-hamerkazit/?page=60",
+    "name": "kn-30-years-from-soviet-union.html",
+    "url": "https://www.knesset.tv/tv-shows/30-years-from-soviet-union/",
     "status": 200,
     "type": "text/html; charset=utf-8",
-    "final": "https://www.knesset.tv/tv-shows/hazira-hamerkazit/?page=60",
-    "len": 33724,
-    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n    <meta property=\"og:site_name\" conte"
+    "final": "https://www.knesset.tv/tv-shows",
+    "len": 55640,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-what-we-had.html",
+    "url": "https://www.knesset.tv/tv-shows/what-we-had/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows",
+    "len": 55640,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-39997.html",
+    "url": "https://www.knesset.tv/tv-shows/39997/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/39997/",
+    "len": 33462,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-47579.html",
+    "url": "https://www.knesset.tv/tv-shows/47579/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/47579/",
+    "len": 33950,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-32293.html",
+    "url": "https://www.knesset.tv/tv-shows/32293/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/32293/",
+    "len": 32917,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-world-game.html",
+    "url": "https://www.knesset.tv/tv-shows/world-game/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/world-game/",
+    "len": 33391,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-19532.html",
+    "url": "https://www.knesset.tv/tv-shows/19532/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/19532/",
+    "len": 33096,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-66075.html",
+    "url": "https://www.knesset.tv/tv-shows/66075/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/66075/",
+    "len": 27137,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-39666.html",
+    "url": "https://www.knesset.tv/tv-shows/39666/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/39666/",
+    "len": 33404,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-55591.html",
+    "url": "https://www.knesset.tv/tv-shows/55591/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/55591/",
+    "len": 30971,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-39199.html",
+    "url": "https://www.knesset.tv/tv-shows/39199/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/39199/",
+    "len": 31839,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-22794.html",
+    "url": "https://www.knesset.tv/tv-shows/22794/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/22794/",
+    "len": 30774,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-noon-parliament.html",
+    "url": "https://www.knesset.tv/tv-shows/noon-parliament/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/noon-parliament/",
+    "len": 33097,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-22858.html",
+    "url": "https://www.knesset.tv/tv-shows/22858/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows",
+    "len": 55640,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-voicesofchange.html",
+    "url": "https://www.knesset.tv/tv-shows/voicesofchange/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/voicesofchange/",
+    "len": 32886,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-61128.html",
+    "url": "https://www.knesset.tv/tv-shows/61128/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/61128/",
+    "len": 33285,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-47464.html",
+    "url": "https://www.knesset.tv/tv-shows/47464/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/47464/",
+    "len": 32898,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-63270.html",
+    "url": "https://www.knesset.tv/tv-shows/63270/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/63270/",
+    "len": 28188,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-22797.html",
+    "url": "https://www.knesset.tv/tv-shows/22797/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows",
+    "len": 55640,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-31762.html",
+    "url": "https://www.knesset.tv/tv-shows/31762/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/31762/",
+    "len": 33297,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-74474.html",
+    "url": "https://www.knesset.tv/tv-shows/74474/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/74474/",
+    "len": 32342,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-78194.html",
+    "url": "https://www.knesset.tv/tv-shows/78194/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/78194/",
+    "len": 30717,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-91963.html",
+    "url": "https://www.knesset.tv/tv-shows/91963/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/91963/",
+    "len": 32957,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
+  },
+  {
+    "name": "kn-92386.html",
+    "url": "https://www.knesset.tv/tv-shows/92386/",
+    "status": 200,
+    "type": "text/html; charset=utf-8",
+    "final": "https://www.knesset.tv/tv-shows/92386/",
+    "len": 28220,
+    "head": "\r\n\r\n\r\n<!DOCTYPE html>\r\n<html dir=\"rtl\" lang=\"he\">\r\n<head>\r\n    <meta charset=\"utf-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r"
   }
 ]

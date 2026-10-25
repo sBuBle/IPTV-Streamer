@@ -1,0 +1,26 @@
+[
+ {
+  "id": "morning_news",
+  "error": "SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+ },
+ {
+  "id": "avri_and_sherki",
+  "error": "SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+ },
+ {
+  "id": "the_singer_in_a_mask",
+  "error": "SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+ },
+ {
+  "id": "weekend-news",
+  "error": "SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+ },
+ {
+  "id": "who_wants_to_start",
+  "error": "SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+ },
+ {
+  "id": "ulpan-shishi",
+  "error": "SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON"
+ }
+]
