@@ -1,0 +1,58 @@
+[
+  {
+    "name": "13954.html",
+    "url": "https://www.kan.org.il/content/kan/kan-11/p-13954/",
+    "status": 200,
+    "final": "https://www.kan.org.il/content/kan/kan-11/p-13954/",
+    "len": 183518
+  },
+  {
+    "name": "13954-c2.html",
+    "url": "https://www.kan.org.il/content/kan/kan-11/p-13954/?currentPage=2",
+    "status": 200,
+    "final": "https://www.kan.org.il/content/kan/kan-11/p-13954/?currentPage=2",
+    "len": 183670
+  },
+  {
+    "name": "546636.html",
+    "url": "https://www.kan.org.il/content/kan/kan-11/p-546636/",
+    "status": 200,
+    "final": "https://www.kan.org.il/content/kan/kan-11/p-546636/",
+    "len": 191794
+  },
+  {
+    "name": "546636-s1.html",
+    "url": "https://www.kan.org.il/content/kan/kan-11/p-546636/s1/",
+    "status": 200,
+    "final": "https://www.kan.org.il/content/kan/kan-11/p-546636/s1/",
+    "len": 191323
+  },
+  {
+    "name": "546636-s1-c2.html",
+    "url": "https://www.kan.org.il/content/kan/kan-11/p-546636/s1/?currentPage=2",
+    "status": 200,
+    "final": "https://www.kan.org.il/content/kan/kan-11/p-546636/s1/?currentPage=2",
+    "len": 191435
+  },
+  {
+    "name": "833724.html",
+    "url": "https://www.kan.org.il/content/kan/kan-11/p-833724/",
+    "status": 200,
+    "final": "https://www.kan.org.il/content/kan/kan-11/p-833724/",
+    "len": 132022
+  },
+  {
+    "name": "851048.html",
+    "url": "https://www.kan.org.il/content/kan/kan-11/p-851048/",
+    "status": 404,
+    "final": "https://www.kan.org.il/content/kan/kan-11/p-851048/",
+    "len": 104130
+  },
+  {
+    "name": "11534.html",
+    "url": "https://www.kan.org.il/content/kan/kan-11/p-11534/",
+    "status": 200,
+    "final": "https://www.kan.org.il/content/kan/kan-11/p-11534/",
+    "len": 183617
+  }
+]
