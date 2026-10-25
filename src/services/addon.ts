@@ -12,6 +12,7 @@ import { TtlCache } from "../util/cache.js";
 import { redactUrl, type FetchFn } from "../util/http.js";
 import { matchesQuery } from "../util/text.js";
 import { itemHealth, statusLine } from "./health.js";
+import { VodService } from "./vod.js";
 
 export const LIVE_CATALOG_ID = "iltv-live";
 export const PAGE_SIZE = 100;
@@ -37,9 +38,17 @@ export class AddonService {
   private readonly channelLists = new TtlCache<LiveChannel[]>(100);
   private readonly streamLists = new TtlCache<ResolvedStream[]>(1000);
   private readonly now: () => number;
+  readonly vod: VodService;
 
   constructor(private readonly deps: AddonDeps) {
     this.now = deps.now ?? Date.now;
+    this.vod = new VodService({
+      registry: deps.registry,
+      store: deps.store,
+      streamPolicy: deps.config.streamPolicy,
+      verifiedMaxAgeMs: deps.config.verifiedMaxAgeMs,
+      now: this.now,
+    });
   }
 
   private liveProviders(): ProviderAdapter[] {
@@ -94,14 +103,16 @@ export class AddonService {
         extra: [{ name: "genre", options: genres }, { name: "search" }, { name: "skip" }],
       });
     }
+    catalogs.push(...this.vod.manifestCatalogs());
+    const types = ["tv", ...(this.vod.vodProviders().length ? ["series", "movie"] : [])];
     return {
       id: "community.israeli-tv",
       version: this.deps.version ?? "0.1.0",
       name: "Israeli TV",
       description:
-        "Israeli live TV from public broadcaster sources. Streams come straight from each broadcaster; Israel-only streams are labeled and only play inside Israel.",
+        "Israeli live TV and VOD from broadcaster sources. Streams come straight from each broadcaster; Israel-only streams are labeled and only play inside Israel.",
       resources: ["catalog", "meta", "stream"],
-      types: ["tv"],
+      types,
       idPrefixes: [ID_PREFIX],
       catalogs,
       behaviorHints: { configurable: false, adult: false, p2p: false },
@@ -109,7 +120,8 @@ export class AddonService {
   }
 
   async catalog(type: string, id: string, extra: CatalogExtra, baseUrl: string): Promise<MetaPreview[]> {
-    if (type !== "tv" || id !== LIVE_CATALOG_ID) return [];
+    if (type !== "tv") return (await this.vod.catalog(type, id, extra)) ?? [];
+    if (id !== LIVE_CATALOG_ID) return [];
     const [channels, health] = await Promise.all([this.channels(), this.healthByItem()]);
     const now = this.now();
     return channels
@@ -129,7 +141,7 @@ export class AddonService {
   }
 
   async meta(type: string, id: string, baseUrl: string): Promise<Meta | undefined> {
-    if (type !== "tv") return undefined;
+    if (type !== "tv") return this.vod.meta(type, id);
     const c = await this.channel(id);
     if (!c) return undefined;
     const h = (await this.healthByItem()).get(c.stremioId);
@@ -166,7 +178,7 @@ export class AddonService {
   }
 
   async streams(type: string, id: string): Promise<Stream[]> {
-    if (type !== "tv") return [];
+    if (type !== "tv") return (await this.vod.streams(type, id)) ?? [];
     const c = await this.channel(id);
     if (!c) return [];
     const h = (await this.healthByItem()).get(c.stremioId);

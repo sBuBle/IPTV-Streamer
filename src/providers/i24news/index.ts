@@ -1,8 +1,9 @@
 import type { Config } from "../../config.js";
 import type { LiveChannel, ResolvedStream } from "../../domain/types.js";
 import { errorMessage } from "../registry.js";
-import type { ProviderAdapter, ProviderContext, ProviderIssue } from "../types.js";
-import { fetchRegionChannels, type InsightChannel } from "./insight.js";
+import type { ProviderAdapter, ProviderContext, ProviderIssue, VodEpisode, VodProgram, VodProgramDetail } from "../types.js";
+import { assignEpisodeNumbers, isoDate, parseClock } from "../vod-util.js";
+import { extractShows, fetchRegionChannels, fetchRegionPage, fetchSeries, fetchVod, type InsightChannel, type InsightEpisode, type InsightRequest } from "./insight.js";
 
 const PROVIDER = "i24news";
 
@@ -43,6 +44,17 @@ export function feedLanguage(c: Pick<InsightChannel, "title" | "videoUrl">): str
   return LANGUAGE_WORDS.find(([re]) => re.test(text))?.[1];
 }
 
+/** Language of the shows on each region page. */
+const REGION_LANGUAGE: Record<string, string> = { all: "en", english: "en", french: "fr", arabic: "ar", hebrew: "he" };
+
+function isPlayableUrl(url: string | null | undefined): url is string {
+  return !!url && /^https:\/\/[^\s]+\.m3u8(\?|$)/.test(url);
+}
+
+function isFree(e: Pick<InsightEpisode, "commerceType" | "paidType">): boolean {
+  return (!e.commerceType || e.commerceType === "free") && !e.paidType;
+}
+
 function slug(s: string): string {
   return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "channel";
 }
@@ -55,15 +67,21 @@ export class I24NewsAdapter implements ProviderAdapter {
   readonly id = PROVIDER;
   readonly name = "i24NEWS";
   private streams = new Map<string, InsightChannel>();
+  /** Region page each show was found on; the API wants the matching region header. */
+  private showRegions = new Map<string, string>();
 
   constructor(private readonly cfg: Config["providers"]["i24news"]) {}
+
+  private request(ctx: ProviderContext): InsightRequest {
+    return { apiUrl: this.cfg.apiUrl, tenant: this.cfg.tenant, fetch: ctx.fetch, timeoutMs: ctx.config.requestTimeoutMs, signal: ctx.signal };
+  }
 
   issues(): ProviderIssue[] {
     return Object.keys(this.cfg.pages).length ? [] : [{ severity: "error", message: "I24_PAGES is empty" }];
   }
 
   private async loadChannels(ctx: ProviderContext): Promise<InsightChannel[]> {
-    const req = { apiUrl: this.cfg.apiUrl, tenant: this.cfg.tenant, fetch: ctx.fetch, timeoutMs: ctx.config.requestTimeoutMs, signal: ctx.signal };
+    const req = this.request(ctx);
     const results = await Promise.allSettled(Object.entries(this.cfg.pages).map(([region, pageId]) => fetchRegionChannels(region, pageId, req)));
     const found = new Map<string, InsightChannel>();
     for (const r of results) {
@@ -120,6 +138,110 @@ export class I24NewsAdapter implements ProviderAdapter {
         source: i === 0 ? "insight-api" : "last-known",
         geo: "unknown" as const,
       }));
+    },
+  };
+
+  /**
+   * VOD: the shows listed on each region page, with every published episode from the series endpoint.
+   * Episodes are grouped by i24NEWS into monthly seasons; season 1 is the oldest month.
+   */
+  readonly vod = {
+    listPrograms: async (ctx: ProviderContext): Promise<VodProgram[]> => {
+      const req = this.request(ctx);
+      const regions = Object.entries(this.cfg.pages);
+      const pages = await Promise.allSettled(regions.map(([region, pageId]) => fetchRegionPage(region, pageId, req)));
+      const out = new Map<string, VodProgram>();
+      const showRegions = new Map<string, string>();
+      pages.forEach((r, i) => {
+        const region = regions[i]![0];
+        if (r.status === "rejected") {
+          ctx.logger.warn("i24NEWS region page failed", { region, error: errorMessage(r.reason) });
+          return;
+        }
+        for (const show of extractShows(r.value)) {
+          if (out.has(show.id)) continue;
+          showRegions.set(show.id, region);
+          out.set(show.id, {
+            id: show.id,
+            provider: PROVIDER,
+            kind: "series",
+            title: show.title,
+            poster: show.image ?? show.poster ?? undefined,
+            posterShape: "landscape",
+            background: show.image ?? undefined,
+            description: show.description?.replace(/\\\n|\s+$/g, "").trim() || undefined,
+            genres: ["News", "Current Affairs"],
+            language: REGION_LANGUAGE[region] ?? "en",
+            website: `https://video.i24news.tv/serie/${show.id}`,
+            geo: "unknown",
+            updatedAt: show.dateUpdate ?? undefined,
+          });
+        }
+      });
+      if (pages.every((p) => p.status === "rejected")) throw new Error("all i24NEWS region pages failed");
+      this.showRegions = showRegions;
+      return [...out.values()];
+    },
+
+    getProgram: async (programId: string, ctx: ProviderContext): Promise<VodProgramDetail | undefined> => {
+      if (!this.showRegions.has(programId)) await this.vod.listPrograms(ctx).catch(() => []);
+      const region = this.showRegions.get(programId) ?? "all";
+      const series = await fetchSeries(programId, region, this.request(ctx));
+      if (!series) return undefined;
+      // Seasons are months; order them oldest first by their newest episode.
+      const seasons = series.seasons
+        .map((s) => ({ ...s, episodes: s.episodes.filter((e) => isPlayableUrl(e.videoUrl) && isFree(e)).sort((a, b) => (a.date ?? 0) - (b.date ?? 0)) }))
+        .filter((s) => s.episodes.length > 0)
+        .sort((a, b) => (a.episodes[0]!.date ?? 0) - (b.episodes[0]!.date ?? 0));
+      const seen = new Set<string>();
+      const episodes: VodEpisode[] = [];
+      const seasonNames: Record<number, string> = {};
+      seasons.forEach((s, i) => {
+        const season = i + 1;
+        if (s.title) seasonNames[season] = s.title;
+        const unique = s.episodes.filter((e) => !seen.has(e.id) && seen.add(e.id));
+        for (const e of assignEpisodeNumbers(unique, () => undefined)) {
+          episodes.push({
+            id: e.id,
+            season,
+            episode: e.episode,
+            title: e.title,
+            released: isoDate(e.date ?? undefined),
+            thumbnail: e.image ?? e.poster ?? undefined,
+            description: e.description?.trim() || undefined,
+            durationSec: parseClock(e.duration),
+          });
+        }
+      });
+      const newest = Math.max(0, ...seasons.flatMap((s) => s.episodes.map((e) => e.date ?? 0)));
+      return {
+        id: programId,
+        provider: PROVIDER,
+        kind: "series",
+        title: series.title,
+        poster: series.image,
+        posterShape: "landscape",
+        background: series.image,
+        description: series.description?.replace(/\\\n|\s+$/g, "").trim() || undefined,
+        genres: ["News", "Current Affairs"],
+        language: REGION_LANGUAGE[region] ?? "en",
+        website: `https://video.i24news.tv/serie/${programId}`,
+        geo: "unknown",
+        updatedAt: newest || undefined,
+        episodes,
+        seasonNames,
+      };
+    },
+
+    resolveEpisodeStreams: async (programId: string, episodeId: string, ctx: ProviderContext): Promise<ResolvedStream[]> => {
+      const region = this.showRegions.get(programId) ?? "all";
+      const vod = await fetchVod(episodeId, region, this.request(ctx));
+      if (!vod || !isPlayableUrl(vod.videoUrl)) return [];
+      if (!isFree(vod)) {
+        ctx.logger.warn("i24NEWS episode is not free, skipped", { episodeId });
+        return [];
+      }
+      return [{ url: vod.videoUrl, format: "hls", label: "Auto", source: "insight-api", geo: "unknown" }];
     },
   };
 }
