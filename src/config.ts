@@ -93,10 +93,14 @@ export const envSchema = z.object({
   /** knesset.tv pages that list TV shows as cards, for VOD. "none" disables Knesset VOD. */
   KNESSET_VOD_PAGES: urlListOrNone.prefault("https://www.knesset.tv/tv-shows/,https://www.knesset.tv/vod/"),
   /** Each show page lists 12 episodes; read at most this many pages per show. */
-  KNESSET_VOD_MAX_PAGES: z.coerce.number().int().min(1).max(100).default(10),
+  KNESSET_VOD_MAX_PAGES: z.coerce.number().int().min(1).max(500).default(200),
 
   /** Kan (kan.org.il) lobby pages whose program cards make up the Kan VOD catalog. "none" disables Kan. */
-  KAN_LOBBIES: urlListOrNone.prefault("https://www.kan.org.il/lobby/kan-box/,https://www.kan.org.il/lobby/series/"),
+  /** Kan's sitemap, read once a day to find programs that no lobby links to. "none" turns it off (do that on Workers: it takes hundreds of requests). */
+  KAN_SITEMAP: urlListOrNone.prefault("https://www.kan.org.il/media/sitemap/general/siteindex.xml"),
+  /** knesset.tv sitemap of show pages, read once a day to find older shows that the show list no longer links to. "none" turns it off. */
+  KNESSET_VOD_SITEMAP: urlListOrNone.prefault("https://www.knesset.tv/sitemap/sitemap-standard-1.xml"),
+  KAN_LOBBIES: urlListOrNone.prefault("https://www.kan.org.il/lobby/kan-box/,https://www.kan.org.il/lobby/series/,https://www.kan.org.il/lobby/%D7%A1%D7%A8%D7%98%D7%99%D7%9D/,https://www.kan.org.il/lobby/archive/,https://www.kan.org.il/lobby/archive_projects/,https://www.kan.org.il/lobby/archive_music/,https://www.kan.org.il/lobby/judaism/,https://www.kan.org.il/lobby/kan_sport/,https://www.kan.org.il/lobby/newstv/,https://www.kan.org.il/lobby/yom-kippur-war/,https://www.kan.org.il/lobby/idf_women/,https://www.kan.org.il/lobby/israelatwar/"),
 
   /** Mako (Keshet 12) VOD catalog. Off by default: playback needs Mako's per-viewer ticket from inside Israel, so episodes only link out to mako.co.il. */
   MAKO_VOD: z.enum(["off", "catalog"]).default("off"),
@@ -130,9 +134,11 @@ export interface Config {
       livePage?: string;
       vodPages: string[];
       vodMaxPages: number;
+      vodSitemaps: string[];
     };
     kan: {
       lobbies: string[];
+      sitemaps: string[];
     };
     mako: {
       mode: "off" | "catalog";
@@ -179,9 +185,11 @@ export function loadConfig(env: Env): Config {
         livePage: disabledOrUrl(e.KNESSET_LIVE_PAGE),
         vodPages: e.KNESSET_VOD_PAGES,
         vodMaxPages: e.KNESSET_VOD_MAX_PAGES,
+        vodSitemaps: e.KNESSET_VOD_SITEMAP,
       },
       kan: {
         lobbies: e.KAN_LOBBIES,
+        sitemaps: e.KAN_SITEMAP,
       },
       mako: {
         mode: e.MAKO_VOD,

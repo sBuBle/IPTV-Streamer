@@ -1,7 +1,7 @@
 import { z } from "zod";
 import type { Config } from "../../config.js";
 import type { GeoAvailability, ResolvedStream } from "../../domain/types.js";
-import { getJson } from "../../util/http.js";
+import { getText } from "../../util/http.js";
 import { errorMessage } from "../registry.js";
 import type { ProviderAdapter, ProviderContext, ProviderIssue, VodEpisode, VodProgram, VodProgramDetail } from "../types.js";
 import { assignEpisodeNumbers, parseDayFirstDate } from "../vod-util.js";
@@ -79,10 +79,16 @@ export class MakoAdapter implements ProviderAdapter {
     return this.cfg.mode === "off" ? [{ severity: "error", message: "Mako VOD is off; set MAKO_VOD=catalog to list its catalog with links to mako.co.il" }] : [];
   }
 
-  private json(path: string, ctx: ProviderContext): Promise<unknown> {
+  private async json(path: string, ctx: ProviderContext): Promise<unknown> {
     const url = new URL(path, SITE);
     url.searchParams.set("platform", "responsive");
-    return getJson(url.toString(), { timeoutMs: ctx.config.requestTimeoutMs, fetch: ctx.fetch, signal: ctx.signal, retries: 1 });
+    const res = await getText(url.toString(), { timeoutMs: ctx.config.requestTimeoutMs, fetch: ctx.fetch, signal: ctx.signal, retries: 1 });
+    // Mako's bot protection (Radware) redirects automated clients to a block page. That is an access control,
+    // so it is reported, not worked around.
+    if (/perfdrive\.com/.test(new URL(res.finalUrl).hostname) || res.text.trimStart().startsWith("<")) {
+      throw new Error("blocked by Mako's bot protection (Radware block page instead of catalog JSON)");
+    }
+    return JSON.parse(res.text);
   }
 
   readonly vod = {

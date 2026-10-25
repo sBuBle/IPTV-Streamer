@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { silentLogger } from "../src/logger.js";
 import { I24NewsAdapter } from "../src/providers/i24news/index.js";
-import { heroVideo, KanAdapter, parseLobby, parsePlayerConfig } from "../src/providers/kan/index.js";
+import { heroVideo, KanAdapter, parseLobby, parsePlayerConfig, programFromPage } from "../src/providers/kan/index.js";
 import { KnessetAdapter } from "../src/providers/knesset/index.js";
 import { episodeIdFromHref, episodeManifest } from "../src/providers/knesset/vod.js";
 import { buildProviders } from "../src/providers/index.js";
@@ -112,9 +112,75 @@ describe("Kan VOD", () => {
     expect(await kan.vod.resolveEpisodeStreams("12832", "6-1098375", ctx)).toEqual([]);
   });
 
+  it("leaves radio and podcasts out of the lobbies and marks films from the films lobby", () => {
+    const lobby = `<h2>הכי חדש</h2>
+<a class="cr-item" href="https://www.kan.org.il/content/kan/podcasts/p-1/" aria-label="הסכת"><img src="/media/p.jpg" /></a>
+<a class="cr-item" href="https://www.kan.org.il/content/kan/kan-b/p-2/" aria-label="רדיו"><img src="/media/r.jpg" /></a>
+<a class="cr-item" href="https://www.kan.org.il/content/kan/kan-11/p-3/" aria-label="סרט"><img src="/media/f.jpg" /></a>`;
+    expect(parseLobby(lobby, "https://www.kan.org.il/lobby/%D7%A1%D7%A8%D7%98%D7%99%D7%9D/").map((p) => [p.id, p.kind])).toEqual([["3", "movie"]]);
+    expect(parseLobby(lobby, "https://www.kan.org.il/lobby/kan-box/").map((p) => [p.id, p.kind])).toEqual([["3", "series"]]);
+  });
+
+  it("loads the older seasons that the old program layout hides behind 'load more', and named sub-sections", async () => {
+    const P = "https://www.kan.org.il/content/kan/kan-11/p-11486/";
+    const card = (path: string, title: string) => `<li><a href="${P}${path}" class="program-grid-card unstyled-link" aria-label="${title}"><img src="/media/x.jpg" /><h3 class="program-grid-title">${title}</h3></a></li>`;
+    const season = (id: string, first: boolean, cards: string[]) => `<div class="seasons-item" data-season-id="${id}" data-is-first-season="${first}"><ul class="program-grid">${cards.join("")}</ul></div>`;
+    const page = (seasons: string) => `<a href="${P}s11/1100316/" class="hero-vod-cta">לצפייה</a><div class="vod-new-wrapper"><div class="seasons">${seasons}</div><div id="vod-page-items-show-more"></div><button class="btn show-more" id="vod-program-show-more" type="button">טען עוד</button></div>`;
+    const { ctx, calls } = ctxFor(
+      {
+        [`${P}?page=2&itemsToShow=500&lastLoadedSeasonId=974774`]: html(page(season("815134", false, [card("s9/900001/", "פרק 1 - א"), card("s9/900002/", "פרק 2 - ב")]))),
+        [`${P}?page=3&itemsToShow=500&lastLoadedSeasonId=815134`]: html(page(season("700000", true, [card("new_chefs/800001/", "שפים חדשים 1")]))),
+        [P]: html(page(season("1100304", false, [card("s11/1100316/", "פרק 1 - ג")]) + season("974774", false, [card("s10/1085339/", "פרק 1 - ד")]))),
+        "https://www.kan.org.il/lobby/kan-box/": html(`<h2>אירוח</h2><a class="cr-item" href="${P}" aria-label="פגישה עם רוני קובן"><img src="/media/k.jpg" /></a>`),
+      },
+      { KAN_LOBBIES: "https://www.kan.org.il/lobby/kan-box/" },
+    );
+    const kan = new KanAdapter(ctx.config.providers.kan);
+    const d = await kan.vod.getProgram("11486", ctx);
+    expect(d?.episodes.map((e) => [e.id, e.season, e.episode])).toEqual([
+      ["9-900001", 9, 1],
+      ["9-900002", 9, 2],
+      ["10-1085339", 10, 1],
+      ["11-1100316", 11, 1],
+      ["new_chefs-800001", 12, 1],
+    ]);
+    expect(d?.seasonNames).toEqual({ 12: "new chefs" });
+    await kan.vod.resolveEpisodeStreams("11486", "new_chefs-800001", ctx);
+    expect(calls.at(-1)?.url).toBe(`${P}new_chefs/800001/`);
+  });
+
+  it("reads programs that no lobby lists from the sitemap", async () => {
+    const root = (path: string) => `<url><loc>https://www.kan.org.il/content/${path}</loc></url>`;
+    const film = `<meta property="og:title" content="חלומו של אבידן | לצפייה" /><meta property="og:image" content="/media/avidan.jpg" />
+<script>npawData.program = decodeEntities('חלומו של אבידן');</script><a href="https://www.kan.org.il/content/kan/kan-11/p-978325/978326/" class="hero-vod-cta">לצפייה</a>`;
+    const { ctx } = ctxFor(
+      {
+        "https://www.kan.org.il/media/sitemap/general/siteindex.xml": html(`<sitemapindex><sitemap><loc>https://www.kan.org.il/media/sitemap/general/sitemap0.xml</loc></sitemap></sitemapindex>`),
+        "https://www.kan.org.il/media/sitemap/general/sitemap0.xml": html(
+          `<urlset>${["kan/kan-11/p-978325/", "kan/kan-11/p-978325/978326/", "kan/kan-b/p-5/", "kan/kan-b/p-5/6/", "kan/kan-11/p-12832/", "kan/kan-11/p-12832/s1/1/"].map(root).join("")}</urlset>`,
+        ),
+        "https://www.kan.org.il/content/kan/kan-11/p-978325/": html(film),
+        "https://www.kan.org.il/content/kan/kan-11/p-12832/s1/": html(KAN_SEASON_1),
+        "https://www.kan.org.il/content/kan/kan-11/p-12832/": html(KAN_PROGRAM),
+        "https://www.kan.org.il/lobby/kan-box/": html(KAN_LOBBY),
+      },
+      { KAN_LOBBIES: "https://www.kan.org.il/lobby/kan-box/", KAN_SITEMAP: "https://www.kan.org.il/media/sitemap/general/siteindex.xml" },
+    );
+    const kan = new KanAdapter(ctx.config.providers.kan);
+    await kan.vod.listPrograms(ctx);
+    await kan.discoverFromSitemap(ctx);
+    const programs = await kan.vod.listPrograms(ctx);
+    expect(programs.find((p) => p.id === "978325")).toMatchObject({ title: "חלומו של אבידן", kind: "movie", poster: "https://www.kan.org.il/media/avidan.jpg" });
+    expect(programs.some((p) => p.id === "5")).toBe(false); // radio
+    // An episode only the sitemap knows (Kan's pages cut long seasons at 50) joins its season, titled by number.
+    const detail = await kan.vod.getProgram("12832", ctx);
+    expect(detail?.episodes.find((e) => e.id === "1-1")).toMatchObject({ season: 1, title: "פרק 2" });
+    expect(programFromPage("<html>no video</html>", "1", "https://www.kan.org.il/content/kan/kan-11/p-1/")).toBeUndefined();
+  });
+
   it("uses the hero 'watch' video for programs that are a single video", () => {
     const page = `<a href="https://www.kan.org.il/content/kan/kan-11/p-1042052/1042053/" class="hero-vod-cta">לצפייה</a>`;
-    expect(heroVideo(page, "1042052")).toEqual({ season: 0, kanId: "1042053" });
+    expect(heroVideo(page, "1042052")).toEqual({ segment: "", kanId: "1042053" });
     expect(heroVideo(page, "999")).toBeUndefined();
   });
 
@@ -170,6 +236,28 @@ describe("Knesset VOD", () => {
     expect(detail?.description).toBe("המגזין הכלכלי של ערוץ כנסת");
     const streams = await k.vod!.resolveEpisodeStreams("the-scale", "video_101", ctx);
     expect(streams[0]?.url).toMatch(/^https:\/\/api\.bynetcdn\.com\/Redirector\/knesset\/manifest\/KNS1\/HLS\/playlist\.m3u8/);
+  });
+  it("pages through long shows in batches and adds older shows from the sitemap", async () => {
+    const S = "https://www.knesset.tv/tv-shows/the-scale/";
+    // Routes match by prefix, first match wins: longer URLs go first.
+    const routes: Record<string, ReturnType<typeof html>> = {};
+    // 25 pages of 2 episodes each; the last page has no "load more" link.
+    for (let n = 24; n >= 1; n--) routes[`${S}?page=${n}`] = html(knessetShowPage([1000 + 2 * n, 1001 + 2 * n], n < 24 ? `${S}?page=${n + 1}` : undefined));
+    routes[S] = html(knessetShowPage([998, 999], `${S}?page=1`));
+    routes["https://www.knesset.tv/sitemap/sitemap-standard-1.xml"] = html(`<urlset><url><loc>https://www.knesset.tv/tv-shows/knesset-square/</loc></url><url><loc>${S}</loc></url></urlset>`);
+    routes["https://www.knesset.tv/tv-shows/knesset-square/"] = html(
+      `<script type="application/ld+json">{"@type":"TVSeries","name":"כיכר הכנסת"}</script><div id="episodes-block"><a href="/tv-shows/knesset-square/video/5/"><h2>כיכר</h2></a></div>`,
+    );
+    routes["https://www.knesset.tv/tv-shows/"] = html(KNESSET_SHOWS);
+    const { ctx } = ctxFor(routes, { KNESSET_VOD_PAGES: "https://www.knesset.tv/tv-shows/", KNESSET_VOD_SITEMAP: "https://www.knesset.tv/sitemap/sitemap-standard-1.xml" });
+    const k = new KnessetAdapter(ctx.config.providers.knesset);
+    const d = await k.vod!.getProgram("the-scale", ctx);
+    expect(d?.episodes.length).toBe(50);
+    await k.vod!.listPrograms(ctx);
+    await (k.vod as unknown as { discoverFromSitemap(c: typeof ctx): Promise<void> }).discoverFromSitemap(ctx);
+    const programs = await k.vod!.listPrograms(ctx);
+    expect(programs.map((p) => p.id)).toEqual(["the-scale", "88938", "knesset-square"]);
+    expect(programs[2]!.title).toBe("כיכר הכנסת");
   });
 });
 
@@ -258,5 +346,17 @@ describe("Mako catalog", () => {
     expect(await mako.vod.resolveEpisodeStreams("show", "5-ddd", ctx)).toEqual([
       { url: "https://www.mako.co.il/mako-vod-keshet/show-s5/VOD-ddd.htm", format: "external", label: "mako.co.il", source: "mako-catalog", geo: "israel-only" },
     ]);
+  });
+  it("reports Mako's bot-protection block page instead of a JSON error", async () => {
+    const { ctx } = ctxFor(
+      {
+        "https://www.mako.co.il/mako-vod-keshet/show?platform=responsive": html("<!DOCTYPE html><title>Radware Block Page</title>"),
+        "https://www.mako.co.il/mako-vod-index?platform=responsive": json({ items: [{ title: "x", pageUrl: "/mako-vod-keshet/show" }] }),
+      },
+      { MAKO_VOD: "catalog" },
+    );
+    const mako = new MakoAdapter(ctx.config.providers.mako);
+    await mako.vod.listPrograms(ctx);
+    await expect(mako.vod.getProgram("show", ctx)).rejects.toThrow(/bot protection/);
   });
 });
