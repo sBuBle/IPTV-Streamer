@@ -1,0 +1,23 @@
+# Cloudflare Workers deployment (free plan). See README "Deploy to Cloudflare Workers".
+name = "israeli-tv-addon"
+main = "src/entry/worker.ts"
+compatibility_date = "2026-10-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Health probes every 30 minutes. Probes never mark a stream verified.
+[triggers]
+crons = ["*/30 * * * *"]
+
+[vars]
+LOG_LEVEL = "info"
+STREAM_POLICY = "all-labeled"
+VERIFIER_LOCATION = "cloudflare"
+# Provider settings have working defaults; see .env.example to override them.
+# Secrets: `npx wrangler secret put ADMIN_TOKEN`
+
+# Create with `npx wrangler d1 create israeli-tv-addon`, then paste the id here.
+# Without it the add-on still runs, but checks are kept in memory only.
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "israeli-tv-addon"
+# database_id = "<paste id>"
