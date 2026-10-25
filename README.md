@@ -17,10 +17,12 @@ The add-on only hands Stremio streams that come straight from each broadcaster. 
 | i24NEWS live: English, Français, عربي, עברית | **Verified** from the US on 24 Oct 2026 (H.264 360p to 1080p, AAC) |
 | Knesset Channel live | **Verified** from the US on 24 Oct 2026 (H.264 720p, AAC) |
 | i24NEWS VOD: every show on video.i24news.tv (English and French), all published episodes in monthly seasons | **Verified** from the US on 25 Oct 2026 on sample episodes (H.264 up to 1080p, AAC) |
-| Knesset Channel VOD: TV shows from knesset.tv (about 50), newest 120 episodes per show | **Verified** from the US on 25 Oct 2026 on sample episodes (H.264 up to 720p, AAC) |
-| Kan VOD: about 440 programs from kan.org.il (Kan Box and archive series), all seasons and episodes, films | Catalog and stream resolution work from abroad; **video is Israel-only** (Kan's CDN answers 403 outside Israel), so playback is not verified until it is checked from Israel |
+| Knesset Channel VOD: about 94 TV shows from knesset.tv and its sitemap, every published episode (long shows open with their newest episodes and fill in within a minute) | **Verified** from the US on 25 Oct 2026 on sample episodes (H.264 up to 720p, AAC) |
+| Kan VOD: about 1,070 programs from kan.org.il (lobbies plus sitemap), all seasons and episodes, films | Catalog and stream resolution work from abroad; **video is Israel-only** (Kan's CDN answers 403 outside Israel), so playback is not verified until it is checked from Israel |
 | Mako (Keshet 12) VOD | Catalog only, off by default (`MAKO_VOD=catalog`). Playback needs Mako's per-viewer ticket from inside Israel; episodes link to mako.co.il instead |
 | Reshet 13, Channel 14 | Not possible from abroad: their sites answer 403 outside Israel, so they need research from an Israeli host |
+
+The `smoke` workflow walked the whole add-on the way Stremio does on 25 Oct 2026 from the US: 84 of 84 steps passed (every catalog, search, paging, the longest programs of each provider, and a decode of every stream that plays abroad), median response 0.5 s, slowest 10.4 s.
 
 "Verified" means a real decode of video and audio, run by the `verify-streams` GitHub workflow from GitHub's US network. i24NEWS and Knesset work with no setup. The other Israeli broadcasters block viewers outside Israel, so they need a host in Israel for verification, and their streams only play for viewers in Israel.
 
