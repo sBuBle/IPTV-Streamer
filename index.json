@@ -1,0 +1,49 @@
+[
+  {
+    "name": "kan-1042052",
+    "url": "https://www.kan.org.il/content/kan/kan-11/p-1042052/",
+    "status": 200,
+    "finalUrl": "https://www.kan.org.il/content/kan/kan-11/p-1042052/",
+    "headers": {
+      "access-control-allow-origin": "*",
+      "cache-control": "public, max-age=60",
+      "cf-cache-status": "EXPIRED",
+      "cf-ray": "a4ffc8cd583f52a8-DFW",
+      "connection": "keep-alive",
+      "content-encoding": "br",
+      "content-type": "text/html; charset=utf-8",
+      "date": "Sun, 25 Oct 2026 08:17:21 GMT",
+      "expires": "Sun, 25 Oct 2026 08:18:21 GMT",
+      "last-modified": "Sun, 25 Oct 2026 08:17:21 GMT",
+      "server": "cloudflare",
+      "set-cookie": "_cfuvid=UM54ZI3DvJnVhlzPDHubTB3ZTcMvmGCcK7al73bgBm4-1792916241.5006673-1.0.1.1-J0oPejhMlSJnl2ruPCiWbW0i_tZm9KLn7M45V2W00FY; HttpOnly; SameSite=None; Secure; Path=/; Domain=kan.org.il",
+      "transfer-encoding": "chunked",
+      "vary": "accept-encoding",
+      "x-content-type-options": "nosniff",
+      "x-xss-protection": "1; mode=block"
+    },
+    "bytes": 113247
+  },
+  {
+    "name": "kan-kids-lobby",
+    "url": "https://www.kankids.org.il/",
+    "status": 200,
+    "finalUrl": "https://www.kankids.org.il/",
+    "headers": {
+      "cache-control": "public, max-age=60",
+      "cf-cache-status": "EXPIRED",
+      "cf-ray": "a4ffc8cfee44710b-DFW",
+      "connection": "keep-alive",
+      "content-encoding": "gzip",
+      "content-type": "text/html; charset=utf-8",
+      "date": "Sun, 25 Oct 2026 08:17:22 GMT",
+      "expires": "Sun, 25 Oct 2026 08:18:22 GMT",
+      "last-modified": "Sun, 25 Oct 2026 08:17:22 GMT",
+      "server": "cloudflare",
+      "transfer-encoding": "chunked",
+      "x-content-type-options": "nosniff",
+      "x-xss-protection": "1; mode=block"
+    },
+    "bytes": 129112
+  }
+]

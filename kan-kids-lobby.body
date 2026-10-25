@@ -1,0 +1,2017 @@
+
+
+<!DOCTYPE html>
+<html lang="he" dir="rtl" prefix="og: https://ogp.me/ns#" data-page-id="415309">
+<head>
+    
+<script>
+    window.AppConfig = {
+        enableUserTracking: true,
+        trackingIntervalMs: 60000,
+        completionThreshold: 0.97
+    };
+</script>
+    <script defer="" src="/sb/kan-layout-top-js.js.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75" type="text/javascript"></script>
+    <script defer="" src="/sb/kan-custom-js.js.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75" type="text/javascript"></script>
+    
+    <script type="text/javascript">
+        const npawSettings = {
+        accountCode: 'kan',
+        isEnabled: true,
+        trackAdditionalEvents: true
+        };
+    </script>
+        <link rel="preconnect" crossorigin href="https://smartplugin.youbora.com">
+        <script defer src="https://smartplugin.youbora.com/v7/js/lib/7.3.23/NpawPlugin.js"></script>
+        <script type="text/javascript" defer src="/scripts/npaw.js"></script>
+
+        <link rel="preconnect" crossorigin href="https://r.il.cdn-redge.media">
+        <link rel="dns-prefetch" crossorigin href="https://n-121-7.il.cdn-redge.media">
+        <script type="text/javascript" defer src="/scripts/arc-cloud-custom-player.js"></script>
+        <script type="text/javascript" defer src="https://r.il.cdn-redge.media/file/oil/kan/player/0.7.0/redgalaxy-player.min.js"></script>
+        <link rel="stylesheet" href="https://r.il.cdn-redge.media/file/oil/kan/player/0.7.0/css/redgalaxy-player.css" />
+        <script defer="" src="/sb/redge-player-js.js.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75" type="text/javascript"></script>
+
+    
+
+<link rel="dns-prefetch" href="https://storycards.co/">
+<link rel="preconnect" crossorigin href="https://storycards.co/">
+<link rel="preload" as="script" crossorigin href="https://storycards.co/kan/vOgycapnk/sdk-prod.js?buildId=bcec8a7c-8a14-42f9-8cfb-62a4f5835d65-0&amp;ver=2">
+    
+
+
+
+
+
+
+<script type="text/javascript">
+
+    (function () {
+        var loaderUrl, scriptType;
+        window._taboolaOS = (function () {
+            var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            var url = document.URL || document.location.href || window.location.href;
+            var isWebView = /app=true/i.test(url);
+            if (isWebView && /android/i.test(userAgent)) {
+                window.taboolaMobilePubName = 'kan11-kankidsandroid';
+                scriptType = 'tb-mobile-loader-script';
+                loaderUrl = 'https://cdn.taboola.com/libtrc/kan11-androidapp/mobile-loader.js';
+                return 'Android';
+            } else if (isWebView && /iPhone|iPad|iPod/i.test(userAgent)) {
+                window.taboolaMobilePubName = 'kan11-kankidsios';
+                scriptType = 'tb-mobile-loader-script';
+                loaderUrl = 'https://cdn.taboola.com/libtrc/kan11-iosapp/mobile-loader.js';
+                return 'iOS';
+            }
+            scriptType = 'tb_loader_script';
+            loaderUrl = 'https://cdn.taboola.com/libtrc/kan11-network/loader.js';
+            return 'Web';
+        })();
+        ! function (e, f, u, i) {
+            if (!document.getElementById(i)) {
+                e.async = 1;
+                e.src = u;
+                e.id = i;
+                f.parentNode.insertBefore(e, f);
+            }
+        }(document.createElement('script'), document.getElementsByTagName('script')[0], loaderUrl, scriptType);
+    }());
+
+     window._taboola = window._taboola || [];
+    _taboola.push({"url":"http://www.kankids.org.il/","home":415309});
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+ 
+      <link href="/sb/kan-layout-css.css.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75" rel="stylesheet" /> 
+
+        <link href="/sb/kan-kids-layout-css.css.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75" rel="stylesheet" />
+        <script defer="" src="/sb/kan-kids-layout-js.js.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75" type="text/javascript"></script>
+
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement":[
+            {             
+                 "@type": "ListItem",
+                 "position": 1,
+                 "name": "חינוכית"
+            }
+          ]
+        }
+    </script>
+
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "NewsMediaOrganization",
+          "url": "https://www.kankids.org.il/",
+           "name": "",
+
+              "sameAs":[
+"https://www.instagram.com/kan_kids/" ,"https://www.facebook.com/kann23tv" ,"https://www.youtube.com/@KANKIDS" ,"https://www.tiktok.com/@kan_kids?lang=he-IL"                     ],
+                        "contactPoint": [
+            {
+          "@type": "ContactPoint",
+          "telephone": "972 768098000",
+          "contactType": "customer service"
+            }]
+       }
+    </script>
+
+    <meta name="robots" content="index, follow, max-image-preview:large">
+
+    
+
+<title>כאן חינוכית - זה גאוני! סדרות חינוכיות לילדים | כאן חינוכית</title>
+
+
+
+
+    <meta name="description" content="כל הסדרות המומלצות, החדשות ומהארכיון של כאן חינוכית לצפייה ישירה במקום אחד, ובחינם - ילדי בית העץ, האחיין שלי בנץ, כראמל, עיר המספרים, הבית של פיסטוק ועוד. היכנסו!">
+    <meta property="og:description" content="כל הסדרות המומלצות, החדשות ומהארכיון של כאן חינוכית לצפייה ישירה במקום אחד, ובחינם - ילדי בית העץ, האחיין שלי בנץ, כראמל, עיר המספרים, הבית של פיסטוק ועוד. היכנסו!">
+
+
+
+
+<meta property="heyday:type" content="homeKids">
+<meta property="heyday:id" content="415309">
+
+
+
+<meta property="og:title" content="כאן חינוכית - זה גאוני! סדרות חינוכיות לילדים | כאן חינוכית" />
+<meta property="og:site_name" content="">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.kankids.org.il/">
+<meta property="datePublished" content="2023-06-25T23:45:36&#x2B;02:00" />
+
+
+
+    <link rel="canonical" href="https://www.kankids.org.il/" />
+
+<meta name=robots content="index, follow, ">
+
+<meta name="category" content="חינוכית" />
+
+
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon-kids/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-kids/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-kids/favicon-16x16.png">
+<link rel="manifest" href="/favicon-kids/site.webmanifest">
+<link rel="mask-icon" color="#5bbad5" href="/favicon-kids/safari-pinned-tab.svg">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+    <script src="https://cdn.heyday.io/cstmst/heyDayMain.js?affId=2543&d=www.kankids.org.il" async type="text/javascript"></script>
+</head>
+<body>
+
+    
+
+<script>
+    function pushDataLayer() {
+        dataLayer = dataLayer || [];
+        dataLayer.push({
+            item_type: 'homeKids',
+            cms_id: '415309',
+            date_time: '20230625',
+            item_author: '',
+            general_tags: '',
+            season: '0',
+            episode_number: '0',
+            episode_title: '',
+            genre_tags: '',
+            item_duration: '0',
+            program_type: '',
+            program_genre: '',
+            program_format: '',
+            article_type: '',
+            page_name: 'כאן חינוכית - זה גאוני! סדרות חינוכיות לילדים',
+            program_name: '',
+            channel_name: 'חינוכית'
+        });
+    }
+
+    function decodeEntities(encodedString) {
+        return encodedString.replace(/&quot;/g, '"');
+    }
+
+    var npawData = npawData || {};
+    npawData.contentId = '0';
+    npawData.program = decodeEntities('');
+    npawData.channel = 'חינוכית';
+    npawData.type = 'Video';
+    npawData.genre = decodeEntities('');
+    npawData.season = '0';
+    npawData.episodeTitle = decodeEntities('');
+    npawData.customDimension1 = '';
+    npawData.customDimension2 = '0';
+    npawData.customDimension3 = decodeEntities('');
+    npawData.customDimension4 = '';
+    npawData.customDimension6 = decodeEntities('');
+    npawData.customDimension7 = '';
+    npawData.customDimension8 = '';
+    npawData.customDimension6 = decodeEntities('');
+    npawData.appName = 'kids-web';
+    npawData.appReleaseVersion = '1.1.0.2';
+</script>
+<span id="gtm-code-holder" data-gtm-code="GTM-PZDDCPJ" class="d-none"></span>
+
+<script>
+    function loadAnalyticsScripts() {
+        let gtmCodeHolder = document.getElementById('gtm-code-holder');
+
+        if(gtmCodeHolder == null){
+            return;
+        }
+
+        const gtmCode = gtmCodeHolder.dataset.gtmCode;
+        var script = document.createElement('script');
+        script.async = true;
+        script.src = `https://www.googletagmanager.com/gtm.js?id=${gtmCode}`;
+
+        var firstScript = document.getElementsByTagName('script')[0];
+        firstScript.parentNode.insertBefore(script, firstScript);
+
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+            'gtm.start': new Date().getTime(),
+            event: 'gtm.js'
+        });
+
+        var noscriptTag = document.createElement('noscript');
+        var iframe = document.createElement('iframe');
+        iframe.src = `https://www.googletagmanager.com/ns.html?id=${gtmCode}`;
+        iframe.height = '0';
+        iframe.width = '0';
+        iframe.style.display = 'none';
+        iframe.style.visibility = 'hidden';
+        noscriptTag.appendChild(iframe);
+
+        document.body.appendChild(noscriptTag);
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", pushDataLayer);
+        }
+        else {
+          pushDataLayer();
+        }
+    }
+</script>
+
+    <link rel="preload" as="style" onload="this.onload=null;this.rel='stylesheet'" href="/lib/vanilla-cookieconsent/dist/cookieconsent.css" />
+    <noscript><link rel="stylesheet" type="text/css" href="/lib/vanilla-cookieconsent/dist/cookieconsent.css" /></noscript>
+    <script type="text/javascript" defer src="/lib/vanilla-cookieconsent/dist/cookieconsent.umd.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+        // one-time migration: remove the legacy cc_cookie left on the old (www) scope.
+        (function () {
+            var host = location.hostname;             // www.kan.org.il
+            var root = host.replace(/^www\./, '');    // kan.org.il
+            if (host !== root) {
+                var expired = 'cc_cookie=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
+                document.cookie = expired + '; domain=' + host; // kills the www.kan.org.il cookie
+                document.cookie = expired;                       // kills any host-only variant
+                // the canonical ".kan.org.il" cookie has a different domain attribute and is NOT removed
+            }
+        })();
+
+        document.documentElement.classList.add('cc--darkmode');
+        const CAT_NECESSARY = "necessary";
+        const CAT_ANALYTICS = "analytics";
+        const CAT_ADVERTISEMENT = "advertisement";
+        const CAT_FUNCTIONALITY = "functionality";
+        const CAT_SECURITY = "security";
+        const cookieBannerConfig = {"EnableCookieBanners":true,"TermsAndConditionsLink":"https://www.kan.org.il/content-pages/terms/","PrivacyPolicy":"https://www.kan.org.il/content-pages/privacy/"};
+
+        CookieConsent.run({
+            revision: 1,
+            guiOptions: {
+                consentModal: {
+                    layout: 'bar inline',
+                    position: 'bottom',
+                    equalWeightButtons: false,
+                    flipButtons: true
+                },
+                preferencesModal: {
+                    layout: 'box',
+                    equalWeightButtons: true,
+                    flipButtons: false
+                }
+            },
+            cookie: {
+                expiresAfterDays: 182,
+                domain: location.hostname.replace(/^www\./, ''),
+                sameSite: 'Lax'
+            },
+            onFirstConsent: function (cookie) {
+                if (cookie.cookie.categories.indexOf('analytics') != -1) {
+                    loadAnalyticsScripts();
+                }
+                if (cookie.cookie.categories.indexOf('necessary') != -1) {
+                }
+            },
+
+            onConsent: function () {
+                if (CookieConsent.acceptedCategory('analytics')) {
+                    if(npawSettings){
+                       npawSettings.trackAdditionalEvents = true;
+                    }
+                }
+                else{
+                    if(npawSettings){
+                        npawSettings.trackAdditionalEvents = false;
+                    }
+                }
+            },
+
+            onChange: function ({ changedCategories, changedServices }) {
+                if (changedCategories.includes('analytics')) {
+                    if (CookieConsent.acceptedCategory('analytics')) {
+                        loadAnalyticsScripts();
+                        if(npawSettings){
+                            npawSettings.trackAdditionalEvents = true;
+                        }
+                    } else {
+                        if(npawSettings){
+                            npawSettings.trackAdditionalEvents = false;
+                        }
+                    }
+
+                    if (changedServices['analytics'].includes('Google Analytics')) {
+                        if (CookieConsent.acceptedService('Google Analytics', 'analytics')) {
+                        loadAnalyticsScripts();
+                        } else {
+                            // Google Analytics was just disabled
+                        }
+                    }
+                }
+            },
+
+            categories: {
+                [CAT_NECESSARY]: {
+                    enabled: true,  // this category is enabled by default
+                    readOnly: true  // this category cannot be disabled
+                },
+                [CAT_ANALYTICS]: {
+                    autoClear: {
+                        cookies: [
+                            {
+                                name: /^_ga/
+                            },
+                            {
+                                name: '_gid'
+                            },
+                            {
+                                name: '_gcl_au'
+                            },
+                            {
+                                name: /^__cf/
+                            },
+                            {
+                                name: /^_cb/
+                            },
+                            {
+                                name: 'TRINITY_USER_DATA'
+                            }
+                        ]
+                    },
+
+                    services: {
+                        ga: {
+                            label: 'Google Analytics',
+                            cookies: [
+                                {
+                                    name: /^(_ga|_gid|__utma|__utmc|__utma)/
+                                }
+                            ]
+                        }
+                    }
+                },
+                targeting: {}
+            },
+
+            language: {
+                default: 'he',
+                rtl: 'he',
+                translations: {
+                    en: async () => {
+                        const res = await fetch('/config/cookieconsent/en.json');
+                        var s = await res.json();
+
+                        if (s.consentModal && s.consentModal.footer) {
+                            s.consentModal.footer = s.consentModal.footer
+                                .replace('{privacy}', cookieBannerConfig.PrivacyPolicy)
+                                .replace('{terms}', cookieBannerConfig.TermsAndConditionsLink);
+                        };
+
+                        if (s.preferencesModal && Array.isArray(s.preferencesModal.sections)) {
+                            s.preferencesModal.sections.forEach(section => {
+                                if (section.description) {
+                                    section.description = section.description.replace('{privacy}', cookieBannerConfig.PrivacyPolicy);
+                                }
+                            });
+                        }
+
+                        return s;
+                    },
+                    he: async () => {
+                        const res = await fetch('/config/cookieconsent/he.json');
+                        var s = await res.json();
+
+                        if (s.consentModal && s.consentModal.footer) {
+                            s.consentModal.footer = s.consentModal.footer
+                                .replace('{privacy}', cookieBannerConfig.PrivacyPolicy)
+                                .replace('{terms}', cookieBannerConfig.TermsAndConditionsLink);
+                        };
+
+                        if (s.preferencesModal && Array.isArray(s.preferencesModal.sections)) {
+                            s.preferencesModal.sections.forEach(section => {
+                                if (section.description) {
+                                    section.description = section.description.replace('{privacy}', cookieBannerConfig.PrivacyPolicy);
+                                }
+                            });
+                        }
+
+                        return s;
+                    }
+                }
+            }
+        });
+        });
+    </script>
+    <script>
+        window.addEventListener("load", (event) => {
+            if (CookieConsent && CookieConsent.acceptedCategory('analytics')) {
+                loadAnalyticsScripts();
+            };
+        });
+    </script>
+
+    
+<ul class="skipMenu noPrint list-unstyled d-none d-lg-block mb-0">
+    <li>
+        <a id="gotoMenu" href="#navigation" class="visually-hidden-focusable">תפריט האתר</a>
+    </li>
+    <li>
+        <a id="gotoMainContent" href="#main" class="visually-hidden-focusable">דלג לתוכן העמוד</a>
+    </li>
+    <li>
+        <a id="gotoBottomLinks" href="#footer" class="visually-hidden-focusable">קישורים תחתונים</a>
+    </li>
+</ul>
+    <div id="wrapper" class="container-fluid" data-mobile-width="755" data-tablet-width="1024" role="presentation" style="--bg-desktop: ; --bg-mobile: ; --text-color: ; --theme-color: ; --separator-line-color: ">
+        <div id="navigation" class="row" role="navigation">
+
+
+<header id="header" class="header kheader p-0">
+    <div class="hidden-overlay"></div>
+    <picture class="bg-elem">
+        <source media="(min-width:756px)" srcset="/images/elem_shape_bg_header.svg">
+        <img src="/images/elem_shape_bg_header_mob.svg" class="img-fluid" alt="bg elem" title="bg elem">
+    </picture>
+    <div class="holder h-100">
+        <div class="d-flex align-items-center holder-inner">
+            <button class="btn btn-open-menu dropdown-toggle burger-menu-btn" type="button" id="dropdownMainMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+                <div class="dropdown-menu dropdown-main-menu" aria-labelledby="dropdownMainMenu">
+                    <div class="nav-wrap">
+                        <a href="/" class="logo">
+                                <img src="/media/0ymcnuw4/logo_hinuchit_main.svg" class="img-fluid" alt="חינוכית לוגו" />
+                        </a>
+
+                        <ul class="nav-menu list-unstyled">
+                                <li class="nav-item ">
+                                    <a href="/lobby-kids/tiny/" class="nav-link">
+                                        <span class="nav-icon">
+                                            <img src="/media/5monxtsy/tiny-default.svg" class="img-fluid icon svg-container icon-regular" alt="קטנטנים" title="קטנטנים" />
+                                            <img src="/media/kz3o3qiw/tiny-selected.svg" class="img-fluid icon svg-container icon-selected" alt="קטנטנים" title="קטנטנים" />
+                                        </span>
+                                        <span class="text">קטנטנים</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a href="/lobby-kids/kids-teens/" class="nav-link">
+                                        <span class="nav-icon">
+                                            <img src="/media/bpqjlrz3/kids-default.svg" class="img-fluid icon svg-container icon-regular" alt="ילדים ונוער" title="ילדים ונוער" />
+                                            <img src="/media/u3jgualp/kids-selected.svg" class="img-fluid icon svg-container icon-selected" alt="ילדים ונוער" title="ילדים ונוער" />
+                                        </span>
+                                        <span class="text">ילדים ונוער</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a href="/lobby-kids/podcasts-kids/" class="nav-link">
+                                        <span class="nav-icon">
+                                            <img src="/media/snjloxf4/podcast-default.svg" class="img-fluid icon svg-container icon-regular" alt="הסכתים לוגו" title="הסכתים לוגו" />
+                                            <img src="/media/2nsprybd/podcasts-selected.svg" class="img-fluid icon svg-container icon-selected" alt="הסכתים לוגו" title="הסכתים לוגו" />
+                                        </span>
+                                        <span class="text">הסכתים</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a href="/lobby-kids/radio/" class="nav-link">
+                                        <span class="nav-icon">
+                                            <img src="/media/na1auz0e/music-default.svg" class="img-fluid icon svg-container icon-regular" alt="מוזיקה לוגו לובי" title="מוזיקה לוגו לובי" />
+                                            <img src="/media/kfxhnnbg/music-selected.svg" class="img-fluid icon svg-container icon-selected" alt="מוזיקה לוגו לובי" title="מוזיקה לוגו לובי" />
+                                        </span>
+                                        <span class="text">רדיו</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a href="/general/חידונים/" class="nav-link">
+                                        <span class="nav-icon">
+                                            <img src="/media/e2igy5ba/games-default.svg" class="img-fluid icon svg-container icon-regular" alt="חידונים ומשחקים לוגו לובי" title="חידונים ומשחקים לוגו לובי" />
+                                            <img src="/media/pwipogkw/games-selected.svg" class="img-fluid icon svg-container icon-selected" alt="חידונים ומשחקים לוגו לובי" title="חידונים ומשחקים לוגו לובי" />
+                                        </span>
+                                        <span class="text">חידונים</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a href="/kids-tv_guide/" class="nav-link">
+                                        <span class="nav-icon">
+                                            <img src="/media/s44jgjcr/broadcast-schedule-default.svg" class="img-fluid icon svg-container icon-regular" alt="לוח שידורים" title="לוח שידורים" />
+                                            <img src="/media/pv5lhpe0/broadcast-schedule-selected.svg" class="img-fluid icon svg-container icon-selected" alt="לוח שידורים" title="לוח שידורים" />
+                                        </span>
+                                        <span class="text">לוח שידורים</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a href="/kids-live/" class="nav-link">
+                                        <span class="nav-icon">
+                                            <img src="/media/gcjf0j35/live-default.svg" class="img-fluid icon svg-container icon-regular" alt="שידור חי" title="שידור חי" />
+                                            <img src="/media/d3lltqmc/live-selected.svg" class="img-fluid icon svg-container icon-selected" alt="שידור חי" title="שידור חי" />
+                                        </span>
+                                        <span class="text">שידור חי</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item search-item">
+                                    <a href="/search/" class="nav-link">
+                                        <span class="nav-icon">
+                                            <img src="/images/icon-search-blue.svg" class="img-fluid icon svg-container icon-regular" alt="search" title="search" />
+                                            <img src="" class="img-fluid icon svg-container icon-selected" alt="search" title="search" />
+                                        </span>
+                                        <span class="text">חיפוש</span>
+                                    </a>
+                                </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="kheader-logo">
+                    <a href="/" class="klogo">
+                        <img src="/media/0ymcnuw4/logo_hinuchit_main.svg" class="img-fluid icon" alt="חינוכית לוגו" />
+                    </a>
+                </div>
+
+                <nav class="tablet-nav">
+                    <ul class="nav-menu list-unstyled">
+                            <li class="nav-item">
+                                <a href="/lobby-kids/tiny/" class="nav-link">
+                                    <span class="nav-icon">
+                                        <img src="/media/5monxtsy/tiny-default.svg" class="img-fluid icon" alt="קטנטנים" title="קטנטנים" />
+                                    </span>
+                                    <span class="text">קטנטנים</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/lobby-kids/kids-teens/" class="nav-link">
+                                    <span class="nav-icon">
+                                        <img src="/media/bpqjlrz3/kids-default.svg" class="img-fluid icon" alt="ילדים ונוער" title="ילדים ונוער" />
+                                    </span>
+                                    <span class="text">ילדים ונוער</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/lobby-kids/podcasts-kids/" class="nav-link">
+                                    <span class="nav-icon">
+                                        <img src="/media/snjloxf4/podcast-default.svg" class="img-fluid icon" alt="הסכתים לוגו" title="הסכתים לוגו" />
+                                    </span>
+                                    <span class="text">הסכתים</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/lobby-kids/radio/" class="nav-link">
+                                    <span class="nav-icon">
+                                        <img src="/media/na1auz0e/music-default.svg" class="img-fluid icon" alt="מוזיקה לוגו לובי" title="מוזיקה לוגו לובי" />
+                                    </span>
+                                    <span class="text">רדיו</span>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/general/חידונים/" class="nav-link">
+                                    <span class="nav-icon">
+                                        <img src="/media/e2igy5ba/games-default.svg" class="img-fluid icon" alt="חידונים ומשחקים לוגו לובי" title="חידונים ומשחקים לוגו לובי" />
+                                    </span>
+                                    <span class="text">חידונים</span>
+                                </a>
+                            </li>
+                    </ul>
+                </nav>
+
+            <div class="end-block">
+                    <a href="/search/" class="search-link">
+                        <span class="icon-search hover-mode">
+                            <img src="/images/icon-search-blue.svg" class="img-fluid" alt="search" title="search" />
+                        </span>
+                        <span class="text">חיפוש</span>
+                    </a>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+
+<div class="sticky-menu-wrap p-0 d-xmd-none ">
+    <ul class="sticky-menu list-unstyled mb-0">
+            <li class="sticky-menu-item selected">
+                <a href="/" class="sticky-menu-link" title="חינוכית">
+                    <img src="/media/5fuhrwe0/home-page_defalut.svg?rmode=pad&amp;v=1d9a857a9d2dcd0" class="img-fluid icon-regular" alt="חינוכית" title="חינוכית" />
+                    <img src="/media/bsyk5gw5/home-page_selected.svg?rmode=pad&amp;v=1d9a857b79fe1f0" class="img-fluid icon-selected" alt="חינוכית" title="חינוכית" />
+                    <span class="title">חינוכית</span>
+                </a>
+            </li>
+            <li class="sticky-menu-item">
+                <a href="/lobby-kids/tiny/" class="sticky-menu-link" title="קטנטנים">
+                    <img src="/media/2k5gh5xb/tiny_defalut.svg?rmode=pad&amp;v=1d9a857e6aa1e70" class="img-fluid icon-regular" alt="קטנטנים" title="קטנטנים" />
+                    <img src="/media/2ehns1h3/tiny_selected.svg?rmode=pad&amp;v=1d9a857f4a2c770" class="img-fluid icon-selected" alt="קטנטנים" title="קטנטנים" />
+                    <span class="title">קטנטנים</span>
+                </a>
+            </li>
+            <li class="sticky-menu-item">
+                <a href="/lobby-kids/kids-teens/" class="sticky-menu-link" title="ילדים ונוער">
+                    <img src="/media/tw2pjxkl/kids_defalut.svg?rmode=pad&amp;v=1d9a858133689b0" class="img-fluid icon-regular" alt="ילדים ונוער" title="ילדים ונוער" />
+                    <img src="/media/pzxmpqt4/kids_selected.svg?rmode=pad&amp;v=1d9a858262d4630" class="img-fluid icon-selected" alt="ילדים ונוער" title="ילדים ונוער" />
+                    <span class="title">ילדים ונוער</span>
+                </a>
+            </li>
+            <li class="sticky-menu-item">
+                <a href="/lobby-kids/podcasts-kids/" class="sticky-menu-link" title="הסכתים">
+                    <img src="/media/zd0ht5wr/podcasts_defalut.svg?rmode=pad&amp;v=1d9a85875ee24f0" class="img-fluid icon-regular" alt="הסכתים" title="הסכתים" />
+                    <img src="/media/glcpsdts/podcasts_selected.svg?rmode=pad&amp;v=1d9a85887054c00" class="img-fluid icon-selected" alt="הסכתים" title="הסכתים" />
+                    <span class="title">הסכתים</span>
+                </a>
+            </li>
+            <li class="sticky-menu-item">
+                <a href="/kids-live/" class="sticky-menu-link" title="שידור חי">
+                    <img src="/media/viafhvht/live_defalut.svg?rmode=pad&amp;v=1d9a858bde68590" class="img-fluid icon-regular" alt="שידור חי" title="שידור חי" />
+                    <img src="/media/cv0lkdfi/live_selected.svg?rmode=pad&amp;v=1d9a858c7910a20" class="img-fluid icon-selected" alt="שידור חי" title="שידור חי" />
+                    <span class="title">שידור חי</span>
+                </a>
+            </li>
+    </ul>
+</div>
+
+            <main id="main" class="container-fluid g-0" aria-label="תוכן ראשי">
+                
+    <link href="/sb/kan-home-kids-css.css.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75" rel="stylesheet" />
+
+<div class="bg-mob component-view">
+    
+
+<div class="umb-block-list">
+        <div>
+            
+
+<link href="/sb/kan-swiper-css.css.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75" rel="stylesheet" />
+<link href="/sb/kan-logo-carousel-css.css.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75" rel="stylesheet" />
+<script defer="" src="/sb/kan-swiper-js.js.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75" type="text/javascript"></script>
+<script defer="" src="/sb/kan-logo-carousel-js.js.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75" type="text/javascript"></script>
+
+<div class="logo-carousel">
+    <nav id="brands" class="">
+        <button class="btn btn-arrow btn-prev logo-carousel 5aa10fe8-e2bf-4a80-825b-6bee6850442c"></button>
+        <div class="logos-wrap">
+            <div id="5aa10fe8-e2bf-4a80-825b-6bee6850442c" class="logos list-unstyled swiper logo-carousel-swiper">
+                <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/the_serials/">
+                                    <div class="block-img">
+                                            <img src="/media/5belmdak/200x200_character_הסדרתיים.png" class="img-fluid img-default" alt="הסדרתיים 2" title="הסדרתיים 2.הסדרתיים 2" />
+                                            <img src="/media/bb2jhkdc/200x200_logo_הסדרתיים_.png" class="img-fluid img-hover" alt="הסדרתיים 2" title="הסדרתיים 2.הסדרתיים 2" />
+                                    </div>
+                                    <span class="logos-title">הסדרתיים</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/the_serials_songs/">
+                                    <div class="block-img">
+                                            <img src="/media/lcupajnh/200x200_character_הסדרתיים-השירים.png" class="img-fluid img-default" alt="הסדרתיים 2 השירים" title="הסדרתיים 2 השירים.הסדרתיים 2 השירים" />
+                                            <img src="/media/f5ngkyby/200x200_logo_הסדרתיים-השירים.png" class="img-fluid img-hover" alt="הסדרתיים 2 השירים" title="הסדרתיים 2 השירים.הסדרתיים 2 השירים" />
+                                    </div>
+                                    <span class="logos-title">הסדרתיים- השירים</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/p-863865/">
+                                    <div class="block-img">
+                                            <img src="/media/24nci20f/200x200_character_png_שכונת-חיים.png" class="img-fluid img-default" alt="שכונת חיים 2" title="שכונת חיים 2.שכונת חיים 2" />
+                                            <img src="/media/m1gjnyp4/200x200_logo_png_שכונת-חיים.png" class="img-fluid img-hover" alt="שכונת חיים 2" title="שכונת חיים 2.שכונת חיים 2" />
+                                    </div>
+                                    <span class="logos-title">שכונת חיים</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/p-1076134/">
+                                    <div class="block-img">
+                                            <img src="/media/z4jhhtlg/200x200_character_png2.png" class="img-fluid img-default" alt="דודו" title="דודו.דודו" />
+                                            <img src="/media/hg5fpzfy/200x200_logo_png_.png" class="img-fluid img-hover" alt="דודו" title="דודו.דודו" />
+                                    </div>
+                                    <span class="logos-title">דודו</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/saving_the_pets/">
+                                    <div class="block-img">
+                                            <img src="/media/5inj4vwr/200x200_character_להציל-את-חיות-הבית.png" class="img-fluid img-default" alt="להציל את חיות הבית 3" title="להציל את חיות הבית 3.להציל את חיות הבית 3" />
+                                            <img src="/media/tfdj33yn/200x200_logo_להציל-את-חיות-הבית.png" class="img-fluid img-hover" alt="להציל את חיות הבית 3" title="להציל את חיות הבית 3.להציל את חיות הבית 3" />
+                                    </div>
+                                    <span class="logos-title">להציל את חיות הבית</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/studio_amtzia/">
+                                    <div class="block-img">
+                                            <img src="/media/jqmfbaxd/200x200_character_pngסטודיו-אמציה__.png" class="img-fluid img-default" alt="סטודיו אמציה" title="סטודיו אמציה.סטודיו אמציה" />
+                                            <img src="/media/jcfncge4/200x200_logo_png_.png" class="img-fluid img-hover" alt="סטודיו אמציה" title="סטודיו אמציה.סטודיו אמציה" />
+                                    </div>
+                                    <span class="logos-title">סטודיו אמציה</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/malon_hotel/">
+                                    <div class="block-img">
+                                            <img src="/media/gjypzuqu/200x200_character-מלון-הוטל_.png" class="img-fluid img-default" alt="מלון הוטל 3" title="מלון הוטל 3.מלון הוטל 3" />
+                                            <img src="/media/qmzlzl4e/200x200_logoמלון-הוטל-לוגו-מונדיאל.png" class="img-fluid img-hover" alt="מלון הוטל 3" title="מלון הוטל 3.מלון הוטל 3" />
+                                    </div>
+                                    <span class="logos-title">מלון הוטל</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/ktantanim-main/p-1010382/">
+                                    <div class="block-img">
+                                            <img src="/media/0f5jvrpg/200x200_character_png_.png" class="img-fluid img-default" alt="היכון הכן טוס" title="היכון הכן טוס.היכון הכן טוס" />
+                                            <img src="/media/kt1g2s1g/200x200_logo_png_.png" class="img-fluid img-hover" alt="היכון הכן טוס" title="היכון הכן טוס.היכון הכן טוס" />
+                                    </div>
+                                    <span class="logos-title">היכון הכן טוס</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/p-1001668/">
+                                    <div class="block-img">
+                                            <img src="/media/4qwoyo0n/200x200_character_png_סושרד-הצעיר.png" class="img-fluid img-default" alt="סושרד הצעיר" title="סושרד הצעיר.סושרד הצעיר" />
+                                            <img src="/media/z2df3ek5/200x200_logo_png_סושרד-הצעיר.png" class="img-fluid img-hover" alt="סושרד הצעיר" title="סושרד הצעיר.סושרד הצעיר" />
+                                    </div>
+                                    <span class="logos-title">סושרד הצעיר</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/p-1001769/">
+                                    <div class="block-img">
+                                            <img src="/media/3hwhdomn/200x200_character_png_.png" class="img-fluid img-default" alt="קייטנה של החיים" title="קייטנה של החיים.קייטנה של החיים" />
+                                            <img src="/media/xdgokj40/200x200_logo_png_.png" class="img-fluid img-hover" alt="קייטנה של החיים" title="קייטנה של החיים.קייטנה של החיים" />
+                                    </div>
+                                    <span class="logos-title">קייטנה של החיים</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/cramel_main/">
+                                    <div class="block-img">
+                                            <img src="/media/dt1hwjxs/200x200_character_png_כראמל-עונה5.png" class="img-fluid img-default" alt="כראמל 5" title="כראמל 5.כראמל 5" />
+                                            <img src="/media/xbpbs1us/200x200_logo_png_כראמל-עונה5.png" class="img-fluid img-hover" alt="כראמל 5" title="כראמל 5.כראמל 5" />
+                                    </div>
+                                    <span class="logos-title">כראמל</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/p-985049/">
+                                    <div class="block-img">
+                                            <img src="/media/5v2j1y4q/200x200_character_png.png" class="img-fluid img-default" alt="תראו אותי" title="תראו אותי.תראו אותי" />
+                                            <img src="/media/2tenu00g/200x200_logo_png.png" class="img-fluid img-hover" alt="תראו אותי" title="תראו אותי.תראו אותי" />
+                                    </div>
+                                    <span class="logos-title">תראו אותי</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/p-607186/">
+                                    <div class="block-img">
+                                            <img src="/media/lcgbtehy/200x200_character_png_בני-מצווה.png" class="img-fluid img-default" alt="בני מצווה 3" title="בני מצווה 3.בני מצווה 3" />
+                                            <img src="/media/brshrpwj/200x200_logo_png_בני-מצווה.png" class="img-fluid img-hover" alt="בני מצווה 3" title="בני מצווה 3.בני מצווה 3" />
+                                    </div>
+                                    <span class="logos-title">בני מצווה</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/on_our_own/">
+                                    <div class="block-img">
+                                            <img src="/media/dasl1bon/200x200_character_png.png" class="img-fluid img-default" alt="לבד בבית 5" title="לבד בבית 5.לבד בבית 5" />
+                                            <img src="/media/axkptfe1/200x200_logo_png.png" class="img-fluid img-hover" alt="לבד בבית 5" title="לבד בבית 5.לבד בבית 5" />
+                                    </div>
+                                    <span class="logos-title">לבד בבית</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/shakshuka/">
+                                    <div class="block-img">
+                                            <img src="/media/lyep21pm/200x200_character-שקשוקה-עונה7.png" class="img-fluid img-default" alt="שקשוקה 7" title="שקשוקה 7.שקשוקה 7" />
+                                            <img src="/media/od5hfikp/200x200_logo_png_שקשוקה-עונה7.png" class="img-fluid img-hover" alt="שקשוקה 7" title="שקשוקה 7.שקשוקה 7" />
+                                    </div>
+                                    <span class="logos-title">שקשוקה</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/its_me/">
+                                    <div class="block-img">
+                                            <img src="/media/uhtlcowc/200x200-character.png" class="img-fluid img-default" alt="והילד הזה הוא אני" title="והילד הזה הוא אני.והילד הזה הוא אני" />
+                                            <img src="/media/t0zkvzgd/200x200_logo_png.png" class="img-fluid img-hover" alt="והילד הזה הוא אני" title="והילד הזה הוא אני.והילד הזה הוא אני" />
+                                    </div>
+                                    <span class="logos-title">והילד הזה הוא אני</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/p-11114/">
+                                    <div class="block-img">
+                                            <img src="/media/jx2emtel/200x200_character-האחיין-שלי-בנץ.png" class="img-fluid img-default" alt="200X200 Character האחיין שלי בנץ" title="200X200 Character האחיין שלי בנץ.האחיין שלי בנץ" />
+                                            <img src="/media/yxclmnla/200x200_logo-האחיין-שלי-בנץ.png" class="img-fluid img-hover" alt="200X200 Logo האחיין שלי בנץ" title="200X200 Logo האחיין שלי בנץ.האחיין שלי בנץ" />
+                                    </div>
+                                    <span class="logos-title">האחיין שלי בנץ</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/p-11530/">
+                                    <div class="block-img">
+                                            <img src="/media/qwpjx1cx/200x200_character_png_האולפן-שלי-לייב_בנץ_2.png" class="img-fluid img-default" alt="האולפן שלי בנץ לייב" title="האולפן שלי בנץ לייב.האולפן שלי בנץ לייב" />
+                                            <img src="/media/bsaayncu/200x200_logo_pngהאולפן-שלי-לייב_בנץ.png" class="img-fluid img-hover" alt="האולפן שלי בנץ לייב" title="האולפן שלי בנץ לייב.האולפן שלי בנץ לייב" />
+                                    </div>
+                                    <span class="logos-title">האולפן שלי בנץ</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/ktantanim-main/tamaris_garden/">
+                                    <div class="block-img">
+                                            <img src="/media/22dhtgyu/200x200_character_png.png" class="img-fluid img-default" alt="הגינה של תמרי" title="הגינה של תמרי.הגינה של תמרי" />
+                                            <img src="/media/gh5fma4e/200x200_logo_png_.png" class="img-fluid img-hover" alt="הגינה של תמרי" title="הגינה של תמרי.הגינה של תמרי" />
+                                    </div>
+                                    <span class="logos-title">הגינה של תמרי</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/shelly_koveshet-main/">
+                                    <div class="block-img">
+                                            <img src="/media/jbxj333q/שלי-הכובשת-סטוריז.png" class="img-fluid img-default" alt="שלי הכובשת סטוריז" title="שלי הכובשת סטוריז.כאן" />
+                                            <img src="/media/okrfyqwr/200x200_האריות-של-שלי-הכובשת.png" class="img-fluid img-hover" alt="האריות של שלי הכובשת" title="האריות של שלי הכובשת.סטודיו" />
+                                    </div>
+                                    <span class="logos-title">האריות של שלי הכובשת</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/ktantanim-main/bluey/">
+                                    <div class="block-img">
+                                            <img src="/media/s4al5rdu/200x200_character_png_בלואי.png" class="img-fluid img-default" alt="200X200 Character PNG בלואי" title="200X200 Character PNG בלואי.BBC" />
+                                            <img src="/media/mazdsizz/בלואי-לוגו-שקוף-עיגולים.png" class="img-fluid img-hover" alt="בלואי כאן חינוכית" title="בלואי כאן חינוכית.כאן חינוכית" />
+                                    </div>
+                                    <span class="logos-title">בלואי</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/p-869745/">
+                                    <div class="block-img">
+                                            <img src="/media/4usddxtl/200x200_character_איזהו-גיבור.png" class="img-fluid img-default" alt="200X200 Character איזהו גיבור" title="200X200 Character איזהו גיבור.איזהו גיבור" />
+                                            <img src="/media/y4jjh4pk/200x200_logoאיזהו-גיבור.png" class="img-fluid img-hover" alt="200X200 LOGOאיזהו גיבור" title="200X200 LOGOאיזהו גיבור.איזהו גיבור" />
+                                    </div>
+                                    <span class="logos-title">איזהו גיבור</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/lost_things/">
+                                    <div class="block-img">
+                                            <img src="/media/2gkjernw/200x200_character_הדברים-שהלכו-לאיבוד.png" class="img-fluid img-default" alt="הדברים שהלכו לאיבוד" title="הדברים שהלכו לאיבוד" />
+                                            <img src="/media/zqdn1oiy/200x200_logo_png.png" class="img-fluid img-hover" alt="הדברים שהלכו לאיבוד" title="הדברים שהלכו לאיבוד.מיכה לובטון" />
+                                    </div>
+                                    <span class="logos-title">הדברים שהלכו לאיבוד</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/exceptional/">
+                                    <div class="block-img">
+                                            <img src="/media/5ohjkgx5/200x200_character_מיוחדת.png" class="img-fluid img-default" alt="מיוחדת" title="מיוחדת" />
+                                            <img src="/media/1fin3b2n/200x200_logo_png.png" class="img-fluid img-hover" alt="מיוחדת" title="." />
+                                    </div>
+                                    <span class="logos-title">מיוחדת</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/p-11049/">
+                                    <div class="block-img">
+                                            <img src="/media/ci2fqfij/200x200_character_מסע-לפולין.png" class="img-fluid img-default" alt="מסע לפולין" title="מסע לפולין" />
+                                            <img src="/media/nlfh1fg2/logo_png.png" class="img-fluid img-hover" alt="מסע לופלין" title="מסע לופלין.סטודיו" />
+                                    </div>
+                                    <span class="logos-title">מסע לפולין</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/thats_joey/">
+                                    <div class="block-img">
+                                            <img src="/media/gymdcaqv/200x200_character_png.png" class="img-fluid img-default" alt="זה יוני" title="זה יוני.סטודיו" />
+                                            <img src="/media/gwupumtj/200x200_logo_png-copy.png" class="img-fluid img-hover" alt="זה יוני" title="זה יוני.סטודיו" />
+                                    </div>
+                                    <span class="logos-title">זה יוני</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/p-11681/">
+                                    <div class="block-img">
+                                            <img src="/media/unxbayzl/200x200_character_png.png" class="img-fluid img-default" alt="סליחה על השאלה ילדים 4" title="סליחה על השאלה ילדים 4.מיכה לובטון" />
+                                            <img src="/media/mhwdqfvc/logo_png.png" class="img-fluid img-hover" alt="סליחה על השאלה ילדים 4" title="סליחה על השאלה ילדים 4.סטודיו" />
+                                    </div>
+                                    <span class="logos-title">סליחה על השאלה ילדים</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/ktantanim-main/p-727908/">
+                                    <div class="block-img">
+                                            <img src="/media/cfffska0/200x200_character_png.png" class="img-fluid img-default" alt="הנסיך הקטן" title="הנסיך הקטן.צילום מסך" />
+                                            <img src="/media/wtjexoln/הנסיך-הקטן-והחברים_200x200.png" class="img-fluid img-hover" alt="הנסיך הקטן והחברים" title="הנסיך הקטן והחברים" />
+                                    </div>
+                                    <span class="logos-title">הנסיך הקטן וחברים</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/p-11627/">
+                                    <div class="block-img">
+                                            <img src="/media/c4znokgv/200x200_character_png.png" class="img-fluid img-default" alt="מקיף מילאנו 4" title="מקיף מילאנו 4.מיכה לובטון" />
+                                            <img src="/media/m4rark2j/200x200_logo_png.png" class="img-fluid img-hover" alt="מקיף מילאנו 4" title="מקיף מילאנו 4.סטודיו" />
+                                    </div>
+                                    <span class="logos-title">מקיף מילאנו</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/p-725967/">
+                                    <div class="block-img">
+                                            <img src="/media/dnfjnea3/200x200_character_png_op2.png" class="img-fluid img-default" alt="המופלאה" title="המופלאה.צילום מסך" />
+                                            <img src="/media/buupjsr1/200x200_logo_png-copy.png" class="img-fluid img-hover" alt="המופלאה" title="המופלאה.צילום מסך" />
+                                    </div>
+                                    <span class="logos-title">המופלאה - הרפתקאות ליידי באג</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/crafts_challenge/">
+                                    <div class="block-img">
+                                            <img src="/media/gpsexrpq/200x200_character_png.png" class="img-fluid img-default" alt="אתגר היצירה" title="אתגר היצירה.הפקה" />
+                                            <img src="/media/r4mjpg2d/200x200_logo_png.png" class="img-fluid img-hover" alt="אתגר היצירה" title="אתגר היצירה.סטודיו" />
+                                    </div>
+                                    <span class="logos-title">אתגר היצירה</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/lost_things/">
+                                    <div class="block-img">
+                                            <img src="/media/2gkjernw/200x200_character_הדברים-שהלכו-לאיבוד.png" class="img-fluid img-default" alt="הדברים שהלכו לאיבוד" title="הדברים שהלכו לאיבוד" />
+                                            <img src="/media/zqdn1oiy/200x200_logo_png.png" class="img-fluid img-hover" alt="הדברים שהלכו לאיבוד" title="הדברים שהלכו לאיבוד.מיכה לובטון" />
+                                    </div>
+                                    <span class="logos-title">הדברים שהלכו לאיבוד</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/ktantanim-main/p-390426/">
+                                    <div class="block-img">
+                                            <img src="/media/0mtbvzg4/200x200_character_png.png" class="img-fluid img-default" alt="הדרסדסים" title="הדרסדסים.peyo productuons - Dupuis edition &amp; audiovisuel - Dargaud media - KiKa - KETNET -RTBF.be - 2021" />
+                                            <img src="/media/uwcfou3n/200x200_logo_png.png" class="img-fluid img-hover" alt="הדרדסים" title="הדרדסים.peyo productuons - Dupuis edition &amp; audiovisuel - Dargaud media - KiKa - KETNET -RTBF.be - 2021" />
+                                    </div>
+                                    <span class="logos-title">הדרדסים</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/tree_house_kids/">
+                                    <div class="block-img">
+                                            <img src="/media/ukbpr4r4/200x200_character_png.png" class="img-fluid img-default" alt="ילדי בית העץ" title="ילדי בית העץ.פיני סילוק" />
+                                            <img src="/media/53tludnu/200x200_logo_png.png" class="img-fluid img-hover" alt="ילדי בית העץ" title="ילדי בית העץ.סטודיו" />
+                                    </div>
+                                    <span class="logos-title">ילדי בית העץ</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/p-11530/">
+                                    <div class="block-img">
+                                            <img src="/media/qwpjx1cx/200x200_character_png_האולפן-שלי-לייב_בנץ_2.png" class="img-fluid img-default" alt="האולפן שלי בנץ לייב" title="האולפן שלי בנץ לייב.האולפן שלי בנץ לייב" />
+                                            <img src="/media/bsaayncu/200x200_logo_pngהאולפן-שלי-לייב_בנץ.png" class="img-fluid img-hover" alt="האולפן שלי בנץ לייב" title="האולפן שלי בנץ לייב.האולפן שלי בנץ לייב" />
+                                    </div>
+                                    <span class="logos-title">האולפן שלי בנץ</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/ktantanim-main/parpar_nehmad/">
+                                    <div class="block-img">
+                                            <img src="/media/wfzowhze/200x200_character_png.png" class="img-fluid img-default" alt="" title="" />
+                                            <img src="/media/usxh1ppe/200x200_logo_png.png" class="img-fluid img-hover" alt="" title="" />
+                                    </div>
+                                    <span class="logos-title">פרפר נחמד</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/p-11262/">
+                                    <div class="block-img">
+                                            <img src="/media/d0wirmmz/200x200_character_png.png" class="img-fluid img-default" alt="" title="" />
+                                            <img src="/media/ujohgzri/200x200_logo.png" class="img-fluid img-hover" alt="" title="" />
+                                    </div>
+                                    <span class="logos-title">השמרטפים</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/madrase_main/">
+                                    <div class="block-img">
+                                            <img src="/media/tovd52i0/200x200_character_png1.png" class="img-fluid img-default" alt="" title="" />
+                                            <img src="/media/t3wpdedo/200x200_logo_png.png" class="img-fluid img-hover" alt="" title="" />
+                                    </div>
+                                    <span class="logos-title">מדרסה</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/area_25-main/">
+                                    <div class="block-img">
+                                            <img src="/media/3nhpzygi/200x200_character_png.png" class="img-fluid img-default" alt="" title="" />
+                                            <img src="/media/jcmdhp21/200x200_logo_png.png" class="img-fluid img-hover" alt="" title="" />
+                                    </div>
+                                    <span class="logos-title">המתחם ה-25</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/p-11168/">
+                                    <div class="block-img">
+                                            <img src="/media/ze3c3410/200x200_character_png.png" class="img-fluid img-default" alt="" title="" />
+                                            <img src="/media/tfenubw2/200x200_logo_png.png" class="img-fluid img-hover" alt="" title="" />
+                                    </div>
+                                    <span class="logos-title">כל עוד בלבב</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/p-11470/">
+                                    <div class="block-img">
+                                            <img src="/media/xwcgrbzd/200x200_character_png.png" class="img-fluid img-default" alt="" title="" />
+                                            <img src="/media/abpdp2bj/200x200_logo_png.png" class="img-fluid img-hover" alt="" title="" />
+                                    </div>
+                                    <span class="logos-title">למה זה טוב?</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/p-11785/">
+                                    <div class="block-img">
+                                            <img src="/media/i3iggzlo/200x200_character_png.png" class="img-fluid img-default" alt="" title="" />
+                                            <img src="/media/mc3nrlth/200x200_logo_png.png" class="img-fluid img-hover" alt="" title="" />
+                                    </div>
+                                    <span class="logos-title">הבאר</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/p-11826/">
+                                    <div class="block-img">
+                                            <img src="/media/hjmd0uar/200x200_character_png.png" class="img-fluid img-default" alt="" title="" />
+                                            <img src="/media/nvefj1co/200x200_logo_png_2.png" class="img-fluid img-hover" alt="" title="" />
+                                    </div>
+                                    <span class="logos-title">בלוגה בלוז</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/ktantanim-main/p-11101/">
+                                    <div class="block-img">
+                                            <img src="/media/hncnyrxp/200x200_character_png.png" class="img-fluid img-default" alt="" title="" />
+                                            <img src="/media/yefllgon/200x200_logo_png.png" class="img-fluid img-hover" alt="" title="" />
+                                    </div>
+                                    <span class="logos-title">עיר המספרים</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/p-11885/">
+                                    <div class="block-img">
+                                            <img src="/media/rapfjyb1/200x200_character_png.png" class="img-fluid img-default" alt="" title="" />
+                                            <img src="/media/42rnh3s1/200x200_logo_png.png" class="img-fluid img-hover" alt="" title="" />
+                                    </div>
+                                    <span class="logos-title">מי פה הבוס?</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/ktantanim-main/p-11429/">
+                                    <div class="block-img">
+                                            <img src="/media/hs0bohdh/200x200_character_png_הפלנטונים.png" class="img-fluid img-default" alt="" title="" />
+                                            <img src="/media/tv5j2fnf/200x200_logo_png.png" class="img-fluid img-hover" alt="" title="" />
+                                    </div>
+                                    <span class="logos-title">הפלנטונים</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/p-11917/">
+                                    <div class="block-img">
+                                            <img src="/media/dtmbajex/200x200_character_png.png" class="img-fluid img-default" alt="" title="" />
+                                            <img src="/media/jfgfg4ri/200x200_logo_png.png" class="img-fluid img-hover" alt="" title="" />
+                                    </div>
+                                    <span class="logos-title">גלילאו</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/ktantanim-main/p-11195/">
+                                    <div class="block-img">
+                                            <img src="/media/znidfe2t/200x200_character_png.png" class="img-fluid img-default" alt="" title="" />
+                                            <img src="/media/2xtb2jqt/200x200_logo_png.png" class="img-fluid img-hover" alt="" title="" />
+                                    </div>
+                                    <span class="logos-title">קפה עמליה</span>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="swiper-slide">
+                            <div class="logos-item">
+                                <a href="/content/kids/hinuchit-main/p-11955/">
+                                    <div class="block-img">
+                                            <img src="/media/on1b2mex/200x200_character_png.png" class="img-fluid img-default" alt="" title="" />
+                                            <img src="/media/bujjasyi/200x200_logo_png.png" class="img-fluid img-hover" alt="" title="" />
+                                    </div>
+                                    <span class="logos-title">שוסטר ושוסטר</span>
+                                </a>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <button class="btn btn-arrow btn-next logo-carousel 5aa10fe8-e2bf-4a80-825b-6bee6850442c"></button>
+    </nav>
+</div>
+
+        </div>
+        <div>
+            
+
+
+    <link href="/sb/news-1-3-section-kids-css.css.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75" rel="stylesheet" />
+
+    <div class="section news-1-3" style="background-color: #f5f5f5">
+        <div class="holder">
+            <div class="section-content wrapper-sm">
+                <div class="card-list grid-md-1-3">
+
+                                <div class="card-list-item">
+                                    <div class="card card-main">
+                                            <a href="/content/kids/hinuchit-main/the_serials/" class="card-img anm-zoom">
+                                                <picture>
+                                                    <source media="(min-width:768px)" srcset="/media/d4abzelb/1920x1080_169_hdהסדרתיים.jpg?width=1064&amp;height=568&amp;v=1dd51b879310170">
+                                                    <img src="/media/ot5fqld5/1920x1080_169_hd_no-logo-הסדרתיים.jpg?width=1064&amp;height=568&amp;v=1dd51b881a94790" class="img-full" alt="הסדרתיים 2" title="הסדרתיים 2.הסדרתיים 2">
+                                                </picture>
+                                            </a>
+                                        <div class="card-body">
+                                                <div class="bg-img">
+                                                    <img src="/media/ot5fqld5/1920x1080_169_hd_no-logo-הסדרתיים.jpg?width=1064&amp;height=568&amp;v=1dd51b881a94790" class="img-full" alt="הסדרתיים 2" title="הסדרתיים 2.הסדרתיים 2" />
+                                                </div>
+                                            <div class="block-img">
+                                                    <img src="/media/bb2jhkdc/200x200_logo_הסדרתיים_.png" class="img-fluid" alt="הסדרתיים 2" title="הסדרתיים 2.הסדרתיים 2" />
+                                            </div>
+                                            <h3 class="card-title">הסדרתיים</h3>
+                                            <div class="description"> רון וגאיה מגלים שהסדרה שהם הכירו השתנתה לגמרי ושום דבר לא לפי התסריט</div>
+                                            <a href="/content/kids/hinuchit-main/the_serials/" class="btn card-btn btn-general-sm with-arrow">לכל הפרקים</a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-list-item border-item">
+                                    <a href="/content/kids/hinuchit-main/the_serials_songs/" class="card-link">
+                                        <div class="card card-row card-row-md">
+                                                <div class="card-img anm-zoom">
+                                                    <img src="/media/qmoozgno/1920x1080_169_hd-הסדרתיים-השירים.jpg?width=1064&amp;height=568&amp;v=1dd54c48fe73380" class="img-full" alt="הסדרתיים 2 השירים" title="הסדרתיים 2 השירים.הסדרתיים 2 השירים" />
+                                                </div>
+                                            <div class="card-body">
+                                                <h3 class="card-title">הסדרתיים - כל השירים </h3>
+                                                <div class="description">פסקול הסדרה שלא הולך לצאת לכם מהראש&#xA0;</div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="card-list-item border-item">
+                                    <a href="/content/kids/hinuchit-main/p-863865/" class="card-link">
+                                        <div class="card card-row card-row-md">
+                                                <div class="card-img anm-zoom">
+                                                    <img src="/media/tmipeiu2/1920x1080_169_hd_no-logo_שכונת-חיים.jpg?width=1064&amp;height=568&amp;v=1dd2f16dedd8b70" class="img-full" alt="שכונת חיים 2" title="שכונת חיים 2.שכונת חיים 2" />
+                                                </div>
+                                            <div class="card-body">
+                                                <h3 class="card-title">שכונת חיים</h3>
+                                                <div class="description">חוזרים לשכונה עם שכנים חדשים-ישנים ועם כל החברים שמזמן הפכו למשפחה </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="card-list-item border-item">
+                                    <a href="/content/kids/hinuchit-main/p-1076134/" class="card-link">
+                                        <div class="card card-row card-row-md">
+                                                <div class="card-img anm-zoom">
+                                                    <img src="/media/ua4l4txl/1920x1080_no-logoדודו.jpg?width=1064&amp;height=568&amp;v=1dd1aadfa6684f0" class="img-full" alt="דודו" title="דודו.דודו" />
+                                                </div>
+                                            <div class="card-body">
+                                                <h3 class="card-title">דודו</h3>
+                                                <div class="description">ג&#x27;ו עולה לחטיבה ומנווט בין פדיחות, חברים חדשים, פחדים ודמיון פרוע </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        </div>
+        <div>
+            
+
+<link href="/sb/four-items-section-kids-css.css.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75" rel="stylesheet" />
+
+    <div class="section section-round four-items head-elem" style="background-color: #ffffff;">
+        <div class="holder">
+
+            
+    <div class="section-head elem-center">
+        <div class="section-head-title">
+        <div class="block-img">
+            <picture>
+                    <source media="(min-width: 756px)" srcset="/media/i3ufva35/new-and-recommended_section-icon.svg" alt="מומלצים">
+                <img src="/media/sptm5q24/new-and-recommended_section-icon-1.svg" class="img-fluid" alt="סטודיו" title="סטודיו" />
+            </picture>
+        </div>
+
+                <h2 class="h2 title-bold title-sm" style="color: ;">מומלצים וחדשים</h2>
+        </div>
+    </div>
+
+
+            <div class="section-content">
+                <div class="card-list grid-md-4">
+                            <div class="card-list-item border-item">
+                                <div class="card card-row card-row-md">
+                                        <a class="card-img anm-zoom" href="/content/kids/hinuchit-main/the_serials/s2/1105085/">
+                                            <img src="/media/au4dn4c3/הסדרתיים-2-פרק-4.jpg?rxy=0.3067755950341046,0.5257571886239902&amp;width=490&amp;height=272&amp;v=1dd596adf611570" class="img-full" alt="הסדרתיים 2 פרק 4" title="הסדרתיים 2 פרק 4.הסדרתיים 2 פרק 4" />
+                                        </a>
+                                    <a class="card-body card-link" href="/content/kids/hinuchit-main/the_serials/s2/1105085/">
+                                        <h3 class="card-title">הסדרתיים 2 | פרק 4 - המבחן</h3>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="card-list-item border-item">
+                                <div class="card card-row card-row-md">
+                                        <a class="card-img anm-zoom" href="/content/kids/hinuchit-main/the_serials_songs/s2/1105731/">
+                                            <img src="/media/ocwgdkxz/הסדרתיים-2-כולה-מתמטיקה.jpg?width=490&amp;height=272&amp;v=1dd5973272aa440" class="img-full" alt="הסדרתיים 2 כולה מתמטיקה" title="הסדרתיים 2 כולה מתמטיקה.הסדרתיים 2 כולה מתמטיקה" />
+                                        </a>
+                                    <a class="card-body card-link" href="/content/kids/hinuchit-main/the_serials_songs/s2/1105731/">
+                                        <h3 class="card-title">הסדרתיים 2 - השירים | כולה מתמטיקה  &#x1F3B5;</h3>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="card-list-item border-item">
+                                <div class="card card-row card-row-md">
+                                        <a class="card-img anm-zoom" href="/content/kids/hinuchit-main/the_serials/s2/1105083/">
+                                            <img src="/media/xjrnm4r3/הסדרתיים-2-פרק-3.jpg?rxy=0.2930000580386261,0.5462561911594175&amp;width=490&amp;height=272&amp;v=1dd59690589ad90" class="img-full" alt="הסדרתיים 2 פרק 3" title="הסדרתיים 2 פרק 3.הסדרתיים 2 פרק 3" />
+                                        </a>
+                                    <a class="card-body card-link" href="/content/kids/hinuchit-main/the_serials/s2/1105083/">
+                                        <h3 class="card-title">הסדרתיים 2 | פרק 3 - החשוד המיידי</h3>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="card-list-item border-item">
+                                <div class="card card-row card-row-md">
+                                        <a class="card-img anm-zoom" href="/content/kids/hinuchit-main/the_serials_songs/s2/1105729/">
+                                            <img src="/media/3cjl3tya/הסדרתיים-2-מפרגן.jpg?rxy=0.4782386943216593,0.5047610757274604&amp;width=490&amp;height=272&amp;v=1dd5972812f08b0" class="img-full" alt="הסדרתיים 2 מפרגן" title="הסדרתיים 2 מפרגן.הסדרתיים 2 מפרגן" />
+                                        </a>
+                                    <a class="card-body card-link" href="/content/kids/hinuchit-main/the_serials_songs/s2/1105729/">
+                                        <h3 class="card-title">הסדרתיים 2 - השירים | מפרגן &#x1F3B5;</h3>
+                                    </a>
+                                </div>
+                            </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        </div>
+        <div>
+            
+
+<link href="/sb/recommended-channel-section-kids-css.css.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75" rel="stylesheet" />
+
+    <div class="section section-round recommended-channel head-elem" style="background-color: ;">
+        <div class="holder">
+            
+    <div class="section-head elem-center">
+        <div class="section-head-title">
+                    <a href="/lobby-kids/tiny/" class="unstyled-link">
+        <div class="block-img">
+            <picture>
+                    <source media="(min-width: 756px)" srcset="/media/rcxc4qka/tiny_section-icon.svg" alt="קטנטנים">
+                <img src="/media/r4zlkmj2/tiny_section-icon-1.svg" class="img-fluid" alt="קטנטנים" title="קטנטנים" />
+            </picture>
+        </div>
+                    </a>
+
+                <a href="/lobby-kids/tiny/" class="unstyled-link circle-link">
+                    <h2 class="h2 title-bold title-sm" style="color: ;">קטנטנים</h2>
+                </a>
+        </div>
+            <a href="/lobby-kids/tiny/" class="unstyled-link btn-link-mobile"></a>
+    </div>
+
+
+            <div class="section-content">
+                <div class="card-list grid-md-4">
+
+                            <div class="card-list-item border-item">
+                                <a class="card-link" href="/content/kids/ktantanim-main/p-1010382/">
+                                    <div class="card card-row card-row-md">
+                                        <div class=card-img>
+                                                <img src="/media/4ltneej2/1920x1080_no-logoהיכון-הכן-טוס.jpg?width=490&amp;height=272&amp;v=1dcbf6b43107470" class="img-full" alt="היכון הכן טוס" title="היכון הכן טוס.היכון הכן טוס" />
+                                        </div>
+                                        <div class="card-body">
+                                            <h3 class="card-title">היכון הכן טוס</h3>
+                                            <div class="description">ג&#x27;ט יוצא יחד עם חבריו וחיית המחמד המוזרה שלו להרפתקאות מסעירות בחלל </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="card-list-item border-item">
+                                <a class="card-link" href="/content/kids/ktantanim-main/tamaris_garden/">
+                                    <div class="card card-row card-row-md">
+                                        <div class=card-img>
+                                                <img src="/media/pyzdoj00/1920x1080_169_hd_no-logo.jpg?width=490&amp;height=272&amp;v=1dbf3d07cdb8530" class="img-full" alt="הגינה של תמרי" title="הגינה של תמרי.הגינה של תמרי" />
+                                        </div>
+                                        <div class="card-body">
+                                            <h3 class="card-title">הגינה של תמרי</h3>
+                                            <div class="description">חבורת ילדים מרגשת ומצחיקה נפגשת בגינה הקהילתית שמנהלת תמרי המקסימה</div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="card-list-item border-item">
+                                <a class="card-link" href="/content/kids/ktantanim-main/bluey/">
+                                    <div class="card card-row card-row-md">
+                                        <div class=card-img>
+                                                <img src="/media/vxgj5dzj/1920x1080_169_hd_no-logo_בלואי.jpg?width=490&amp;height=272&amp;v=1db40b1dff00600" class="img-full" alt="1920X1080 169 HD NO LOGO בלואי" title="1920X1080 169 HD NO LOGO בלואי.BBC" />
+                                        </div>
+                                        <div class="card-body">
+                                            <h3 class="card-title">בלואי</h3>
+                                            <div class="description">בלואי היא כלבה בת 6, שאוהבת להפוך את חיי היומיום שלה להרפתקאות</div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="card-list-item border-item">
+                                <a class="card-link" href="/content/kids/ktantanim-main/parpar_nehmad/">
+                                    <div class="card card-row card-row-md">
+                                        <div class=card-img>
+                                                <img src="/media/5kwjydh5/https-kanstaticazureedgenet-download-pictures-2021-9-1-imgid-60284_aa.jpeg?width=490&amp;height=272&amp;v=1d976ac75a4d710" class="img-full" alt="פרפר נחמד" title="פרפר נחמד.משה נחומוביץ&#x27;" />
+                                        </div>
+                                        <div class="card-body">
+                                            <h3 class="card-title">פרפר נחמד</h3>
+                                            <div class="description">אוזה,שבי,בץ ונולי חוזרים בסדרת בובות חכמה ומוסיקלית לילדי הגן</div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+
+                </div>
+                    <div class="btn-wrap" data-link="/lobby-kids/tiny/">
+                        <a href="/lobby-kids/tiny/" class="btn btn-general-sm btn-mobile btn-white btn-white-outline with-arrow link-to-all">לכל התוכניות</a>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+        </div>
+        <div>
+            
+
+<link href="/sb/recommended-channel-section-kids-css.css.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75" rel="stylesheet" />
+
+    <div class="section section-round recommended-channel head-elem" style="background-color: #f5f5f5;">
+        <div class="holder">
+            
+    <div class="section-head elem-center">
+        <div class="section-head-title">
+                    <a href="/lobby-kids/kids-teens/" class="unstyled-link">
+        <div class="block-img">
+            <picture>
+                    <source media="(min-width: 756px)" srcset="/media/2selgtms/kids_section-icon.svg" alt="ילדים ונוער">
+                <img src="/media/xgvhkk1b/kids_section-icon-1.svg" class="img-fluid" alt="ילדים ונוער" title="ילדים ונוער" />
+            </picture>
+        </div>
+                    </a>
+
+                <a href="/lobby-kids/kids-teens/" class="unstyled-link circle-link">
+                    <h2 class="h2 title-bold title-sm" style="color: #002587;">ילדים ונוער</h2>
+                </a>
+        </div>
+            <a href="/lobby-kids/kids-teens/" class="unstyled-link btn-link-mobile"></a>
+    </div>
+
+
+            <div class="section-content">
+                <div class="card-list grid-md-4">
+
+                            <div class="card-list-item border-item">
+                                <a class="card-link" href="/content/kids/hinuchit-main/p-1001668/">
+                                    <div class="card card-row card-row-md">
+                                        <div class=card-img>
+                                                <img src="/media/p53napd3/1920x1080_169_hd_no-logo_סושרד-הצעיר.jpg?width=490&amp;height=272&amp;v=1dccc28ef309950" class="img-full" alt="סושרד הצעיר" title="סושרד הצעיר.סושרד הצעיר" />
+                                        </div>
+                                        <div class="card-body">
+                                            <h3 class="card-title">סושרד הצעיר</h3>
+                                            <div class="description">מסעו המדהים של ליאור סושרד, מנער מפוחד ועד לכוכב שכבש כל פסגה אפשרית</div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="card-list-item border-item">
+                                <a class="card-link" href="/content/kids/hinuchit-main/p-985049/">
+                                    <div class="card card-row card-row-md">
+                                        <div class=card-img>
+                                                <img src="/media/j2kb0pxx/1920x1080_no-logoתראו-אותי.jpg?width=490&amp;height=272&amp;v=1dc796e67711560" class="img-full" alt="תראו אותי" title="תראו אותי.תראו אותי" />
+                                        </div>
+                                        <div class="card-body">
+                                            <h3 class="card-title">תראו אותי</h3>
+                                            <div class="description">כל החיים בן הרגיש שלא רואים אותו. עכשיו הוא גם הופך רואה ואינו נראה</div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="card-list-item border-item">
+                                <a class="card-link" href="/content/kids/hinuchit-main/on_our_own/">
+                                    <div class="card card-row card-row-md">
+                                        <div class=card-img>
+                                                <img src="/media/kcdnozcj/1920x1080_no-logoלבד-בבית5.jpg?width=490&amp;height=272&amp;v=1dc36a16a074c50" class="img-full" alt="לבד בבית 5" title="לבד בבית 5.לבד בבית 5" />
+                                        </div>
+                                        <div class="card-body">
+                                            <h3 class="card-title">לבד בבית</h3>
+                                            <div class="description">כשההורים שלך נוסעים לחופשה של כמה ימים בחו&quot;ל ו...נתקעים שם</div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="card-list-item border-item">
+                                <a class="card-link" href="/content/kids/hinuchit-main/p-11114/">
+                                    <div class="card card-row card-row-md">
+                                        <div class=card-img>
+                                                <img src="/media/5lxbchuf/1920x1080_169_no-logo-האחיין-שלי-בנץ.jpg?width=490&amp;height=272&amp;v=1dbb1e9dfdb0210" class="img-full" alt="1920X1080 169 NO LOGO האחיין שלי בנץ" title="1920X1080 169 NO LOGO האחיין שלי בנץ.האחיין שלי בנץ" />
+                                        </div>
+                                        <div class="card-body">
+                                            <h3 class="card-title">האחיין שלי בנץ</h3>
+                                            <div class="description">בנץ רוצה לחיות כמו נער מתבגר רגיל, אבל אז כל השדים שבארון יוצאים החוצה</div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+
+                </div>
+                    <div class="btn-wrap" data-link="/lobby-kids/kids-teens/">
+                        <a href="/lobby-kids/kids-teens/" class="btn btn-general-sm btn-mobile btn-white btn-white-outline with-arrow link-to-all">לכל התוכניות</a>
+                    </div>
+            </div>
+        </div>
+    </div>
+
+        </div>
+        <div>
+            
+    <link href="/sb/recommended-podcast-section-kids-css.css.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75" rel="stylesheet" />
+    <script defer="" src="/sb/kan-recommended-podcast-js.js.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75" type="text/javascript"></script>
+
+
+
+
+    <div class="section section-round head-elem recommended-podcast">
+        <div class="holder">
+            <div class="">
+                
+    <div class="section-head elem-center">
+        <div class="section-head-title">
+                    <a href="/lobby-kids/podcasts-kids/" class="unstyled-link">
+        <div class="block-img">
+            <picture>
+                    <source media="(min-width: 756px)" srcset="/media/xcmjw5l2/podcast_section-icon.svg" alt="פודקאסט">
+                <img src="/media/3bnhntus/podcast_section-icon-1.svg" class="img-fluid" alt="פודקאסט" title="פודקאסט" />
+            </picture>
+        </div>
+                    </a>
+
+                <a href="/lobby-kids/podcasts-kids/" class="unstyled-link circle-link">
+                    <h2 class="h2 title-bold title-sm" style="color: ;">הסכתים</h2>
+                </a>
+        </div>
+            <a href="/lobby-kids/podcasts-kids/" class="unstyled-link btn-link-mobile"></a>
+    </div>
+
+                <div class="section-content">
+                    <div class="card-list grid-md-2">
+                        
+    <div class="card-list-item border-item">
+        <div class="card card-row small">
+            <a href="/content/kids/kids-podcasts/p-1087293/" class="card-img">
+                    <img src="/media/lolcaomy/מדעאיכס500x500-cover.png" class="img-full" alt="מדעאיכס" title="מדעאיכס.כאן דיגיטל" />
+            </a>
+            <div class="card-body">
+                <a href="/content/kids/kids-podcasts/p-1087293/">
+                    <h3 class="card-title">מדעאיכס</h3>
+                    <div class="description">הסכת מדעי לילדות ולילדים על המדע שמאחורי הדברים הכי מגעילים. אביגיל...</div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="card-list-item border-item">
+        <div class="card card-row small">
+            <a href="/content/kids/kids-podcasts/p-416252/" class="card-img">
+                    <img src="/media/oludlved/podcastprogram2190_img72592304.jpg" class="img-full" alt="" title="" />
+            </a>
+            <div class="card-body">
+                <a href="/content/kids/kids-podcasts/p-416252/">
+                    <h3 class="card-title">גורי כיס</h3>
+                    <div class="description">ילדים וילדות שואלים על כלכלה, וצוות &quot;חיות כיס&quot; עונה</div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="card-list-item border-item">
+        <div class="card card-row small">
+            <a href="/content/kids/kids-podcasts/p-415950/" class="card-img">
+                    <img src="/media/wd3o44ev/podcastprogram2030_img266602744.jpg" class="img-full" alt="" title="" />
+            </a>
+            <div class="card-body">
+                <a href="/content/kids/kids-podcasts/p-415950/">
+                    <h3 class="card-title">היסטוריה לילדים</h3>
+                    <div class="description">סיפורם של ממציאים, מתקני עולם, מנהיגים, מצביאים מפורסמים ואמנים גדולים</div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="card-list-item border-item">
+        <div class="card card-row small">
+            <a href="/content/kids/kids-podcasts/p-895705/" class="card-img">
+                    <img src="/media/e4pjphju/logo.jpg" class="img-full" alt="האחיין שלי בנץ" title="האחיין שלי בנץ.כאן" />
+            </a>
+            <div class="card-body">
+                <a href="/content/kids/kids-podcasts/p-895705/">
+                    <h3 class="card-title">הפודקאסט שלי בנץ  | בגרות או למות</h3>
+                    <div class="description">תומי, שיא-גל וארמונד בהסכת הכנה לבגרויות</div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="card-list-item border-item">
+        <div class="card card-row small">
+            <a href="/content/kids/kids-podcasts/p-1010293/" class="card-img">
+                    <img src="/media/rbubml53/logo_-í-ש-ñ-ץ-ש-ó-ש-פ.jpg" class="img-full" alt="סיפורים לעמליה" title="סיפורים לעמליה.כאן הסכתים" />
+            </a>
+            <div class="card-body">
+                <a href="/content/kids/kids-podcasts/p-1010293/">
+                    <h3 class="card-title">סיפורים לעמליה</h3>
+                    <div class="description">מסע בין עולמות של דמיון וסיפור, עם היוצרים האהובים בספרות הישראלית</div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="card-list-item border-item">
+        <div class="card card-row small">
+            <a href="/content/kids/kids-podcasts/p-784187/" class="card-img">
+                    <img src="/media/ojxknode/special_הרפתקאות-ינץ-לוי.jpg" class="img-full" alt="הרפתקאות ינץ לוי" title="הרפתקאות ינץ לוי" />
+            </a>
+            <div class="card-body">
+                <a href="/content/kids/kids-podcasts/p-784187/">
+                    <h3 class="card-title">הרפתקאות ינץ לוי</h3>
+                    <div class="description">הסוופר האהוב ינץ לוי מגיע לכאן הסכתים עם כל הדמויות האהובות מספריו...</div>
+                </a>
+            </div>
+        </div>
+    </div>
+<div class="recommended-podcast-load-more-items"></div>
+                    </div>
+                        <div class="btn-wrap">
+                            <a href="/lobby-kids/podcasts-kids/" class="btn btn-general-sm btn-mobile btn-white btn-white-outline with-arrow">לכל ההסכתים</a>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        </div>
+        <div>
+            
+
+<link href="/sb/four-items-section-kids-css.css.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75" rel="stylesheet" />
+
+    <div class="section section-round four-items head-elem" style="background-color: #f5f5f5;">
+        <div class="holder">
+
+            
+    <div class="section-head elem-center">
+        <div class="section-head-title">
+        <div class="block-img">
+            <picture>
+                    <source media="(min-width: 756px)" srcset="/media/e2jdatlv/editor-s-choice-desktop.svg" alt="בחירת העורכת">
+                <img src="/media/dkanxq14/editor_section-icon.svg" class="img-fluid" alt="בחירת העורכת - חינוכית " title="בחירת העורכת - חינוכית " />
+            </picture>
+        </div>
+
+                <h2 class="h2 title-bold title-sm" style="color: ;">בחירת העורכת</h2>
+        </div>
+    </div>
+
+
+            <div class="section-content">
+                <div class="card-list grid-md-4">
+                            <div class="card-list-item border-item">
+                                <div class="card card-row card-row-md">
+                                        <a class="card-img anm-zoom" href="/content/kids/hinuchit-main/studio_amtzia/עונה-2/1076170/">
+                                            <img src="/media/lwvfamgu/סטודיו-אמציה-פרק-1.jpg?rxy=0.6196871812308739,0.5047610757274604&amp;width=490&amp;height=272&amp;v=1dd1903396b1be0" class="img-full" alt="סטודיו אמציה פרק 1" title="סטודיו אמציה פרק 1.סטודיו אמציה פרק 1" />
+                                        </a>
+                                    <a class="card-body card-link" href="/content/kids/hinuchit-main/studio_amtzia/עונה-2/1076170/">
+                                        <h3 class="card-title">סטודיו אמציה 2 | פרק 1 - חיי כלב</h3>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="card-list-item border-item">
+                                <div class="card card-row card-row-md">
+                                        <a class="card-img anm-zoom" href="/content/kids/hinuchit-main/malon_hotel/עונה-3/1037174/">
+                                            <img src="/media/yhxosfxi/מלון-הוטל-3-פרק-3.jpg?rxy=0.5141108466507991,0.5513079054652023&amp;width=490&amp;height=272&amp;v=1dcf34062350290" class="img-full" alt="מלון הוטל 3 פרק 3" title="מלון הוטל 3 פרק 3.מלון הוטל 3 פרק 3" />
+                                        </a>
+                                    <a class="card-body card-link" href="/content/kids/hinuchit-main/malon_hotel/עונה-3/1037174/">
+                                        <h3 class="card-title">מלון הוטל 3 | פרק 3 - שאלה של קווסטשן</h3>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="card-list-item border-item">
+                                <div class="card card-row card-row-md">
+                                        <a class="card-img anm-zoom" href="/content/kids/hinuchit-main/p-1076134/עונה-1/1076136/">
+                                            <img src="/media/yjelt0pu/דודו-פרק-1.jpg?rxy=0.4809588575314519,0.49992504146899375&amp;width=490&amp;height=272&amp;v=1dd1f4f61b65680" class="img-full" alt="דודו פרק 1" title="דודו פרק 1.דודו פרק 1" />
+                                        </a>
+                                    <a class="card-body card-link" href="/content/kids/hinuchit-main/p-1076134/עונה-1/1076136/">
+                                        <h3 class="card-title">דודו | פרק 1 - בית הספר הגדול</h3>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="card-list-item border-item">
+                                <div class="card card-row card-row-md">
+                                        <a class="card-img anm-zoom" href="/content/kids/hinuchit-main/cramel_main/s5/1006493/">
+                                            <img src="/media/u3wbdbxp/כראמל-5-פרק-11.jpg?rxy=0.4700782046922815,0.5241052127613272&amp;width=490&amp;height=272&amp;v=1dcabd28086c4f0" class="img-full" alt="כראמל 5 פרק 11" title="כראמל 5 פרק 11.כראמל 5 פרק 11" />
+                                        </a>
+                                    <a class="card-body card-link" href="/content/kids/hinuchit-main/cramel_main/s5/1006493/">
+                                        <h3 class="card-title">כראמל 5 | פרק 11- מאגיה פיניטו</h3>
+                                    </a>
+                                </div>
+                            </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        </div>
+        <div>
+            
+
+        <link href="/sb/editors-choice-kids-css.css.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75" rel="stylesheet" />
+
+    <div class="ec-section section elem taboola-recommendations-section head-elem section-round taboola-kids" style="">
+        
+
+        <div class="holder">
+
+
+    <div class="section-head elem-center">
+        <div class="section-head-title">
+
+                <h2 class="h2 title-bold title-sm" style="color:;">אולי יעניין אותך</h2>
+        </div>
+    </div>
+
+
+            <div class="section-content">
+                <div id="below-page-thumbnails"></div>
+            </div>
+        </div>
+    </div>
+
+<style>
+    .ec-section .section-header .title-elem:after {
+        background-color: ;
+    }
+</style>
+
+<script type='text/javascript'>
+    if (window._taboolaOS === 'Android') {
+        _taboola.push({
+            mode: 'organic-thumbs-feed-01-d',
+            container: 'below-page-thumbnails',
+            placement: 'Below Page Thumbnails',
+            target_type: 'mix'
+        });
+        _taboola["mobile"] = [];
+        _taboola["mobile"].push({
+            allow_sdkless_load: false,
+            taboola_view_id: new Date().getTime(),
+            publisher: window.taboolaMobilePubName
+        });
+    } else if (window._taboolaOS === 'iOS') {
+        _taboola.push({
+            mode: 'organic-thumbs-feed-01-d',
+            container: 'below-page-thumbnails',
+            placement: 'Below Page Thumbnails',
+            target_type: 'mix'
+        });
+        _taboola["mobile"] = [];
+        _taboola["mobile"].push({
+            allow_sdkless_load: false,
+            taboola_view_id: new Date().getTime(),
+            publisher: window.taboolaMobilePubName
+        });
+    } else {
+        _taboola.push({
+            mode: 'organic-thumbs-feed-01-d',
+            container: 'below-page-thumbnails',
+            placement: 'Below Page Thumbnails',
+            target_type: 'mix'
+        });
+    }
+    _taboola.push({
+        flush: true
+    });
+</script>
+        </div>
+</div>
+
+
+    <script defer="" src="/sb/kan-timelocalization-js.js.v6cc5e68b6c27727feffeeb5240dbd6d9f9a77d75" type="text/javascript"></script>
+
+</div>
+            </main>
+
+<footer id="kfooter" class="kfooter footer g-0">
+    <div class="footer-top">
+        <div class="holder">
+            <div class="grid-block">
+                <div class="footer-logo-group">
+                        <a href="/" class="logo">
+                            <img class="img-fluid" src="/media/bejdinrf/logo_hinuchit_main-white.svg" alt="כאן חינוכית לוגו" />
+                            <span class="visually-hidden">
+                                תמונה לוגו
+                            </span>
+                        </a>
+                        <div class="socials">
+                            <div class="socials-title">
+                                אנחנו גם כאן
+                            </div>
+                            <ul class="socials-list list-unstyled mb-0">
+                                    <li class="socials-list-item">
+                                        <a href="https://www.instagram.com/kan_kids/" class="socials-list-link">
+                                            <img src="/media/y1jivswd/instagram.svg" alt="אינסטגרם" title="אינסטגרם">
+                                            <span class="visually-hidden">
+                                                אנחנו גם כאן - תאגיד השידור הישראלי
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="socials-list-item">
+                                        <a href="https://www.facebook.com/kann23tv" class="socials-list-link">
+                                            <img src="/media/wzph5w4a/facebook.svg" alt="פייסבוק" title="פייסבוק">
+                                            <span class="visually-hidden">
+                                                 - תאגיד השידור הישראלי
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="socials-list-item">
+                                        <a href="https://www.youtube.com/@KANKIDS" class="socials-list-link">
+                                            <img src="/media/j5zd13aj/youtube.svg" alt="יוטיוב" title="יוטיוב">
+                                            <span class="visually-hidden">
+                                                 - תאגיד השידור הישראלי
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li class="socials-list-item">
+                                        <a href="https://www.tiktok.com/@kan_kids?lang=he-IL" class="socials-list-link">
+                                            <img src="/media/1gzjwfwb/tiktok.svg" alt="טיקטוק" title="טיקטוק">
+                                            <span class="visually-hidden">
+                                                 - תאגיד השידור הישראלי
+                                            </span>
+                                        </a>
+                                    </li>
+                            </ul>
+                        </div>
+                </div>
+                <div class="footer-links-group">
+                    <div class="footer-links">
+                                <div class="footer-links-item">
+                                    <h4>כללי</h4>
+                                    <ul class="footer-links-grid list-unstyled">
+                                                <li class="d-none d-lg-block">
+                                                    <a href="/general/about/" class="footer-link">אודות כאן חינוכית</a>
+                                                </li>
+                                                <li class="d-none d-lg-block">
+                                                    <a href="/general/accessibility/" class="footer-link">נגישות</a>
+                                                </li>
+                                                <li class="d-none d-lg-block">
+                                                    <a href="/general/terms/" class="footer-link">תנאי שימוש באתר כאן חינוכית</a>
+                                                </li>
+                                    </ul>
+                                </div>
+                                <div class="footer-links-item">
+                                    <h4>תוכניות מומלצות</h4>
+                                    <ul class="footer-links-grid list-unstyled">
+                                                <li class="d-none d-lg-block">
+                                                    <a href="https://www.kankids.org.il/content/kids/hinuchit-main/the_serials/" class="footer-link" target="_blank">הסדרתיים</a>
+                                                </li>
+                                                <li class="d-none d-lg-block">
+                                                    <a href="https://www.kankids.org.il/content/kids/hinuchit-main/cramel_main/" class="footer-link" target="_blank">כראמל</a>
+                                                </li>
+                                                <li class="d-none d-lg-block">
+                                                    <a href="https://www.kankids.org.il/content/kids/hinuchit-main/bnai_mitzvah/" class="footer-link">בני מצווה</a>
+                                                </li>
+                                                <li class="d-none d-lg-block">
+                                                    <a href="/content/kids/hinuchit-main/p-11114/" class="footer-link">האחיין שלי בנץ</a>
+                                                </li>
+                                                <li class="d-none d-lg-block">
+                                                    <a href="/content/kids/hinuchit-main/on_our_own/" class="footer-link">לבד בבית</a>
+                                                </li>
+                                                <li class="d-none d-lg-block">
+                                                    <a href="/content/kids/hinuchit-main/shakshuka/" class="footer-link">שקשוקה</a>
+                                                </li>
+                                    </ul>
+                                </div>
+                            <div class="footer-links-item widgets">
+                                <h4>יישומונים להורדה</h4>
+                                <ul class="footer-links-widget list-unstyled">
+                                        <li>
+                                            <div class="widget">
+                                                <div class="block-img">
+                                                    <img src="/media/qqbfqdmv/logo_kan-hinuchit.png" class="img-fluid" alt="" title="" />
+                                                </div>
+                                                <div class="widget-info">
+                                                    <p>יישומון כאן חינוכית</p>
+                                                    <div class="widget-list">
+                                                        <p>להורדה:</p><a href="https://apps.apple.com/il/app/%D7%9B%D7%90%D7%9F-%D7%97%D7%99%D7%A0%D7%95%D7%9B%D7%99%D7%AA/id1326766092">iOS</a><p>|</p><a href="https://play.google.com/store/apps/details?id=com.channel23&hl=he&gl=US">Android</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="widget">
+                                                <div class="block-img">
+                                                    <img src="/media/ve3n5vj5/logo_kan-stickers.png" class="img-fluid" alt="" title="" />
+                                                </div>
+                                                <div class="widget-info">
+                                                    <p>יישומון כאן סטיקרים</p>
+                                                    <div class="widget-list">
+                                                        <p>להורדה:</p><a href="https://apps.apple.com/us/app/%D7%9B%D7%90%D7%9F-%D7%A1%D7%98%D7%99%D7%A7%D7%A8%D7%99%D7%9D-%D7%95%D7%A8%D7%99%D7%A0%D7%92%D7%98%D7%95%D7%A0%D7%99%D7%9D/id1528015411">iOS</a><p>|</p><a href="https://play.google.com/store/apps/details?id=com.kan.stickers&hl=he&gl=US&pli=1">Android</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </li>
+                                </ul>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="holder">
+            <ul class="footer-rights list-unstyled mb-0">
+                    <li class="footer-rights-item">
+                        <p>2023 © כל הזכויות שמורות לכאן - תאגיד השידור הישראלי</p>
+                    </li>
+                    <li class="footer-rights-item">
+                        <p>Website created by <a rel="noopener" href="http://www.ideo-digital.com" target="_blank">IdeoDigital</a></p>
+                    </li>
+                    <li class="footer-rights-item">
+                        <div class="license-block d-flex">
+                            <div class="license-block-title">האתר פועל ברישיון</div>
+                                    <div class="license-block-img">
+                                        <img class="img-fluid" src="/media/anqj42px/akum_logo.svg" alt="" title="" />
+                                        <span class="visually-hidden">License Image - רשות השידור</span>
+                                    </div>
+                                    <div class="license-block-img">
+                                        <img class="img-fluid" src="/media/j4he01jw/logo_ilam_footer.png" alt="לוגו עילם" title="לוגו עילם" />
+                                        <span class="visually-hidden">License Image - </span>
+                                    </div>
+                        </div>
+                    </li>
+            </ul>
+        </div>
+    </div>
+</footer>
+
+<div class="bottom-space kids"></div>        </div>
+    </div>
+    
+
+<div class="logout-popup-overlay d-none">
+    <div class="logout-popup">
+        <div class="logout-popup__content">
+            <h3 class="logout-popup__title">התנתקות</h3>
+            <p class="logout-popup__message">האם אתה רוצה להתנתק?</p>
+        </div>
+        <div class="logout-popup__buttons">
+            <button class="logout-popup__btn logout-popup__btn--confirm">כן</button>
+            <button class="logout-popup__btn logout-popup__btn--cancel">לא</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
