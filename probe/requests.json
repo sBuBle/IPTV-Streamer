@@ -1,116 +1,52 @@
 [
  {
-  "name": "i24-series",
-  "url": "https://insight-api-shared.univtec.com/interface/pages/series/69dd53ce08729d93535c6f12",
-  "headers": {
-   "platform": "web",
-   "x-device-type": "web",
-   "x-tenant-id": "i24israel",
-   "regioncode": "all"
-  }
+  "name": "kan-hls",
+  "url": "https://r.il.cdn-redge.media/webcache/gorigin/hls/oil/kancdn/vod/2250837/LIBCODER_SMOOTH_1080_KAN/Manifest.ism/playlist.m3u8?fmp4"
  },
  {
-  "name": "i24-series-fr",
-  "url": "https://insight-api-shared.univtec.com/interface/pages/series/69dd53ce08729d93535c6f12",
-  "headers": {
-   "platform": "web",
-   "x-device-type": "web",
-   "x-tenant-id": "i24israel",
-   "regioncode": "french"
-  }
+  "name": "kan-dash",
+  "url": "https://r.il.cdn-redge.media/webcache/gorigin/dash/oil/kancdn/vod/2250837/LIBCODER_SMOOTH_1080_KAN/Manifest.ism"
  },
  {
-  "name": "i24-section",
-  "url": "https://insight-api-shared.univtec.com/interface/pages/section/69fb07922af0171ced6f156e?page=1&limit=50",
-  "headers": {
-   "platform": "web",
-   "x-device-type": "web",
-   "x-tenant-id": "i24israel",
-   "regioncode": "all",
-   "x-no-verbose-items": "ok"
-  }
+  "name": "kan-hls-decode",
+  "decode": true,
+  "url": "https://r.il.cdn-redge.media/webcache/gorigin/hls/oil/kancdn/vod/2250837/LIBCODER_SMOOTH_1080_KAN/Manifest.ism/playlist.m3u8?fmp4"
  },
  {
-  "name": "i24-section-p2",
-  "url": "https://insight-api-shared.univtec.com/interface/pages/section/69fb07922af0171ced6f156e?page=2&limit=50",
-  "headers": {
-   "platform": "web",
-   "x-device-type": "web",
-   "x-tenant-id": "i24israel",
-   "regioncode": "all",
-   "x-no-verbose-items": "ok"
-  }
- },
- {
-  "name": "i24-vod",
-  "url": "https://insight-api-shared.univtec.com/interface/pages/vod/6ada5121e17ae9effa0880c5",
-  "headers": {
-   "platform": "web",
-   "x-device-type": "web",
-   "x-tenant-id": "i24israel",
-   "regioncode": "all"
-  }
- },
- {
-  "name": "i24-search",
-  "url": "https://insight-api-shared.univtec.com/interface/search/search?q=rundown",
-  "headers": {
-   "platform": "web",
-   "x-device-type": "web",
-   "x-tenant-id": "i24israel",
-   "regioncode": "all"
-  }
- },
- {
-  "name": "i24-vod-m3u8",
-  "url": "https://i24israel.vod.immergo.tv/i24israel/transcoded/038aee8f-22cd-41c9-98c8-14747c35bd5c/hls/master.m3u8"
- },
- {
-  "name": "kan-ep",
-  "url": "https://www.kan.org.il/content/kan/kan-11/p-1075348/s1/1104559/"
- },
- {
-  "name": "kan-prog-1075348",
-  "url": "https://www.kan.org.il/content/kan/kan-11/p-1075348/"
- },
- {
-  "name": "kan-sitemap0",
-  "url": "https://www.kan.org.il/media/sitemap/general/sitemap0.xml"
- },
- {
-  "name": "kan-archive-vod",
-  "url": "https://www.kan.org.il/content/archive1/vod/p-670851/"
- },
- {
-  "name": "mako-ep-json",
-  "url": "https://www.mako.co.il/mako-vod-keshet/the_singer_in_a_mask-s5/VOD-3b3c47ace7f21a1027.htm?platform=responsive"
- },
- {
-  "name": "mako-playlist",
-  "url": "https://www.mako.co.il/AjaxPage?jspName=playlist12.jsp&vcmid=3b3c47ace7f21a10VgnVCM100000700a10acRCRD&videoChannelId=b7a50ea945031a10VgnVCM200000650a10acRCRD&galleryChannelId=3b3c47ace7f21a10VgnVCM100000700a10acRCRD&isGallery=false&consumer=web_html5&encryption=no"
- },
- {
-  "name": "mako-season-json",
-  "url": "https://www.mako.co.il/mako-vod-keshet/the_singer_in_a_mask-s2?platform=responsive"
- },
- {
-  "name": "knesset-video-page",
-  "url": "https://www.knesset.tv/tv-shows/88938/video/88941/"
- },
- {
-  "name": "knesset-vod-m3u8",
-  "url": "https://api.bynetcdn.com/Redirector/knesset/manifest/KNS028370/HLS/playlist.m3u8?tn=&ts=1768501538&"
- },
- {
-  "name": "knesset-vod-m3u8-bare",
+  "name": "knesset-decode",
+  "decode": true,
   "url": "https://api.bynetcdn.com/Redirector/knesset/manifest/KNS028370/HLS/playlist.m3u8"
  },
  {
-  "name": "knesset-show-88938",
-  "url": "https://www.knesset.tv/tv-shows/88938/"
+  "name": "i24-decode",
+  "decode": true,
+  "url": "https://i24israel.vod.immergo.tv/i24israel/transcoded/038aee8f-22cd-41c9-98c8-14747c35bd5c/hls/master.m3u8"
  },
  {
-  "name": "knesset-sm-videos-20",
-  "url": "https://www.knesset.tv/sitemap/sitemap-videos-20.xml"
+  "name": "mako-akamai",
+  "url": "https://mako-vod.akamaized.net/i/VOD/KESHET/Hazamar_Bemasecha/S05/EP/Hazamar_Bemasecha5_03_241026_VOD_WBY810/Hazamar_Bemasecha5_03_241026_VOD_WBY810_,550,850,1400,2200,.mp4.csmil/master.m3u8"
+ },
+ {
+  "name": "kan-archive-ep-prog",
+  "url": "https://www.kan.org.il/content/archive1/vod/p-670735/"
+ },
+ {
+  "name": "i24-shows-section",
+  "url": "https://insight-api-shared.univtec.com/interface/pages/section/6a15800ed7dd65c210d2d0c1?page=1&limit=100",
+  "headers": {
+   "platform": "web",
+   "x-device-type": "web",
+   "x-tenant-id": "i24israel",
+   "regioncode": "all",
+   "x-no-verbose-items": "ok"
+  }
+ },
+ {
+  "name": "knesset-show-scale",
+  "url": "https://www.knesset.tv/tv-shows/the-scale/"
+ },
+ {
+  "name": "knesset-show-24842",
+  "url": "https://www.knesset.tv/tv-shows/24842/"
  }
 ]
