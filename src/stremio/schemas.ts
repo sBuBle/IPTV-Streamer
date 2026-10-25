@@ -34,11 +34,23 @@ export const metaPreviewSchema = z.object({
   genres: z.array(z.string()).optional(),
 });
 
+export const videoSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  season: z.number().int().nonnegative().optional(),
+  episode: z.number().int().nonnegative().optional(),
+  released: z.iso.datetime({ offset: true }).optional(),
+  thumbnail: z.string().optional(),
+  overview: z.string().optional(),
+});
+
 export const metaSchema = metaPreviewSchema.extend({
   logo: z.string().optional(),
   background: z.string().optional(),
   language: z.string().optional(),
   website: z.string().optional(),
+  releaseInfo: z.string().optional(),
+  videos: z.array(videoSchema).optional(),
 });
 
 export const streamSchema = z

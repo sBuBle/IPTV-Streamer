@@ -10,8 +10,9 @@ function setup(env: Record<string, string>, routes: Parameters<typeof fakeFetch>
 }
 
 describe("Knesset adapter", () => {
-  it("needs a URL or a page", () => {
-    expect(setup({ KNESSET_LIVE_URL: "none", KNESSET_LIVE_PAGE: "none" }).a.issues()[0]?.severity).toBe("error");
+  it("needs a live URL, a live page or VOD pages", () => {
+    expect(setup({ KNESSET_LIVE_URL: "none", KNESSET_LIVE_PAGE: "none", KNESSET_VOD_PAGES: "none" }).a.issues()[0]?.severity).toBe("error");
+    expect(setup({ KNESSET_LIVE_URL: "none", KNESSET_LIVE_PAGE: "none" }).a.issues()).toEqual([]);
     expect(setup({}).a.issues()).toEqual([]);
   });
 

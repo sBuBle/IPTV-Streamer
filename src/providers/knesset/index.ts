@@ -3,6 +3,7 @@ import type { LiveChannel, ResolvedStream } from "../../domain/types.js";
 import { extractManifestUrls } from "../../media/extract.js";
 import { getText } from "../../util/http.js";
 import type { ProviderAdapter, ProviderContext, ProviderIssue } from "../types.js";
+import { KnessetVod } from "./vod.js";
 
 const PROVIDER = "knesset";
 const CHANNEL_ID = "knesset-99";
@@ -16,17 +17,21 @@ export class KnessetAdapter implements ProviderAdapter {
   readonly id = PROVIDER;
   readonly name = "Knesset Channel";
 
-  constructor(private readonly cfg: Config["providers"]["knesset"]) {}
+  readonly vod?: KnessetVod;
+
+  constructor(private readonly cfg: Config["providers"]["knesset"]) {
+    if (cfg.vodPages.length) this.vod = new KnessetVod({ showPages: cfg.vodPages, maxEpisodePages: cfg.vodMaxPages });
+  }
 
   issues(): ProviderIssue[] {
-    if (!this.cfg.liveUrl && !this.cfg.livePage) {
-      return [{ severity: "error", message: "set KNESSET_LIVE_URL or KNESSET_LIVE_PAGE; run `npm run discover` on the host to find them" }];
+    if (!this.cfg.liveUrl && !this.cfg.livePage && !this.vod) {
+      return [{ severity: "error", message: "set KNESSET_LIVE_URL, KNESSET_LIVE_PAGE or KNESSET_VOD_PAGES; run `npm run discover` on the host to find them" }];
     }
     return [];
   }
 
   readonly live = {
-    listChannels: async (): Promise<LiveChannel[]> => [
+    listChannels: async (): Promise<LiveChannel[]> => (!this.cfg.liveUrl && !this.cfg.livePage ? [] : [
       {
         id: CHANNEL_ID,
         provider: PROVIDER,
@@ -39,7 +44,7 @@ export class KnessetAdapter implements ProviderAdapter {
         website: "https://main.knesset.gov.il",
         geo: "unknown",
       },
-    ],
+    ]),
 
     resolveStreams: async (channelId: string, ctx: ProviderContext): Promise<ResolvedStream[]> => {
       if (channelId !== CHANNEL_ID) return [];

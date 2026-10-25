@@ -44,6 +44,14 @@ const urlOrNone = z
   .transform((v) => v.trim())
   .refine((v) => v === "" || v === "none" || z.url().safeParse(v).success, "expected a URL or \"none\"");
 
+/** Comma-separated URLs; "none" or empty means no URLs. */
+const urlListOrNone = z
+  .string()
+  .optional()
+  .transform((v) => (v ?? "").trim())
+  .transform((v) => (v === "none" ? [] : v.split(",").map((s) => s.trim()).filter(Boolean)))
+  .pipe(z.array(z.url()));
+
 function disabledOrUrl(v: string): string | undefined {
   return v === "" || v === "none" ? undefined : v;
 }
@@ -82,6 +90,17 @@ export const envSchema = z.object({
   KNESSET_LIVE_URL: urlOrNone.default("https://kneset.gostreaming.tv/p2-kneset/_definst_/myStream/playlist.m3u8"),
   /** A page that embeds the Knesset player; the manifest URL is read from it at request time. "none" disables it. */
   KNESSET_LIVE_PAGE: urlOrNone.default("https://www.knesset.tv/"),
+  /** knesset.tv pages that list TV shows as cards, for VOD. "none" disables Knesset VOD. */
+  KNESSET_VOD_PAGES: urlListOrNone.prefault("https://www.knesset.tv/tv-shows/,https://www.knesset.tv/vod/"),
+  /** Each show page lists 12 episodes; read at most this many pages per show. */
+  KNESSET_VOD_MAX_PAGES: z.coerce.number().int().min(1).max(100).default(10),
+
+  /** Kan (kan.org.il) lobby pages whose program cards make up the Kan VOD catalog. "none" disables Kan. */
+  KAN_LOBBIES: urlListOrNone.prefault("https://www.kan.org.il/lobby/kan-box/,https://www.kan.org.il/lobby/series/"),
+
+  /** Mako (Keshet 12) VOD catalog. Off by default: playback needs Mako's per-viewer ticket from inside Israel, so episodes only link out to mako.co.il. */
+  MAKO_VOD: z.enum(["off", "catalog"]).default("off"),
+  MAKO_VOD_INDEX: z.url().default("https://www.mako.co.il/mako-vod-index"),
 });
 
 export type Env = Record<string, string | undefined>;
@@ -109,6 +128,15 @@ export interface Config {
     knesset: {
       liveUrl?: string;
       livePage?: string;
+      vodPages: string[];
+      vodMaxPages: number;
+    };
+    kan: {
+      lobbies: string[];
+    };
+    mako: {
+      mode: "off" | "catalog";
+      indexUrl: string;
     };
   };
 }
@@ -149,6 +177,15 @@ export function loadConfig(env: Env): Config {
       knesset: {
         liveUrl: disabledOrUrl(e.KNESSET_LIVE_URL),
         livePage: disabledOrUrl(e.KNESSET_LIVE_PAGE),
+        vodPages: e.KNESSET_VOD_PAGES,
+        vodMaxPages: e.KNESSET_VOD_MAX_PAGES,
+      },
+      kan: {
+        lobbies: e.KAN_LOBBIES,
+      },
+      mako: {
+        mode: e.MAKO_VOD,
+        indexUrl: e.MAKO_VOD_INDEX,
       },
     },
   };

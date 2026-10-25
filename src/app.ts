@@ -4,6 +4,7 @@ import { z } from "zod";
 import type { Logger } from "./logger.js";
 import { namePoster } from "./routes/assets.js";
 import { AddonService, type AddonDeps } from "./services/addon.js";
+import { itemHealth } from "./services/health.js";
 import { parseExtra } from "./stremio/extra.js";
 
 const checkSchema = z.object({
@@ -123,26 +124,42 @@ export function createApp(deps: AddonDeps & { service?: AddonService }) {
   app.get("/coverage", async (c) => {
     const channels = await service.channels();
     const health = await service.healthByItem();
-    const providers = registry.healthReport().map((p) => {
-      const mine = channels.filter((ch) => ch.provider === p.id);
-      const count = (s: string) => mine.filter((ch) => health.get(ch.stremioId)?.status === s).length;
-      const verified = count("verified");
-      const lastCheck = Math.max(0, ...mine.flatMap((ch) => [health.get(ch.stremioId)?.lastProbe?.checkedAt ?? 0, health.get(ch.stremioId)?.lastPlayback?.checkedAt ?? 0]));
-      return {
-        provider: p.id,
-        name: p.name,
-        enabled: p.enabled,
-        issues: p.issues.map((i) => i.message),
-        liveChannelsDiscovered: mine.length,
-        liveChannelsVerified: verified,
-        liveChannelsReachableNotVerified: count("reachable"),
-        liveChannelsFailing: count("failing"),
-        liveChannelsUnchecked: count("unverified"),
-        verifiedPlayableCoveragePct: mine.length ? Math.round((verified / mine.length) * 1000) / 10 : 0,
-        vodProgramsDiscovered: 0,
-        lastCheckAt: lastCheck ? new Date(lastCheck).toISOString() : null,
-      };
-    });
+    const latest = await store.latestChecks();
+    const now = Date.now();
+    const providers = await Promise.all(
+      registry.healthReport().map(async (p) => {
+        const mine = channels.filter((ch) => ch.provider === p.id);
+        const count = (s: string) => mine.filter((ch) => health.get(ch.stremioId)?.status === s).length;
+        const verified = count("verified");
+        const lastCheck = Math.max(0, ...mine.flatMap((ch) => [health.get(ch.stremioId)?.lastProbe?.checkedAt ?? 0, health.get(ch.stremioId)?.lastPlayback?.checkedAt ?? 0]));
+        const hasVod = !!registry.get(p.id)?.vod;
+        const programs = hasVod ? await service.vod.programs(p.id) : [];
+        const vodChecks = [...latest].filter(([id]) => id.startsWith(`iltv:vod:${p.id}:`)).map(([, l]) => itemHealth(l, now, config.verifiedMaxAgeMs));
+        const vodSample = hasVod ? service.vod.providerHealth(p.id, latest) : undefined;
+        return {
+          provider: p.id,
+          name: p.name,
+          enabled: p.enabled,
+          issues: p.issues.map((i) => i.message),
+          liveChannelsDiscovered: mine.length,
+          liveChannelsVerified: verified,
+          liveChannelsReachableNotVerified: count("reachable"),
+          liveChannelsFailing: count("failing"),
+          liveChannelsUnchecked: count("unverified"),
+          verifiedPlayableCoveragePct: mine.length ? Math.round((verified / mine.length) * 1000) / 10 : 0,
+          vodProgramsDiscovered: programs.length,
+          vodSeriesDiscovered: programs.filter((x) => x.kind === "series").length,
+          vodMoviesDiscovered: programs.filter((x) => x.kind === "movie").length,
+          // Episodes are only counted once someone opens a program, so only checked episodes are reported here.
+          vodEpisodesChecked: vodChecks.length,
+          vodEpisodesVerified: vodChecks.filter((h) => h.status === "verified").length,
+          vodEpisodesFailing: vodChecks.filter((h) => h.status === "failing").length,
+          vodSampleStatus: vodSample?.status ?? null,
+          vodGeo: programs[0]?.geo ?? null,
+          lastCheckAt: lastCheck ? new Date(lastCheck).toISOString() : null,
+        };
+      }),
+    );
     return c.json({ generatedAt: new Date().toISOString(), providers });
   });
 

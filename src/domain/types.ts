@@ -4,7 +4,8 @@
  */
 export type GeoAvailability = "worldwide" | "israel-only" | "unknown";
 
-export type StreamFormat = "hls" | "dash" | "mp4";
+/** "external" is not a stream: a link to the broadcaster's own page, for content we cannot play. */
+export type StreamFormat = "hls" | "dash" | "mp4" | "external";
 
 export interface LiveChannel {
   /** Stable id, unique within the provider, e.g. "i24news-en". */
