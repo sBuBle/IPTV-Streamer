@@ -26,9 +26,27 @@ jobs:
           cache: npm
       - run: npm ci
         if: steps.creds.outputs.ok == 'true'
-      - run: npx wrangler deploy
+      - name: Attach a D1 database (created on the first run)
         if: steps.creds.outputs.ok == 'true'
+        continue-on-error: true
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           WRANGLER_SEND_METRICS: "false"
+        run: |
+          find_id() { npx wrangler d1 list --json | jq -r '.[] | select(.name=="israeli-tv-addon") | .uuid'; }
+          ID=$(find_id)
+          if [ -z "$ID" ]; then npx wrangler d1 create israeli-tv-addon; ID=$(find_id); fi
+          if [ -z "$ID" ]; then echo "::warning::No D1 database; check results are kept in memory only. Give the API token D1 edit rights to fix."; exit 0; fi
+          printf '\n[[d1_databases]]\nbinding = "DB"\ndatabase_name = "israeli-tv-addon"\ndatabase_id = "%s"\n' "$ID" >> wrangler.toml
+      - name: Deploy
+        if: steps.creds.outputs.ok == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+          WRANGLER_SEND_METRICS: "false"
+        run: |
+          npx wrangler deploy
+          # The same ADMIN_TOKEN lets the daily verify-streams workflow push playback results to the Worker.
+          if [ -n "$ADMIN_TOKEN" ]; then printf '%s' "$ADMIN_TOKEN" | npx wrangler secret put ADMIN_TOKEN; fi

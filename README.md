@@ -72,6 +72,18 @@ An HTTP 200 or a valid playlist is never treated as proof of playback. With `STR
 
 Checks record where they ran from (`--location`). A geo-blocked stream verified from Israel can still fail abroad.
 
+## Deploy on a server in Israel (one command)
+
+On a fresh Ubuntu server, for example an Oracle Cloud free VM in the Jerusalem region:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/sBuBle/IPTV-Streamer/main/deploy/setup-server.sh | bash
+```
+
+It installs Docker and Tailscale, starts the add-on, publishes it over HTTPS with Tailscale Funnel (no domain, open ports or certificates needed), checks playback from the server's country and schedules that check daily. It prints the manifest URL at the end. Run it again to update.
+
+A server in Israel gets the full catalogs (sitemaps on), verifies Kan streams for viewers in Israel, and is where Reshet 13 and Channel 14 can be researched. Viewers abroad can use the same add-on: they get direct broadcaster URLs, so only streams that play abroad work for them.
+
 ## Deploy with Docker
 
 ```bash
@@ -153,3 +165,9 @@ npm run typecheck
 ```
 
 The end-to-end test generates a real HLS stream with ffmpeg, serves it locally and walks Stremio → Live TV → channel → stream → decoded video and audio. It also checks that a web page served as `.m3u8`, a stream without audio and a missing stream all fail.
+
+### End-to-end smoke test
+
+`npm run smoke -- --url <add-on URL> --decode --location <country>` walks a running add-on the way Stremio does: manifest, every catalog with paging and search, a few programs per catalog, the newest episode's streams, and a probe and decode of each stream. Any step slower than 15 s counts as a failure, because Stremio gives up on slow add-ons. `--ids` adds specific programs (the longest ones are good tests).
+
+The `smoke` GitHub workflow runs it every day against the add-on built from `main`, and against your deployed add-on when the repository variable `ADDON_URL` is set.
