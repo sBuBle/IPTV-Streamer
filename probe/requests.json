@@ -1,0 +1,154 @@
+[
+ {
+  "name": "i24-site",
+  "url": "https://video.i24news.tv/"
+ },
+ {
+  "name": "i24-serie-page",
+  "url": "https://video.i24news.tv/serie/69dd53ce08729d93535c6f12"
+ },
+ {
+  "name": "i24-api-pages-serie",
+  "url": "https://insight-api-shared.univtec.com/interface/pages/serie/69dd53ce08729d93535c6f12",
+  "headers": {
+   "platform": "web",
+   "x-device-type": "web",
+   "x-tenant-id": "i24israel",
+   "regioncode": "all"
+  }
+ },
+ {
+  "name": "i24-api-series",
+  "url": "https://insight-api-shared.univtec.com/interface/series/69dd53ce08729d93535c6f12",
+  "headers": {
+   "platform": "web",
+   "x-device-type": "web",
+   "x-tenant-id": "i24israel",
+   "regioncode": "all"
+  }
+ },
+ {
+  "name": "i24-api-series-episodes",
+  "url": "https://insight-api-shared.univtec.com/interface/series/69dd53ce08729d93535c6f12/episodes",
+  "headers": {
+   "platform": "web",
+   "x-device-type": "web",
+   "x-tenant-id": "i24israel",
+   "regioncode": "all"
+  }
+ },
+ {
+  "name": "i24-api-serie",
+  "url": "https://insight-api-shared.univtec.com/interface/serie/69dd53ce08729d93535c6f12",
+  "headers": {
+   "platform": "web",
+   "x-device-type": "web",
+   "x-tenant-id": "i24israel",
+   "regioncode": "all"
+  }
+ },
+ {
+  "name": "i24-api-vods",
+  "url": "https://insight-api-shared.univtec.com/interface/vods?mainProgramId=69dd53ce08729d93535c6f12",
+  "headers": {
+   "platform": "web",
+   "x-device-type": "web",
+   "x-tenant-id": "i24israel",
+   "regioncode": "all"
+  }
+ },
+ {
+  "name": "i24-api-pages-list",
+  "url": "https://insight-api-shared.univtec.com/interface/pages",
+  "headers": {
+   "platform": "web",
+   "x-device-type": "web",
+   "x-tenant-id": "i24israel",
+   "regioncode": "all"
+  }
+ },
+ {
+  "name": "kan-home",
+  "url": "https://www.kan.org.il/"
+ },
+ {
+  "name": "kan-robots",
+  "url": "https://www.kan.org.il/robots.txt"
+ },
+ {
+  "name": "kan-sitemap",
+  "url": "https://www.kan.org.il/sitemap.xml"
+ },
+ {
+  "name": "kan-lobby-kan11",
+  "url": "https://www.kan.org.il/lobby/kan11/"
+ },
+ {
+  "name": "kan-lobby-series",
+  "url": "https://www.kan.org.il/lobby/kan-series/"
+ },
+ {
+  "name": "kan-content-kan11",
+  "url": "https://www.kan.org.il/content/kan/kan-11/"
+ },
+ {
+  "name": "mako-home",
+  "url": "https://www.mako.co.il/"
+ },
+ {
+  "name": "mako-vod-index",
+  "url": "https://www.mako.co.il/mako-vod-index"
+ },
+ {
+  "name": "mako-vod-index-json",
+  "url": "https://www.mako.co.il/mako-vod-index?platform=responsive"
+ },
+ {
+  "name": "mako-robots",
+  "url": "https://www.mako.co.il/robots.txt"
+ },
+ {
+  "name": "r13-home",
+  "url": "https://13tv.co.il/"
+ },
+ {
+  "name": "r13-allshows",
+  "url": "https://13tv.co.il/allshows/"
+ },
+ {
+  "name": "r13-wpjson",
+  "url": "https://13tv.co.il/wp-json/"
+ },
+ {
+  "name": "r13-robots",
+  "url": "https://13tv.co.il/robots.txt"
+ },
+ {
+  "name": "c14-home",
+  "url": "https://www.c14.co.il/"
+ },
+ {
+  "name": "c14-robots",
+  "url": "https://www.c14.co.il/robots.txt"
+ },
+ {
+  "name": "now14-home",
+  "url": "https://www.now14.co.il/"
+ },
+ {
+  "name": "now14-wpjson",
+  "url": "https://www.now14.co.il/wp-json/"
+ },
+ {
+  "name": "knesset-tv-home",
+  "url": "https://www.knesset.tv/"
+ },
+ {
+  "name": "knesset-tv-robots",
+  "url": "https://www.knesset.tv/robots.txt"
+ },
+ {
+  "name": "knesset-tv-sitemap",
+  "url": "https://www.knesset.tv/sitemap.xml"
+ }
+]

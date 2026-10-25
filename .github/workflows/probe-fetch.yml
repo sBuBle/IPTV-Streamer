@@ -1,0 +1,29 @@
+name: probe-fetch
+
+# Temporary research helper (removed before merge): fetches probe/requests.json from GitHub's network
+# and commits the responses to the claude/probe-results branch.
+on:
+  push:
+    branches: ["claude/project-thread-bb8vth"]
+    paths: ["probe/requests.json"]
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node probe/fetch.mjs probe/requests.json out
+      - name: Commit results
+        run: |
+          cd out
+          git init -q -b claude/probe-results
+          git add -A
+          git -c user.name=probe -c user.email=probe@users.noreply.github.com commit -qm "probe results ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${GITHUB_REPOSITORY}.git" claude/probe-results
