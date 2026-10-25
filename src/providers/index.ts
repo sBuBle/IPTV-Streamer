@@ -11,6 +11,7 @@ export function buildProviders(config: Config): ProviderAdapter[] {
     new I24NewsAdapter(config.providers.i24news),
     new KnessetAdapter(config.providers.knesset),
     new KanAdapter(config.providers.kan),
-    new MakoAdapter(config.providers.mako),
+    // Catalog only (links out to mako.co.il), so it is opt-in.
+    ...(config.providers.mako.mode === "catalog" ? [new MakoAdapter(config.providers.mako)] : []),
   ];
 }

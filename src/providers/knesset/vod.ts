@@ -111,7 +111,13 @@ function seriesInfo(html: string): { name?: string; description?: string; image?
 
 /** The episode's own manifest on a video page, ignoring the live channel player every page also embeds. */
 export function episodeManifest(html: string, pageUrl: string): string | undefined {
-  const urls = extractManifestUrls(html, pageUrl).filter((u) => /\.m3u8(\?|$)/.test(u));
+  const urls = extractManifestUrls(html, pageUrl)
+    .map((u) => {
+      // The site's player is embedded as watch.knesset.tv?src=<manifest>.
+      const url = new URL(u);
+      return url.hostname === "watch.knesset.tv" ? url.searchParams.get("src") ?? "" : u;
+    })
+    .filter((u) => /^https:\/\/[^\s]+\.m3u8(\?|$)/.test(u));
   return urls.find((u) => /bynetcdn\.com/.test(u)) ?? urls.find((u) => !/gostreaming\.tv/.test(u));
 }
 

@@ -76,7 +76,7 @@ export class MakoAdapter implements ProviderAdapter {
   constructor(private readonly cfg: Config["providers"]["mako"]) {}
 
   issues(): ProviderIssue[] {
-    return this.cfg.mode === "off" ? [{ severity: "error", message: "Mako VOD is off (set MAKO_VOD=catalog to list its catalog with links to mako.co.il)" }] : [];
+    return this.cfg.mode === "off" ? [{ severity: "error", message: "Mako VOD is off; set MAKO_VOD=catalog to list its catalog with links to mako.co.il" }] : [];
   }
 
   private json(path: string, ctx: ProviderContext): Promise<unknown> {

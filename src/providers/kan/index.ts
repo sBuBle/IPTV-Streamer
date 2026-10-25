@@ -132,6 +132,14 @@ export function parseEpisodeCards(html: string, programId: string, onlySeason?: 
   return out;
 }
 
+/** The video behind the hero "watch" button of a program page. */
+export function heroVideo(html: string, programId: string): { season: number; kanId: string } | undefined {
+  const re = new RegExp(`/p-${programId}/(?:s(\\d+)/)?(\\d+)/$`);
+  const a = anchors(html, re).find((x) => /hero-vod-cta/.test(attr(x.tag, "class") ?? ""));
+  const m = a?.href.match(re);
+  return m ? { season: m[1] ? Number(m[1]) : 0, kanId: m[2]! } : undefined;
+}
+
 /** Season tabs of the newer program layout: season number -> season page URL, and the season shown on this page. */
 export function parseSeasonTabs(html: string, programId: string): { seasons: Map<number, string>; active?: number } {
   const re = new RegExp(`/p-${programId}/s(\\d+)/$`);
@@ -258,6 +266,11 @@ export class KanAdapter implements ProviderAdapter {
       }
       // Unseasoned links are extras next to real seasons; they are the episodes only when nothing else exists.
       if (cards.some((c) => c.season > 0)) cards = cards.filter((c) => c.season > 0);
+      // Single-video programs (films, specials) have no episode list, only the hero "watch" button.
+      if (cards.length === 0) {
+        const cta = heroVideo(text, programId);
+        if (cta) cards = [{ ...cta, title: listed.title }];
+      }
 
       const bySeason = new Map<number, ListedEpisode[]>();
       for (const c of cards) bySeason.set(c.season, [...(bySeason.get(c.season) ?? []), c]);
