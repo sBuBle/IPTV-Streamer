@@ -14,6 +14,8 @@ export const MOVIE_CATALOG_ID = "iltv-movies";
 export const VOD_PAGE_SIZE = 100;
 const PROGRAM_LIST_TTL_MS = 60 * 60_000;
 const PROGRAM_DETAIL_TTL_MS = 30 * 60_000;
+/** A partial episode list is asked for again soon, by when the provider has usually read the rest. */
+const PARTIAL_DETAIL_TTL_MS = 60_000;
 const STREAM_TTL_MS = 5 * 60_000;
 const STREAM_EXPIRY_MARGIN_MS = 60_000;
 /** A failed provider call is retried after this long instead of on every request. */
@@ -106,7 +108,7 @@ export class VodService {
         // During an outage, the last good copy keeps the series page and its episode list working.
         if (!r.ok) return { value: this.details.lastGood(key) ?? null, ttlMs: FAILURE_TTL_MS };
         if (r.value) this.details.remember(key, r.value);
-        return { value: r.value ?? null, ttlMs: PROGRAM_DETAIL_TTL_MS };
+        return { value: r.value ?? null, ttlMs: r.value?.partial ? PARTIAL_DETAIL_TTL_MS : PROGRAM_DETAIL_TTL_MS };
       }, { staleWhileRevalidate: true });
       return detail ?? undefined;
     } catch {

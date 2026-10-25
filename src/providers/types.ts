@@ -9,6 +9,8 @@ export interface ProviderContext {
   config: Config;
   /** Aborted when the provider's time budget runs out. */
   signal: AbortSignal;
+  /** Epoch ms when the time budget runs out. Slow adapters return what they have shortly before it. */
+  deadline?: number;
 }
 
 /** A problem that stops a provider from working, shown in diagnostics (e.g. missing config). */
@@ -77,6 +79,8 @@ export interface VodProgramDetail extends VodProgram {
   episodes: VodEpisode[];
   /** Names for season numbers when the broadcaster names them ("October 2026", "2024"). */
   seasonNames?: Record<number, string>;
+  /** True when only part of the episode list was read in time; the rest is being read and a later call returns it. */
+  partial?: boolean;
 }
 
 export interface ProviderAdapter {

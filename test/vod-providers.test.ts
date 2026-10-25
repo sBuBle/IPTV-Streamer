@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { silentLogger } from "../src/logger.js";
 import { I24NewsAdapter } from "../src/providers/i24news/index.js";
 import { heroVideo, KanAdapter, parseLobby, parsePlayerConfig, programFromPage } from "../src/providers/kan/index.js";
@@ -258,6 +258,30 @@ describe("Knesset VOD", () => {
     const programs = await k.vod!.listPrograms(ctx);
     expect(programs.map((p) => p.id)).toEqual(["the-scale", "88938", "knesset-square"]);
     expect(programs[2]!.title).toBe("כיכר הכנסת");
+  });
+
+  it("returns the newest episodes of a long show in time and reads the rest in the background", async () => {
+    const S = "https://www.knesset.tv/tv-shows/the-scale/";
+    const slow = (body: string) => async () => (await new Promise((r) => setTimeout(r, 30)), new Response(body, { headers: { "content-type": "text/html" } }));
+    const routes: Record<string, () => Promise<Response> | Response> = {};
+    for (let n = 24; n >= 1; n--) routes[`${S}?page=${n}`] = slow(knessetShowPage([1000 + 2 * n, 1001 + 2 * n], n < 24 ? `${S}?page=${n + 1}` : undefined));
+    routes[S] = html(knessetShowPage([998, 999], `${S}?page=1`));
+    routes["https://www.knesset.tv/tv-shows/"] = html(KNESSET_SHOWS);
+    const { ctx, calls } = ctxFor(routes, { KNESSET_VOD_PAGES: "https://www.knesset.tv/tv-shows/", KNESSET_VOD_SITEMAP: "none" });
+    const k = new KnessetAdapter(ctx.config.providers.knesset);
+
+    // A budget that ends 100 ms after the reply margin: room for one or two batches of pages, not all 24.
+    const first = await k.vod!.getProgram("the-scale", { ...ctx, deadline: Date.now() + 2_600 });
+    expect(first?.partial).toBe(true);
+    expect(first!.episodes.length).toBeGreaterThanOrEqual(2);
+    expect(first!.episodes.length).toBeLessThan(50);
+
+    await vi.waitFor(async () => expect((await k.vod!.getProgram("the-scale", ctx))?.partial).toBeUndefined(), { timeout: 3000 });
+    const before = calls.length;
+    const full = await k.vod!.getProgram("the-scale", { ...ctx, deadline: Date.now() + 2_600 });
+    expect(full?.partial).toBeUndefined();
+    expect(full!.episodes.map((e) => e.id)).toHaveLength(50);
+    expect(calls.length - before).toBe(1); // only the first page is read again
   });
 });
 

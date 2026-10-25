@@ -79,6 +79,7 @@ export class ProviderRegistry {
       logger: this.deps.logger.child({ provider: adapter.id, op }),
       config: this.deps.config,
       signal: controller.signal,
+      deadline: Date.now() + timeoutMs,
     };
     const started = this.now();
     let timer: ReturnType<typeof setTimeout> | undefined;
