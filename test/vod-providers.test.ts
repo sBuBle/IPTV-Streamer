@@ -371,8 +371,8 @@ describe("Mako catalog", () => {
       { url: "https://www.mako.co.il/mako-vod-keshet/show-s5/VOD-ddd.htm", format: "external", label: "mako.co.il", source: "mako-catalog", geo: "israel-only" },
     ]);
   });
-  it("reports Mako's bot-protection block page instead of a JSON error", async () => {
-    const { ctx } = ctxFor(
+  it("reports Mako's bot-protection block page and pauses Mako requests", async () => {
+    const { ctx, calls } = ctxFor(
       {
         "https://www.mako.co.il/mako-vod-keshet/show?platform=responsive": html("<!DOCTYPE html><title>Radware Block Page</title>"),
         "https://www.mako.co.il/mako-vod-index?platform=responsive": json({ items: [{ title: "x", pageUrl: "/mako-vod-keshet/show" }] }),
@@ -382,5 +382,9 @@ describe("Mako catalog", () => {
     const mako = new MakoAdapter(ctx.config.providers.mako);
     await mako.vod.listPrograms(ctx);
     await expect(mako.vod.getProgram("show", ctx)).rejects.toThrow(/bot protection/);
+    // After a block the adapter backs off instead of sending more requests.
+    const sent = calls.length;
+    await expect(mako.vod.getProgram("show", ctx)).rejects.toThrow(/paused until/);
+    expect(calls.length).toBe(sent);
   });
 });
