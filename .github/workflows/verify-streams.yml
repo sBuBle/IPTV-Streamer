@@ -1,0 +1,29 @@
+name: verify-streams
+
+# Daily real playback check of every channel from GitHub's network (US).
+# Channels that play worldwide should pass; Israel-only channels are expected to fail here.
+# Set the ADDON_URL variable and ADMIN_TOKEN secret to push results to a deployed add-on.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 5 * * *"
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: sudo apt-get install -y --no-install-recommends ffmpeg || (sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg)
+      - run: npm ci
+      - name: Verify playback
+        env:
+          ADMIN_TOKEN: ${{ secrets.ADMIN_TOKEN }}
+          ADDON_URL: ${{ vars.ADDON_URL }}
+        run: |
+          COUNTRY=$(curl -fsS https://ipinfo.io/country || echo XX)
+          npm run verify -- --location "$COUNTRY" ${ADDON_URL:+--push "$ADDON_URL"}

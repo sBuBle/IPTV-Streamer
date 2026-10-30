@@ -1,103 +1,175 @@
-# IPTV Streamer
+# Israeli TV for Stremio
 
-IPTV Streamer is a modern, web-based application for accessing and managing publicly available IPTV channels. Built with privacy in mind, it runs entirely in your browser and stores all data locally on your device.
+A Stremio add-on for Israeli live TV and VOD (series, seasons, episodes and films). It runs on Cloudflare Workers (free plan) or on any server with Node 22 or Docker.
 
-## Features
+The add-on only hands Stremio streams that come straight from each broadcaster. It does not proxy or relay video, and it does not work around DRM, logins or geo-blocking. Streams that only play in Israel are labeled as such.
 
-- **Playlist Management**: Add and manage M3U8 playlists from various sources
-- **Channel Organization**: Browse channels by country, category, or language
-- **Favorites Collection**: Save your preferred channels for quick access
-- **Watch History**: Keep track of recently watched channels
-- **Picture-in-Picture Support**: Continue watching while browsing other content
-- **Privacy-Focused**: All data is stored locally, no tracking or analytics
-- **Cross-Platform**: Works on desktop and mobile devices
-- **Responsive Design**: Adapts to any screen size
-- **Stream Quality Selection**: Choose stream quality where available
-- **Customizable Interface**: Grid and list views for channel browsing
+## Status
 
-## Getting Started
+| Area | State |
+| --- | --- |
+| Stremio manifest, catalog, meta, stream routes | Done, tested |
+| Live TV catalog with genre filter, Hebrew/English search, paging | Done, tested |
+| Provider adapters with failure isolation and timeouts | Done, tested |
+| Storage: SQLite (Node) and D1 (Workers) | Done, tested |
+| Playback verifier (real video and audio decode with ffprobe) | Done, tested against generated HLS |
+| Health probes (scheduled), diagnostics, coverage report | Done |
+| i24NEWS live: English, Français, عربي, עברית | **Verified** from the US on 24 Oct 2026 (H.264 360p to 1080p, AAC) |
+| Knesset Channel live | **Verified** from the US on 24 Oct 2026 (H.264 720p, AAC) |
+| i24NEWS VOD: every show on video.i24news.tv (English and French), all published episodes in monthly seasons | **Verified** from the US on 25 Oct 2026 on sample episodes (H.264 up to 1080p, AAC) |
+| Knesset Channel VOD: about 94 TV shows from knesset.tv and its sitemap, every published episode (long shows open with their newest episodes and fill in within a minute) | **Verified** from the US on 25 Oct 2026 on sample episodes (H.264 up to 720p, AAC) |
+| Kan VOD: about 1,070 programs from kan.org.il (lobbies plus sitemap), all seasons and episodes, films | Catalog and stream resolution work from abroad; **video is Israel-only** (Kan's CDN answers 403 outside Israel), so playback is not verified until it is checked from Israel |
+| Mako (Keshet 12) VOD | Catalog only, off by default (`MAKO_VOD=catalog`). Playback needs Mako's per-viewer ticket from inside Israel; episodes link to mako.co.il instead |
+| Reshet 13, Channel 14 | Not possible from abroad: their sites answer 403 outside Israel, so they need research from an Israeli host |
 
-### Installation
+The `smoke` workflow walked the whole add-on the way Stremio does on 25 Oct 2026 from the US: 84 of 84 steps passed (every catalog, search, paging, the longest programs of each provider, and a decode of every stream that plays abroad), median response 0.5 s, slowest 10.4 s.
 
-#### Option 1: Use the live version
+"Verified" means a real decode of video and audio, run by the `verify-streams` GitHub workflow from GitHub's US network. i24NEWS and Knesset work with no setup. The other Israeli broadcasters block viewers outside Israel, so they need a host in Israel for verification, and their streams only play for viewers in Israel.
 
-The application is available at [https://your-deployment-url.com](https://your-deployment-url.com)
+## Quick start (Node)
 
-#### Option 2: Run locally
+```bash
+npm install
+cp .env.example .env      # optional; every setting has a default
+npm run dev               # http://localhost:7000
+```
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/iptv-streamer.git
-   cd iptv-streamer
-   ```
+Open `http://localhost:7000/` for the install link, or add `http://localhost:7000/manifest.json` in Stremio. Stremio needs HTTPS for anything other than localhost, so a remote install needs a domain with TLS or a Cloudflare Tunnel.
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
+## Checking the channels
 
-3. Start the development server:
-   ```bash
-   npm run dev
-   ```
+`npm run discover` lists what each provider finds from the machine it runs on (channels and stream URLs). `npm run verify -- --location IL` (use your real location) resolves each channel, probes it, decodes a few seconds of video and audio, and records the result in the add-on's database. `/coverage` then shows which channels count as working.
 
-4. Build for production:
-   ```bash
-   npm run build
-   ```
+The `verify-streams` GitHub workflow does the same every day from GitHub's network. Set the repository variable `ADDON_URL` and secret `ADMIN_TOKEN` to push its results to your deployed add-on, so viewers see "✅ Playback verified".
 
-## Usage
+A provider with broken settings is switched off and listed under `/diagnostics`. It never stops the rest of the add-on.
 
-### Adding Playlists
+## VOD
 
-1. Navigate to the Settings page
-2. Enter the URL of an M3U8 playlist
-3. Give the playlist a name
-4. Click "Add Playlist"
+Every VOD provider gets a series catalog ("Kan VOD", "i24NEWS VOD", "Knesset Channel VOD") with genre filter, Hebrew/English search and paging, and films from all providers share the "Israeli Movies & Documentaries" catalog. Opening a program lists its seasons and episodes; episode streams are resolved fresh from the broadcaster each time.
 
-### Browsing Channels
+- **i24NEWS** groups episodes by month; season 1 is the oldest month still published. Shows are read from the region pages in `I24_PAGES`. i24's API serves only the last nine or so months of each show, even where it counts more episodes.
+- **Knesset Channel** shows come from `KNESSET_VOD_PAGES`, plus older shows found in the site's sitemap (`KNESSET_VOD_SITEMAP`) that the show list no longer links to. Each show page lists 12 episodes; up to `KNESSET_VOD_MAX_PAGES` pages are read, three at a time (knesset.tv rate-limits more).
+- **Kan** programs come from the lobby pages in `KAN_LOBBIES` (Kan Box, series, films, archive, sport, Judaism and more; radio and podcasts are left out), plus TV programs in Kan's sitemap (`KAN_SITEMAP`) that no lobby links to. The lobby section a program sits in gives its genres and tells films from series. Every season is read, including the older seasons that Kan's older program pages load with "load more", and named sub-sections become extra seasons. DRM-protected episodes are skipped.
+- **Mako** is catalog only and off by default; see the status table. Each episode opens on mako.co.il (in the browser or Mako's app) instead of playing in Stremio. Mako's bot protection (Radware) blocked program pages from GitHub's US servers. The add-on does not try to get around it: it reads season pages one at a time, a second apart, and after a block it sends Mako nothing for an hour and reports the block as the provider's error. To try it from a server in Israel, set `MAKO_VOD=catalog` and run `npm run audit:vod -- --provider mako --limit 20`. If programs open, keep `MAKO_VOD=catalog` on that server.
 
-- Use the "Browse by Country" page to find channels by region
-- Use categories to filter by content type (News, Sports, Entertainment, etc.)
-- Search for specific channels using the search bar
+The sitemaps are read in the background once a day, so right after a start the catalogs hold the lobby programs only. That takes several hundred requests, more than a free Cloudflare Workers request may make, so `wrangler.toml` turns it off (`KAN_SITEMAP=none`, `KNESSET_VOD_SITEMAP=none`). Run the add-on on a normal server to get the full catalogs.
 
-### Watching Channels
+`npm run audit:vod` opens every program of every provider against the live sites and compares the counts with what the broadcasters publish (sitemaps, declared episode counts).
 
-- Click on any channel to start streaming
-- Use the player controls to adjust volume, enter fullscreen, or enable PiP mode
-- Add channels to favorites by clicking the heart icon
+Episode numbers follow the broadcaster ("פרק 12") when it gives them, and otherwise the publishing order, so irregular numbering never collides.
 
-## Technical Details
+Nobody can decode every episode, so the verifier decodes the newest episode of a few programs per provider (`npm run verify -- --vod 3`). An episode that was not checked itself shows the provider's sample result, for example "✅ Playback verified 2 h ago from US (sample of i24NEWS episodes)". Checks of Israel-only streams are skipped when the verifier runs outside Israel, because a failure there says nothing about viewers in Israel. With `STREAM_POLICY=verified-only`, a provider's VOD appears once a sample episode has decoded.
 
-IPTV Streamer is built using:
+## What "verified" means
 
-- **Preact**: A lightweight alternative to React
-- **HLS.js**: For streaming video content
-- **IndexedDB**: For local data persistence
-- **TailwindCSS**: For responsive styling
-- **Lucide Icons**: For clean, minimal UI icons
+Each channel has one of four states, shown to viewers in the channel description and stream title:
 
-The application is designed as a Progressive Web App (PWA), allowing it to work offline and be installed on supported devices.
+- **verified**: a playback check decoded real video frames (and audio) within `VERIFIED_MAX_AGE_HOURS`. Only `npm run verify` writes these.
+- **reachable**: a probe downloaded the playlist, a variant and a media segment that looks like video. That is not playback, so it is not "verified".
+- **failing**: the newest check failed.
+- **unverified**: no recent check.
 
-## Legal Notice
+An HTTP 200 or a valid playlist is never treated as proof of playback. With `STREAM_POLICY=verified-only`, Stremio only sees verified channels.
 
-IPTV Streamer only provides links to publicly available streams. We do not host, upload, or store any content. Users are responsible for ensuring they have the legal right to access content in their jurisdiction.
+Checks record where they ran from (`--location`). A geo-blocked stream verified from Israel can still fail abroad.
 
-## Contributing
+## Deploy on a server in Israel (one command)
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+On a fresh Ubuntu server, for example an Oracle Cloud free VM in the Jerusalem region:
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+```bash
+curl -fsSL https://raw.githubusercontent.com/sBuBle/IPTV-Streamer/main/deploy/setup-server.sh | bash
+```
 
-## License
+It installs Docker and Tailscale, starts the add-on, publishes it over HTTPS with Tailscale Funnel (no domain, open ports or certificates needed), checks playback from the server's country and schedules that check daily. It prints the manifest URL at the end. Run it again to update.
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+A server in Israel gets the full catalogs (sitemaps on), verifies Kan streams for viewers in Israel, and is where Reshet 13 and Channel 14 can be researched. Viewers abroad can use the same add-on: they get direct broadcaster URLs, so only streams that play abroad work for them.
 
-## Acknowledgments
+## Deploy with Docker
 
-- [IPTV-Org](https://github.com/iptv-org) for providing a comprehensive database of publicly available IPTV channels
-- All the developers of the open-source libraries used in this project
+```bash
+cp .env.example .env
+docker compose up -d --build
+```
+
+The image includes ffmpeg, so discovery and verification run inside the container and write to the same database:
+
+```bash
+docker compose exec addon node dist/scripts/discover.js
+docker compose exec addon node dist/scripts/verify-streams.js --location IL
+```
+
+For HTTPS without opening ports, create a Cloudflare Tunnel that points at `http://addon:7000`, set `CLOUDFLARE_TUNNEL_TOKEN` and `BASE_URL`, then `docker compose --profile tunnel up -d`.
+
+## Deploy to Cloudflare Workers
+
+From GitHub: add the repository secrets `CLOUDFLARE_API_TOKEN` (a token with the "Edit Cloudflare Workers" template) and `CLOUDFLARE_ACCOUNT_ID`, then run the `deploy-workers` workflow. It deploys `main` to `https://israeli-tv-addon.<your-subdomain>.workers.dev`.
+
+From your computer:
+
+```bash
+npx wrangler login
+npx wrangler d1 create israeli-tv-addon         # paste the id into wrangler.toml and uncomment [[d1_databases]]
+npx wrangler secret put ADMIN_TOKEN
+# put the provider settings under [vars] in wrangler.toml
+npm run worker:deploy
+```
+
+The Worker runs health probes from Cloudflare's network every 30 minutes. It cannot run ffprobe, so playback verification runs elsewhere and is pushed in: `npm run verify -- --location IL --push https://israeli-tv-addon.<you>.workers.dev`.
+
+Whether broadcasters accept requests from Cloudflare's network is not known yet. If the Israeli providers refuse it, use the Docker setup on a server in Israel.
+
+## Endpoints
+
+| Path | Purpose |
+| --- | --- |
+| `/manifest.json` | Stremio manifest |
+| `/catalog/tv/iltv-live[/genre=..&search=..&skip=..].json` | Live TV catalog |
+| `/meta/tv/<id>.json`, `/stream/tv/<id>.json` | Channel details and fresh stream URLs |
+| `/catalog/series/iltv-vod-<provider>[/genre=..&search=..&skip=..].json`, `/catalog/movie/iltv-movies.json` | VOD catalogs |
+| `/meta/series/<id>.json`, `/stream/series/<episode id>.json`, `/meta/movie/<id>.json`, `/stream/movie/<id>.json` | Program with episodes, fresh episode streams |
+| `/coverage` | Per provider: live channels discovered/verified/failing, VOD programs discovered, VOD episodes checked/verified, sample status |
+| `/diagnostics` | Provider health, config issues, last checks per channel |
+| `/health` | Liveness |
+| `POST /admin/checks`, `POST /admin/probe` | Record checks / run probes now (Bearer `ADMIN_TOKEN`) |
+
+Ids look like `iltv:live:<provider>:<channel>`, `iltv:vod:<provider>:<program>` and `iltv:vod:<provider>:<program>:<episode>`, and never change once released.
+
+## Architecture
+
+```
+src/
+  entry/node.ts, entry/worker.ts   runtime entry points (same app)
+  bootstrap.ts, app.ts             wiring and Hono routes
+  config.ts, logger.ts             Zod-validated env config, JSON-lines logs
+  stremio/                         protocol schemas, ids, extra parsing
+  services/addon.ts                catalog aggregation, caching, stream policy, health probes
+  services/vod.ts                  VOD catalogs, series/movie meta, episode streams, sample verification
+  services/health.ts               check results -> verified / reachable / failing / unverified
+  providers/                       one adapter per broadcaster + registry (timeouts, isolation)
+  media/                           HLS parsing, DRM detection, probing, manifest extraction
+  verify/playback.ts               ffprobe decode check (Node only)
+  storage/                         Store interface; memory, node:sqlite and D1 drivers
+scripts/                           discover and verify CLIs
+test/                              Vitest: unit, protocol and end-to-end with real HLS media
+```
+
+### Adding a broadcaster
+
+Write a class that implements `ProviderAdapter` (`src/providers/types.ts`) with a `live` and/or `vod` capability, register it in `src/providers/index.ts`, and add its settings to `src/config.ts`. Return config problems from `issues()` instead of throwing. `resolveStreams` should fetch fresh URLs every time and set `expiresAt` for signed URLs, so caching stops before tokens expire. Mark `geo: "israel-only"` where the broadcaster restricts playback; skip DRM sources and log them.
+
+## Tests
+
+```bash
+npm test          # needs ffmpeg/ffprobe for the end-to-end tests (skipped without them)
+npm run typecheck
+```
+
+The end-to-end test generates a real HLS stream with ffmpeg, serves it locally and walks Stremio → Live TV → channel → stream → decoded video and audio. It also checks that a web page served as `.m3u8`, a stream without audio and a missing stream all fail.
+
+### End-to-end smoke test
+
+`npm run smoke -- --url <add-on URL> --decode --location <country>` walks a running add-on the way Stremio does: manifest, every catalog with paging and search, a few programs per catalog, the newest episode's streams, and a probe and decode of each stream. Any step slower than 15 s counts as a failure, because Stremio gives up on slow add-ons. `--ids` adds specific programs (the longest ones are good tests).
+
+The `smoke` GitHub workflow runs it every day against the add-on built from `main`, and against your deployed add-on when the repository variable `ADDON_URL` is set.

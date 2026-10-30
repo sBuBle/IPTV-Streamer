@@ -1,0 +1,54 @@
+name: smoke
+
+# End-to-end walk through the add-on the way Stremio uses it: manifest, catalogs, search, meta, streams, decode.
+# Runs the add-on from this commit on GitHub's network (US), and, when the ADDON_URL variable is set,
+# also checks the deployed add-on.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "41 6 * * *"
+
+jobs:
+  local:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: sudo apt-get install -y --no-install-recommends ffmpeg || (sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg)
+      - run: npm ci && npm run build
+      - name: Start the add-on
+        run: |
+          HEALTH_PROBE_INTERVAL_MIN=0 DATABASE_PATH=/tmp/addon.db nohup node dist/src/entry/node.js > /tmp/addon.log 2>&1 &
+          for i in $(seq 1 30); do curl -fs localhost:7000/health && break; sleep 1; done
+      - name: Smoke test
+        # Big Kan and Knesset programs come from the sitemaps, which the add-on reads in the background after it starts.
+        run: |
+          sleep 120
+          COUNTRY=$(curl -fsS https://ipinfo.io/country || echo XX)
+          npx tsx scripts/smoke.ts --url http://localhost:7000 --items 3 --decode --location "$COUNTRY" --out smoke.json --ids iltv:vod:knesset:39011,iltv:vod:knesset:hazira-hamerkazit,iltv:vod:kan:11544,iltv:vod:kan:963853,iltv:vod:i24news:69dd53d308729d93535c6f34
+      - name: Add-on log (errors and slow requests)
+        if: always()
+        run: grep -E '"level":"(warn|error)"|"ms":[0-9]{4,}' /tmp/addon.log | tail -200 || true
+
+  deployed:
+    if: vars.ADDON_URL != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: sudo apt-get install -y --no-install-recommends ffmpeg || (sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg)
+      - run: npm ci
+      - name: Smoke test the deployed add-on
+        env:
+          ADDON_URL: ${{ vars.ADDON_URL }}
+        run: |
+          COUNTRY=$(curl -fsS https://ipinfo.io/country || echo XX)
+          npx tsx scripts/smoke.ts --url "$ADDON_URL" --items 3 --decode --location "$COUNTRY"
