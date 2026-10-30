@@ -20,7 +20,7 @@ export class KnessetAdapter implements ProviderAdapter {
   readonly vod?: KnessetVod;
 
   constructor(private readonly cfg: Config["providers"]["knesset"]) {
-    if (cfg.vodPages.length) this.vod = new KnessetVod({ showPages: cfg.vodPages, maxEpisodePages: cfg.vodMaxPages });
+    if (cfg.vodPages.length) this.vod = new KnessetVod({ showPages: cfg.vodPages, maxEpisodePages: cfg.vodMaxPages, sitemaps: cfg.vodSitemaps });
   }
 
   issues(): ProviderIssue[] {

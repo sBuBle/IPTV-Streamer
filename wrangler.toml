@@ -12,6 +12,9 @@ crons = ["*/30 * * * *"]
 LOG_LEVEL = "info"
 STREAM_POLICY = "all-labeled"
 VERIFIER_LOCATION = "cloudflare"
+# Sitemap discovery takes hundreds of requests, more than a free Workers request may make.
+KAN_SITEMAP = "none"
+KNESSET_VOD_SITEMAP = "none"
 # Provider settings have working defaults; see .env.example to override them.
 # Secrets: `npx wrangler secret put ADMIN_TOKEN`
 

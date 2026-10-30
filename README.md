@@ -46,10 +46,14 @@ A provider with broken settings is switched off and listed under `/diagnostics`.
 
 Every VOD provider gets a series catalog ("Kan VOD", "i24NEWS VOD", "Knesset Channel VOD") with genre filter, Hebrew/English search and paging, and films from all providers share the "Israeli Movies & Documentaries" catalog. Opening a program lists its seasons and episodes; episode streams are resolved fresh from the broadcaster each time.
 
-- **i24NEWS** groups episodes by month; season 1 is the oldest month still published. Shows are read from the region pages in `I24_PAGES`.
-- **Knesset Channel** shows come from `KNESSET_VOD_PAGES`; each show page lists 12 episodes and up to `KNESSET_VOD_MAX_PAGES` pages are read.
-- **Kan** programs come from the lobby pages in `KAN_LOBBIES` (Kan Box and the archive series lobby). The lobby section a program sits in gives its genres and tells films from series. Seasons are separate pages and all are read. DRM-protected episodes are skipped.
-- **Mako** is catalog only and off by default; see the status table.
+- **i24NEWS** groups episodes by month; season 1 is the oldest month still published. Shows are read from the region pages in `I24_PAGES`. i24's API serves only the last nine or so months of each show, even where it counts more episodes.
+- **Knesset Channel** shows come from `KNESSET_VOD_PAGES`, plus older shows found in the site's sitemap (`KNESSET_VOD_SITEMAP`) that the show list no longer links to. Each show page lists 12 episodes; up to `KNESSET_VOD_MAX_PAGES` pages are read, three at a time (knesset.tv rate-limits more).
+- **Kan** programs come from the lobby pages in `KAN_LOBBIES` (Kan Box, series, films, archive, sport, Judaism and more; radio and podcasts are left out), plus TV programs in Kan's sitemap (`KAN_SITEMAP`) that no lobby links to. The lobby section a program sits in gives its genres and tells films from series. Every season is read, including the older seasons that Kan's older program pages load with "load more", and named sub-sections become extra seasons. DRM-protected episodes are skipped.
+- **Mako** is catalog only and off by default; see the status table. Each episode opens on mako.co.il (in the browser or Mako's app) instead of playing in Stremio. Mako's bot protection (Radware) blocked program pages from GitHub's US servers. The add-on does not try to get around it: it reads season pages one at a time, a second apart, and after a block it sends Mako nothing for an hour and reports the block as the provider's error. To try it from a server in Israel, set `MAKO_VOD=catalog` and run `npm run audit:vod -- --provider mako --limit 20`. If programs open, keep `MAKO_VOD=catalog` on that server.
+
+The sitemaps are read in the background once a day, so right after a start the catalogs hold the lobby programs only. That takes several hundred requests, more than a free Cloudflare Workers request may make, so `wrangler.toml` turns it off (`KAN_SITEMAP=none`, `KNESSET_VOD_SITEMAP=none`). Run the add-on on a normal server to get the full catalogs.
+
+`npm run audit:vod` opens every program of every provider against the live sites and compares the counts with what the broadcasters publish (sitemaps, declared episode counts).
 
 Episode numbers follow the broadcaster ("פרק 12") when it gives them, and otherwise the publishing order, so irregular numbering never collides.
 

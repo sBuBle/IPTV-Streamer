@@ -2,6 +2,8 @@ import type { Config } from "../../config.js";
 import type { ResolvedStream } from "../../domain/types.js";
 import { anchors, attr, decodeEntities, firstImage, metaContent, textOf } from "../../util/html.js";
 import { getText } from "../../util/http.js";
+import { mapPool } from "../../util/pool.js";
+import { sitemapLocs } from "../../util/sitemap.js";
 import { errorMessage } from "../registry.js";
 import type { ProviderAdapter, ProviderContext, ProviderIssue, VodEpisode, VodProgram, VodProgramDetail } from "../types.js";
 import { assignEpisodeNumbers, episodeNumberFromTitle, parseClock } from "../vod-util.js";
@@ -37,6 +39,14 @@ export function genresFor(labels: string[]): string[] {
 }
 
 const PROGRAM_HREF = /^https:\/\/www\.kan\.org\.il\/content\/([a-z0-9/_-]+)\/p-(\d+)\/$/i;
+/** Radio stations and podcasts share Kan's lobbies with TV; they are audio, so they stay out of the catalog. */
+const AUDIO_SECTION = /^(?:kan\/(?:podcasts|kan-b|kan-gimel|kan-88|kan-music|kan-tarbut|kan-reka|kan-moreshet|radio_articles)|archive1\/podcast_archive)$/i;
+/** Sitemap sections that hold TV programs. Radio, podcasts, articles and event microsites are left out. */
+const SITEMAP_TV_PROGRAM = /^https:\/\/www\.kan\.org\.il\/content\/(?:kan\/kan-11|kan\/news-series|kan\/kan-actual|kan-news\/newstv|dig\/digital|archive1\/vod)\/p-(\d+)\/(.*)$/;
+/** Programs found through the sitemap are looked up again after this long. */
+const SITEMAP_REFRESH_MS = 24 * 3600_000;
+/** Lobbies that list only films ("סרטים"). */
+const FILM_LOBBY = /\/lobby\/(?:%D7%A1%D7%A8%D7%98%D7%99%D7%9D|סרטים)\//i;
 
 interface ListedProgram extends VodProgram {
   url: string;
@@ -46,7 +56,8 @@ interface ListedProgram extends VodProgram {
  * Program cards on a Kan lobby page. Each card sits under a section heading (Drama, Comedy, Documentary films...),
  * which gives the genres and tells films from series.
  */
-export function parseLobby(html: string): ListedProgram[] {
+export function parseLobby(html: string, lobbyUrl = ""): ListedProgram[] {
+  const filmLobby = FILM_LOBBY.test(lobbyUrl);
   const headings = [...html.matchAll(/<h2[^>]*>([\s\S]*?)<\/h2>/gi)].map((m) => ({ index: m.index, text: textOf(m[1]) })).filter((h) => h.text);
   const sectionAt = (index: number) => {
     let current: string | undefined;
@@ -59,7 +70,8 @@ export function parseLobby(html: string): ListedProgram[] {
   const byId = new Map<string, ListedProgram & { sections: Set<string> }>();
   for (const a of anchors(html, PROGRAM_HREF)) {
     if (!/<img\s/i.test(a.inner)) continue; // menu links have no poster
-    const id = a.href.match(PROGRAM_HREF)![2]!;
+    const [, contentPath, id] = a.href.match(PROGRAM_HREF) as unknown as [string, string, string];
+    if (AUDIO_SECTION.test(contentPath)) continue;
     const img = a.inner.match(/<img\s[^>]*>/i)![0];
     const title = (attr(a.tag, "aria-label") || textOf(a.inner.match(/<h3[^>]*>([\s\S]*?)<\/h3>/i)?.[1]) || attr(img, "alt") || "").trim();
     if (!title) continue;
@@ -88,13 +100,14 @@ export function parseLobby(html: string): ListedProgram[] {
   }
   return [...byId.values()].map(({ sections, ...p }) => {
     const labels = [...sections];
-    const film = labels.some((l) => /סרט/.test(l)) && !labels.some((l) => /סדר/.test(l));
+    const film = filmLobby || (labels.some((l) => /סרט/.test(l)) && !labels.some((l) => /סדר/.test(l)));
     return { ...p, kind: film ? "movie" : "series", genres: genresFor(labels) };
   });
 }
 
 interface ListedEpisode {
-  season: number;
+  /** Path segment between program and episode: "s3" (season 3), a named sub-section such as "new_chefs", or "" for none. */
+  segment: string;
   kanId: string;
   title: string;
   thumbnail?: string;
@@ -107,21 +120,30 @@ function episodeSubtitle(s: string): string | undefined {
   return !s || /^עונה\s*\d+\s*,\s*פרק\s*\d+$/.test(s) ? undefined : s;
 }
 
-/** Episode cards of one program found in a page fragment. Unseasoned links get season 0. */
+const episodeHref = (programId: string) => new RegExp(`/p-${programId}/(?:([a-z0-9_]+)/)?(\\d+)/$`, "i");
+
+/** Season number of a path segment: "s3" -> 3, none -> 0, named sub-section -> undefined. */
+function segmentSeason(segment: string): number | undefined {
+  if (!segment) return 0;
+  const m = segment.match(/^s(\d+)$/i);
+  return m ? Number(m[1]) : undefined;
+}
+
+/** Episode cards of one program found in a page fragment. */
 export function parseEpisodeCards(html: string, programId: string, onlySeason?: number): ListedEpisode[] {
-  const re = new RegExp(`/p-${programId}/(?:s(\\d+)/)?(\\d+)/$`);
+  const re = episodeHref(programId);
   const out: ListedEpisode[] = [];
   const seen = new Set<string>();
   for (const a of anchors(html, re)) {
     const m = a.href.match(re)!;
-    const season = m[1] ? Number(m[1]) : 0;
+    const segment = (m[1] ?? "").toLowerCase();
     const kanId = m[2]!;
-    if ((onlySeason !== undefined && season !== onlySeason) || seen.has(kanId)) continue;
+    if ((onlySeason !== undefined && segmentSeason(segment) !== onlySeason) || seen.has(kanId)) continue;
     const title = (textOf(a.inner.match(/<h3[^>]*>([\s\S]*?)<\/h3>/i)?.[1]) || attr(a.tag, "aria-label") || "").trim();
     if (!title || !/<img\s/i.test(a.inner)) continue; // the hero "watch" button is not an episode card
     seen.add(kanId);
     out.push({
-      season,
+      segment,
       kanId,
       title,
       thumbnail: firstImage(a.inner, SITE)?.replace(/([?&])width=\d+&(amp;)?height=\d+/, "$1width=960&height=540"),
@@ -133,11 +155,36 @@ export function parseEpisodeCards(html: string, programId: string, onlySeason?: 
 }
 
 /** The video behind the hero "watch" button of a program page. */
-export function heroVideo(html: string, programId: string): { season: number; kanId: string } | undefined {
-  const re = new RegExp(`/p-${programId}/(?:s(\\d+)/)?(\\d+)/$`);
+export function heroVideo(html: string, programId: string): { segment: string; kanId: string } | undefined {
+  const re = episodeHref(programId);
   const a = anchors(html, re).find((x) => /hero-vod-cta/.test(attr(x.tag, "class") ?? ""));
   const m = a?.href.match(re);
-  return m ? { season: m[1] ? Number(m[1]) : 0, kanId: m[2]! } : undefined;
+  return m ? { segment: (m[1] ?? "").toLowerCase(), kanId: m[2]! } : undefined;
+}
+
+/**
+ * Seasons of the older program layout: each `seasons-item` block with its id, and whether it is the program's
+ * first (oldest) season. The page shows the newest seasons; the rest load one at a time via "load more".
+ */
+export function parseSeasonItems(html: string): Array<{ id: string; first: boolean }> {
+  return [...html.matchAll(/<div class="seasons-item" data-season-id="(\d+)" data-is-first-season="(true|false)"/gi)].map((m) => ({ id: m[1]!, first: m[2]!.toLowerCase() === "true" }));
+}
+
+/** Episode id prefix of a path segment. Numbered seasons stay numbers ("3-1098375"), as ids were before named sub-sections. */
+function episodeSegmentId(segment: string): string {
+  const n = segmentSeason(segment);
+  return n !== undefined ? String(n) : segment;
+}
+
+/** Inverse of episodeSegmentId: the URL path piece for an episode id prefix. */
+function episodePathSegment(prefix: string): string {
+  if (/^\d+$/.test(prefix)) return prefix === "0" ? "" : `s${prefix}/`;
+  return `${prefix.toLowerCase()}/`;
+}
+
+function uniqueBy<T>(items: T[], key: (item: T) => string): T[] {
+  const seen = new Set<string>();
+  return items.filter((x) => (seen.has(key(x)) ? false : (seen.add(key(x)), true)));
 }
 
 /** Season tabs of the newer program layout: season number -> season page URL, and the season shown on this page. */
@@ -193,6 +240,39 @@ export function parsePlayerConfig(html: string): RedgeConfig | undefined {
   }
 }
 
+/**
+ * A program's catalog entry read from its own page, for programs that no lobby lists. Undefined when the page
+ * holds no video (no player, no episode list).
+ */
+export function programFromPage(html: string, id: string, url: string): ListedProgram | undefined {
+  const tabs = parseSeasonTabs(html, id);
+  const cards = parseEpisodeCards(episodesRegion(html), id);
+  const hero = heroVideo(html, id);
+  if (!tabs.seasons.size && !cards.length && !hero) return undefined;
+  const npawTitle = html.match(/npawData\.program\s*=\s*decodeEntities\('((?:[^'\\]|\\.)*)'\)/)?.[1];
+  const ogTitle = textOf(decodeEntities(metaContent(html, "og:title") ?? "")).split(/\s+[|–-]\s+/)[0];
+  const title = textOf(decodeEntities(npawTitle ?? "")) || ogTitle;
+  if (!title) return undefined;
+  const pageGenres = [...html.matchAll(/<div class="info-genre[\s\S]*?<\/ul>/gi)].flatMap((m) => [...m[0].matchAll(/<li>([\s\S]*?)<\/li>/gi)].map((li) => textOf(li[1])));
+  const programGenre = html.match(/program_genre:\s*'([^']*)'/)?.[1];
+  const image = metaContent(html, "og:image");
+  return {
+    id,
+    provider: PROVIDER,
+    // One video and no episode list: a film or a one-off special.
+    kind: !tabs.seasons.size && !cards.length ? "movie" : "series",
+    title,
+    poster: image ? new URL(decodeEntities(image), SITE).toString() : undefined,
+    posterShape: "landscape",
+    description: textOf(decodeEntities(metaContent(html, "og:description") ?? "")) || undefined,
+    genres: genresFor([...pageGenres, ...(programGenre ? [decodeEntities(programGenre)] : [])]),
+    language: "he",
+    website: url,
+    geo: "israel-only",
+    url,
+  };
+}
+
 function https(url: string | null | undefined): string | undefined {
   if (!url) return undefined;
   return url.startsWith("//") ? `https:${url}` : url;
@@ -208,6 +288,13 @@ export class KanAdapter implements ProviderAdapter {
   readonly id = PROVIDER;
   readonly name = "Kan";
   private programs = new Map<string, ListedProgram>();
+  private lobbyIds = new Set<string>();
+  /** Programs found through the sitemap that no lobby lists, and when they were last looked up. */
+  private fromSitemap = new Map<string, ListedProgram>();
+  /** Episode URLs in the sitemap: program id -> path segment -> Kan ids. Fills lists that Kan's pages cut at 50. */
+  private sitemapEpisodes = new Map<string, Map<string, string[]>>();
+  private sitemapReadAt = 0;
+  private sitemapRun?: Promise<void>;
 
   constructor(private readonly cfg: Config["providers"]["kan"]) {}
 
@@ -217,6 +304,97 @@ export class KanAdapter implements ProviderAdapter {
 
   private get(url: string, ctx: ProviderContext) {
     return getText(url, { timeoutMs: ctx.config.requestTimeoutMs, fetch: ctx.fetch, signal: ctx.signal, retries: 1 });
+  }
+
+  /**
+   * Finds TV programs in Kan's sitemap that no lobby links to and reads each one's page for its title and poster.
+   * Several hundred requests, so listPrograms runs it in the background once a day; the first catalog request
+   * returns the lobby programs only.
+   */
+  discoverFromSitemap(ctx: ProviderContext): Promise<void> {
+    this.sitemapRun ??= this.readSitemap(ctx).finally(() => {
+      this.sitemapRun = undefined;
+      this.sitemapReadAt ||= Date.now();
+    });
+    return this.sitemapRun;
+  }
+
+  private async readSitemap(ctx: ProviderContext): Promise<void> {
+    const get = async (u: string) => (await getText(u, { timeoutMs: Math.max(ctx.config.requestTimeoutMs, 60_000), fetch: ctx.fetch, signal: ctx.signal, retries: 1 })).text;
+    const roots = new Map<string, string>();
+    const withEpisodes = new Set<string>();
+    const episodes = new Map<string, Map<string, string[]>>();
+    for (const sitemap of this.cfg.sitemaps) {
+      let locs: string[];
+      try {
+        locs = await sitemapLocs(sitemap, get);
+      } catch (err) {
+        ctx.logger.warn("Kan sitemap failed", { sitemap, error: errorMessage(err) });
+        continue;
+      }
+      for (const loc of locs) {
+        const m = loc.match(SITEMAP_TV_PROGRAM);
+        if (!m) continue;
+        if (m[2]) withEpisodes.add(m[1]!);
+        const ep = m[2]!.match(/^(?:([a-z0-9_]+)\/)?(\d+)\/$/i);
+        if (ep) {
+          const bySegment = episodes.get(m[1]!) ?? new Map<string, string[]>();
+          const segment = (ep[1] ?? "").toLowerCase();
+          bySegment.set(segment, [...(bySegment.get(segment) ?? []), ep[2]!]);
+          episodes.set(m[1]!, bySegment);
+        }
+        else roots.set(m[1]!, loc);
+      }
+    }
+    const wanted = [...roots].filter(([id]) => withEpisodes.has(id) && !this.lobbyIds.has(id));
+    const found = new Map<string, ListedProgram>();
+    await mapPool(wanted, 6, async ([id, url]) => {
+      try {
+        const res = await this.get(url, ctx);
+        if (res.finalUrl.replace(/\/?$/, "/") !== url) return; // moved or retired
+        const program = programFromPage(res.text, id, url);
+        if (program) found.set(id, program);
+      } catch (err) {
+        ctx.logger.debug("Kan program page failed", { url, error: errorMessage(err) });
+      }
+    });
+    this.fromSitemap = found;
+    this.sitemapEpisodes = episodes;
+    this.sitemapReadAt = Date.now();
+    ctx.logger.info("Kan sitemap read", { candidates: wanted.length, programs: found.size });
+  }
+
+  private refreshSitemapInBackground(ctx: ProviderContext): void {
+    if (!this.cfg.sitemaps.length || this.sitemapRun || Date.now() - this.sitemapReadAt < SITEMAP_REFRESH_MS) return;
+    // Not tied to the request that started it.
+    const own = { ...ctx, signal: new AbortController().signal };
+    this.discoverFromSitemap(own).catch((err) => ctx.logger.warn("Kan sitemap discovery failed", { error: errorMessage(err) }));
+  }
+
+  /** Older-layout seasons that the program page leaves to "load more": one request per season, newest to oldest. */
+  private async olderSeasons(url: string, html: string, programId: string, ctx: ProviderContext): Promise<ListedEpisode[]> {
+    const shown = parseSeasonItems(html);
+    if (!shown.length || shown.some((x) => x.first) || !html.includes('id="vod-program-show-more"')) return [];
+    const seen = new Set(shown.map((x) => x.id));
+    let last = shown[shown.length - 1]!.id;
+    const out: ListedEpisode[] = [];
+    for (let page = 2; page < MAX_SEASON_PAGES + 2; page++) {
+      let text: string;
+      try {
+        ({ text } = await this.get(`${url}?page=${page}&itemsToShow=500&lastLoadedSeasonId=${last}`, ctx));
+      } catch (err) {
+        ctx.logger.warn("Kan season load failed; keeping seasons read so far", { programId, after: last, error: errorMessage(err) });
+        break;
+      }
+      const loaded = parseSeasonItems(text).filter((x) => !seen.has(x.id));
+      if (!loaded.length) break;
+      out.push(...parseEpisodeCards(episodesRegion(text), programId));
+      loaded.forEach((x) => seen.add(x.id));
+      const oldest = loaded[loaded.length - 1]!;
+      if (oldest.first) break;
+      last = oldest.id;
+    }
+    return out;
   }
 
   private async programUrl(programId: string, ctx: ProviderContext): Promise<string | undefined> {
@@ -233,14 +411,20 @@ export class KanAdapter implements ProviderAdapter {
           ctx.logger.warn("Kan lobby failed", { lobby: this.cfg.lobbies[i], error: errorMessage(r.reason) });
           return;
         }
-        for (const p of parseLobby(r.value.text)) {
+        for (const p of parseLobby(r.value.text, this.cfg.lobbies[i])) {
           const prev = out.get(p.id);
           if (!prev) out.set(p.id, p);
-          else prev.genres = [...new Set([...prev.genres, ...p.genres])].sort();
+          else {
+            prev.genres = [...new Set([...prev.genres, ...p.genres])].sort();
+            if (p.kind === "movie") prev.kind = "movie";
+          }
         }
       });
       if (pages.every((p) => p.status === "rejected")) throw new Error("all Kan lobbies failed");
+      this.lobbyIds = new Set(out.keys());
       this.programs = out;
+      this.refreshSitemapInBackground(ctx);
+      for (const [id, p] of this.fromSitemap) if (!out.has(id)) out.set(id, p);
       return [...out.values()].map(({ url: _url, ...p }) => p);
     },
 
@@ -263,26 +447,50 @@ export class KanAdapter implements ProviderAdapter {
         });
       } else {
         cards = parseEpisodeCards(episodesRegion(text), programId);
+        cards.push(...(await this.olderSeasons(url, text, programId, ctx)));
       }
-      // Unseasoned links are extras next to real seasons; they are the episodes only when nothing else exists.
-      if (cards.some((c) => c.season > 0)) cards = cards.filter((c) => c.season > 0);
+      // Kan's pages show at most 50 episodes per row and some seasons not at all; the sitemap lists every
+      // episode URL (without titles). Its extra episodes are added to the seasons and sub-sections it names, and
+      // to unsectioned lists only when the page itself lists unsectioned episodes, so trailers never turn a film
+      // into a series.
+      const listedSegments = new Set(cards.map((c) => c.segment));
+      for (const [segment, ids] of this.sitemapEpisodes.get(programId) ?? []) {
+        if (segment || listedSegments.has("")) for (const kanId of ids) cards.push({ segment, kanId, title: "" });
+      }
+      cards = uniqueBy(cards, (c) => c.kanId);
+      // Unsectioned links are extras next to real seasons; they are the episodes only when nothing else exists.
+      if (cards.some((c) => c.segment)) cards = cards.filter((c) => c.segment);
       // Single-video programs (films, specials) have no episode list, only the hero "watch" button.
       if (cards.length === 0) {
         const cta = heroVideo(text, programId);
         if (cta) cards = [{ ...cta, title: listed.title }];
       }
 
-      const bySeason = new Map<number, ListedEpisode[]>();
-      for (const c of cards) bySeason.set(c.season, [...(bySeason.get(c.season) ?? []), c]);
+      // Numbered seasons keep their number; named sub-sections ("new_chefs") follow as extra seasons, in page order.
+      const seasonOf = new Map<string, number>();
+      for (const c of cards) {
+        const n = segmentSeason(c.segment);
+        if (n !== undefined) seasonOf.set(c.segment, n || 1);
+      }
+      const seasonNames: Record<number, string> = {};
+      let nextSeason = Math.max(0, ...seasonOf.values()) + 1;
+      for (const c of cards) {
+        if (seasonOf.has(c.segment)) continue;
+        seasonNames[nextSeason] = c.segment.replace(/_/g, " ");
+        seasonOf.set(c.segment, nextSeason++);
+      }
+      const bySegment = new Map<string, ListedEpisode[]>();
+      for (const c of cards) bySegment.set(c.segment, [...(bySegment.get(c.segment) ?? []), c]);
       const episodes: VodEpisode[] = [];
-      for (const [season, list] of [...bySeason.entries()].sort((a, b) => a[0] - b[0])) {
+      for (const [segment, list] of bySegment) {
+        const season = seasonOf.get(segment)!;
         const ordered = [...list].sort((a, b) => Number(a.kanId) - Number(b.kanId));
         for (const e of assignEpisodeNumbers(ordered, (x) => episodeNumberFromTitle(x.title))) {
           episodes.push({
-            id: `${season}-${e.kanId}`,
-            season: season || 1,
+            id: `${episodeSegmentId(segment)}-${e.kanId}`,
+            season,
             episode: e.episode,
-            title: e.title,
+            title: e.title || `פרק ${e.episode}`,
             thumbnail: e.thumbnail,
             description: e.description,
             durationSec: e.durationSec,
@@ -304,15 +512,15 @@ export class KanAdapter implements ProviderAdapter {
         logo: logoTag ? firstImage(logoTag, SITE) : undefined,
         genres: [...new Set([...base.genres, ...genresFor(pageGenres)])].sort(),
         episodes,
+        seasonNames: Object.keys(seasonNames).length ? seasonNames : undefined,
       };
     },
 
     resolveEpisodeStreams: async (programId: string, episodeId: string, ctx: ProviderContext): Promise<ResolvedStream[]> => {
       const url = await this.programUrl(programId, ctx);
-      const m = episodeId.match(/^(\d+)-(\d+)$/);
+      const m = episodeId.match(/^([a-z0-9_]+)-(\d+)$/i);
       if (!url || !m) return [];
-      const season = Number(m[1]);
-      const { text } = await this.get(`${url}${season ? `s${season}/` : ""}${m[2]}/`, ctx);
+      const { text } = await this.get(`${url}${episodePathSegment(m[1]!)}${m[2]}/`, ctx);
       const config = parsePlayerConfig(text);
       if (!config?.file) {
         ctx.logger.warn("no Redge player config on Kan episode page", { programId, episodeId });

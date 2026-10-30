@@ -1,7 +1,7 @@
 import { z } from "zod";
 import type { Config } from "../../config.js";
 import type { GeoAvailability, ResolvedStream } from "../../domain/types.js";
-import { getJson } from "../../util/http.js";
+import { getText } from "../../util/http.js";
 import { errorMessage } from "../registry.js";
 import type { ProviderAdapter, ProviderContext, ProviderIssue, VodEpisode, VodProgram, VodProgramDetail } from "../types.js";
 import { assignEpisodeNumbers, parseDayFirstDate } from "../vod-util.js";
@@ -9,6 +9,12 @@ import { assignEpisodeNumbers, parseDayFirstDate } from "../vod-util.js";
 const PROVIDER = "mako";
 const SITE = "https://www.mako.co.il";
 const MAX_SEASON_PAGES = 20;
+/** Season pages are read one at a time, this far apart, to stay well under Mako's bot-protection thresholds. */
+const SEASON_PAGE_GAP_MS = 1000;
+/** After a bot-protection block, no request goes to Mako for this long. */
+const BLOCK_PAUSE_MS = 60 * 60_000;
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 const indexSchema = z.object({
   items: z.array(z.object({ title: z.string().min(1), pageUrl: z.string().startsWith("/"), pic: z.string().nullish() })),
@@ -72,6 +78,8 @@ export class MakoAdapter implements ProviderAdapter {
   private pages = new Map<string, string>();
   /** "<programId>:<episodeId>" -> episode page path, filled when a program is read. */
   private episodePages = new Map<string, string>();
+  /** Set when Mako's bot protection blocks this server; until then nothing is sent to Mako. */
+  private blockedUntil = 0;
 
   constructor(private readonly cfg: Config["providers"]["mako"]) {}
 
@@ -79,10 +87,22 @@ export class MakoAdapter implements ProviderAdapter {
     return this.cfg.mode === "off" ? [{ severity: "error", message: "Mako VOD is off; set MAKO_VOD=catalog to list its catalog with links to mako.co.il" }] : [];
   }
 
-  private json(path: string, ctx: ProviderContext): Promise<unknown> {
+  private async json(path: string, ctx: ProviderContext): Promise<unknown> {
+    if (Date.now() < this.blockedUntil) {
+      throw new Error(`Mako's bot protection blocked this server; paused until ${new Date(this.blockedUntil).toISOString()}`);
+    }
     const url = new URL(path, SITE);
     url.searchParams.set("platform", "responsive");
-    return getJson(url.toString(), { timeoutMs: ctx.config.requestTimeoutMs, fetch: ctx.fetch, signal: ctx.signal, retries: 1 });
+    const res = await getText(url.toString(), { timeoutMs: ctx.config.requestTimeoutMs, fetch: ctx.fetch, signal: ctx.signal, retries: 1 });
+    // Mako's bot protection (Radware) redirects automated clients to a block page. That is an access control,
+    // so it is reported, not worked around.
+    if (/perfdrive\.com/.test(new URL(res.finalUrl).hostname) || res.text.trimStart().startsWith("<")) {
+      // Back off instead of retrying: more requests would only look more like a bot.
+      this.blockedUntil = Date.now() + BLOCK_PAUSE_MS;
+      ctx.logger.warn("Mako bot protection blocked this server; pausing Mako requests", { pauseMinutes: BLOCK_PAUSE_MS / 60_000 });
+      throw new Error("blocked by Mako's bot protection (Radware block page instead of catalog JSON)");
+    }
+    return JSON.parse(res.text);
   }
 
   readonly vod = {
@@ -119,9 +139,24 @@ export class MakoAdapter implements ProviderAdapter {
       const seasons = main.seasons?.length ? main.seasons : [{ seasonTitle: main.channelName ?? "1", pageUrl: main.pageUrl ?? path, current: true }];
       const numbered = seasons.map((s, i) => ({ ...s, number: Number(s.seasonTitle.match(/עונה\s*(\d+)/)?.[1] ?? NaN) || i + 1 }));
       const wanted = numbered.slice(-MAX_SEASON_PAGES);
-      const pages = await Promise.allSettled(
-        wanted.map((s) => (main.pageUrl && s.pageUrl === main.pageUrl ? Promise.resolve(main) : this.json(s.pageUrl, ctx).then((p) => programPage.parse(p)))),
-      );
+      // One season page at a time, a second apart; a block stops the rest.
+      const pages: Array<PromiseSettledResult<ProgramPage>> = [];
+      for (const [i, season] of wanted.entries()) {
+        if (main.pageUrl && season.pageUrl === main.pageUrl) {
+          pages.push({ status: "fulfilled", value: main });
+          continue;
+        }
+        if (Date.now() < this.blockedUntil) {
+          pages.push({ status: "rejected", reason: new Error("paused after a bot-protection block") });
+          continue;
+        }
+        if (i > 0) await sleep(SEASON_PAGE_GAP_MS);
+        try {
+          pages.push({ status: "fulfilled", value: programPage.parse(await this.json(season.pageUrl, ctx)) });
+        } catch (reason) {
+          pages.push({ status: "rejected", reason });
+        }
+      }
       const episodes: VodEpisode[] = [];
       let geo: GeoAvailability = "unknown";
       pages.forEach((r, i) => {

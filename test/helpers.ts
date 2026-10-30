@@ -9,7 +9,7 @@ import type { LiveChannel, ResolvedStream } from "../src/domain/types.js";
 import type { ProviderAdapter } from "../src/providers/types.js";
 
 export function testConfig(env: Env = {}): Config {
-  return loadConfig({ DATABASE_PATH: ":memory:", HEALTH_PROBE_INTERVAL_MIN: "0", PROVIDER_TIMEOUT_MS: "2000", REQUEST_TIMEOUT_MS: "2000", ...env });
+  return loadConfig({ DATABASE_PATH: ":memory:", HEALTH_PROBE_INTERVAL_MIN: "0", PROVIDER_TIMEOUT_MS: "2000", REQUEST_TIMEOUT_MS: "2000", KAN_SITEMAP: "none", KNESSET_VOD_SITEMAP: "none", ...env });
 }
 
 type Route = (url: URL, init?: RequestInit) => Response | Promise<Response>;
