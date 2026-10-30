@@ -132,8 +132,8 @@ for (const p of buildProviders(config)) {
   const picked = programs.slice(0, limit);
   let opened = 0;
   let failed = 0;
-  // knesset.tv answers 429 when several shows are paged through at once.
-  const audits = await mapPool(picked, p.id === "knesset" ? 1 : concurrency, async (prog) => {
+  // knesset.tv answers 429 when several shows are paged through at once; Mako blocks bursts.
+  const audits = await mapPool(picked, p.id === "knesset" || p.id === "mako" ? 1 : concurrency, async (prog) => {
     // A site that refuses every request (bot protection, outage) is not hammered with hundreds more.
     if (failed >= 10 && opened === 0) return auditDetail(prog, undefined, "skipped: the first 10 programs all failed");
     try {
