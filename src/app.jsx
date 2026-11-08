@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { Router } from 'preact-router';
 import { useState, useEffect } from 'preact/hooks';
-import { Tv2, Menu, Settings as SettingsIcon, Home as HomeIcon, Heart, History, Globe, List, Info } from 'lucide-preact';
+import { Menu, Settings as SettingsIcon, Home as HomeIcon, Heart, History, Globe, List, Info } from 'lucide-preact';
 import { getPlaylists } from './utils/playlist';
 import { PictureInPictureProvider } from './contexts/PictureInPictureContext';
 import { PictureInPictureOverlay } from './components/PictureInPictureOverlay';
@@ -58,16 +58,17 @@ function isActive(href, currentUrl) {
   return path === href || path.startsWith(href + '/');
 }
 
-// Logo: a play glyph on the brand gradient
+// Logo mark drawn in VectorCraft (design/brand has the editable source)
 function BrandMark({ size = 32 }) {
   return (
-    <span
-      class="brand-gradient inline-flex items-center justify-center rounded-lg shadow-lg shadow-blue-900/40 shrink-0"
+    <img
+      src="/brand/logo-mark.svg"
+      width={size}
+      height={size}
+      alt=""
+      class="shrink-0 rounded-lg shadow-lg shadow-blue-900/40"
       style={{ width: `${size}px`, height: `${size}px` }}
-      aria-hidden="true"
-    >
-      <Tv2 size={Math.round(size * 0.56)} class="text-white" />
-    </span>
+    />
   );
 }
 

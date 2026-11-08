@@ -160,7 +160,9 @@ h1, h2, h3 {
   object-fit: contain;
 }
 /* Home hero: layered gradients now; an ArtCraft image can sit underneath via --hero-art */
+/* Hero artwork drawn in VectorCraft (public/brand/hero-art.svg) */
 .hero {
+  --hero-art: url('/brand/hero-art.svg');
   background-color: var(--color-gray-900);
   background-image:
     linear-gradient(90deg, oklch(0.14 0.03 285 / 0.95) 0%, oklch(0.14 0.03 285 / 0.75) 45%, oklch(0.14 0.03 285 / 0.1) 100%),
