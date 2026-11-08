@@ -276,3 +276,14 @@ h1, h2, h3 {
 .banner-about { --banner-art: url('/brand/pages/banner-about.svg'); }
 .banner-playlist { --banner-art: url('/brand/pages/banner-playlist.svg'); }
 .banner-category { --banner-art: url('/brand/pages/banner-category.svg'); }
+
+/* Channel logos fade in over their initials placeholder once loaded */
+@keyframes logo-fade-in {
+  from { opacity: 0; }
+}
+.logo-fade-in {
+  animation: logo-fade-in 200ms ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-fade-in { animation: none; }
+}
