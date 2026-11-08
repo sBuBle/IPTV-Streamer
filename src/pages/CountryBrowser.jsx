@@ -26,75 +26,76 @@ const REGION_CHIPS = [
   ['MIDEAST', 'Middle East'], ['OCE', 'Oceania'],
 ];
 
-// Memoized simple components for better performance
-const CountryListItem = memo(({ item, kind, selectedItem, streamInfo, loadingStreamCounts, onClick }) => {
-  // Countries and languages have a `code`, categories only an `id`
-  const itemKey = item.code || item.id;
-  const isSelected = !!selectedItem && !!itemKey && (selectedItem.code || selectedItem.id) === itemKey;
-  const countryCode = kind === 'countries' ? (item.code || '') : '';
-  const isLanguage = kind === 'languages';
-  
+// Neutral count badge from the FigCraft Badge component ("128 channels")
+const CountBadge = ({ children }) => (
+  <span class="shrink-0 inline-flex items-center h-[22px] px-2 rounded-full bg-white/6 text-[11px] font-semibold text-[var(--color-muted)] whitespace-nowrap">
+    {children}
+  </span>
+);
+
+const formatCount = (n) => Number(n || 0).toLocaleString('en-US');
+
+// Leading visual of a row: flag for countries, VectorCraft icon for categories
+const ItemMark = ({ item, kind, size = 'row' }) => {
+  const box = size === 'row' ? 'w-7 h-5 rounded-[4px]' : 'w-10 h-7 rounded-[5px]';
+  if (kind === 'countries') {
+    return (
+      <span class={`${box} shrink-0 overflow-hidden ring-1 ring-inset ring-white/15 bg-[var(--color-card-hover)]`}>
+        <CountryFlag code={item.code} />
+      </span>
+    );
+  }
+  if (kind === 'categories') {
+    const px = size === 'row' ? 'w-7 h-7' : 'w-10 h-10';
+    return (
+      <img src={`/brand/icons/cat-${item.id}.svg`} alt="" class={`${px} shrink-0`}
+        onError={(e) => { e.currentTarget.src = '/brand/channel-fallback.svg'; }} />
+    );
+  }
   return (
-    <button
-      onClick={() => onClick(item)}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          onClick(item);
-          e.preventDefault();
-        }
-      }}
-      class={`group w-full text-left px-3 min-h-14 rounded-xl flex items-center border transition ${
-        isSelected
-          ? 'bg-violet-500/15 border-violet-500/50 text-white'
-          : 'border-transparent hover:bg-[var(--color-card-hover)] hover:border-violet-500/30'
-      }`}
-      aria-selected={isSelected}
-      role="option"
-      aria-label={`Select ${item.name}`}
-    >
-      <div class="flex items-center gap-3 w-full">
-        {countryCode ? (
-          <div class="w-7 h-5 shrink-0 overflow-hidden rounded-[4px] bg-gray-900 ring-1 ring-white/10">
-            <CountryFlag code={countryCode} />
-          </div>
-        ) : isLanguage ? (
-          <div class="w-7 h-7 shrink-0 rounded-md bg-white/5 flex items-center justify-center text-[var(--color-muted)]">
-            <BookOpen class="w-4 h-4" />
-          </div>
-        ) : (
-          <img src={`/brand/icons/cat-${item.id}.svg`} alt="" width="28" height="28" class="w-7 h-7 shrink-0"
-            onError={(e) => { e.currentTarget.src = '/brand/channel-fallback.svg'; }} />
-        )}
-        <span class="flex-1 min-w-0 truncate text-sm font-semibold">{item.name} {item.code && <span class="text-[var(--color-subtle)] text-xs font-normal">{item.code.toUpperCase()}</span>}</span>
-        
-        {/* Enhanced stream count display */}
-        {streamInfo && (
-          <div class={`flex items-center gap-1 text-[11px] font-medium px-2 h-6 rounded-full ${
-            streamInfo.streamCount > 0 ? 'bg-white/8 text-[var(--color-muted)]' : 'bg-white/5 text-[var(--color-subtle)]'
-          }`}>
-            <Wifi class={`w-3 h-3 ${streamInfo.streamCount > 0 ? 'text-emerald-400' : 'text-gray-500'}`} />
-            <span>{streamInfo.streamCount}</span>
-            {streamInfo.channelCount > 0 && streamInfo.channelCount !== streamInfo.streamCount && (
-              <span class="text-gray-400">/{streamInfo.channelCount}</span>
-            )}
-          </div>
-        )}
-        {isLanguage && item.channelCount > 0 && (
-          <div class="flex items-center gap-1 text-[11px] font-medium px-2 h-6 rounded-full bg-white/8 text-[var(--color-muted)]">
-            <Wifi class="w-3 h-3 text-emerald-400" />
-            <span>{item.channelCount}</span>
-          </div>
-        )}
-        {!streamInfo && loadingStreamCounts && kind === 'countries' && (
-          <div class="w-8 h-5 shrink-0">
-            <Loader class="w-3 h-3 animate-spin" />
-          </div>
-        )}
-        <ChevronRight class={`w-4 h-4 shrink-0 transition ${isSelected ? 'text-white' : 'text-[var(--color-subtle)] group-hover:text-white'}`} aria-hidden="true" />
-      </div>
-    </button>
+    <span class={`${box} shrink-0 flex items-center justify-center bg-violet-500/15 text-[var(--color-lilac)] text-[10px] font-bold uppercase`}>
+      {String(item.code || '').slice(0, 3)}
+    </span>
   );
-});
+};
+
+// CountryRow from the FigCraft design (design/figcraft/code/CountryRow.tsx):
+// 56px tall, card fill, hairline edge; hover lifts to card-hover with a violet edge.
+const CountryRow = memo(({ item, kind, count, loadingCount, onClick }) => (
+  <button
+    type="button"
+    onClick={() => onClick(item)}
+    class="group w-full min-h-14 pl-4 pr-3.5 flex items-center gap-3 rounded-xl text-left bg-[var(--color-card)] border border-[var(--color-hairline)] hover:bg-[var(--color-card-hover)] hover:border-violet-500/40 transition"
+  >
+    <ItemMark item={item} kind={kind} />
+    <span class="flex-1 min-w-0 truncate text-sm font-semibold text-[var(--color-text)]">{item.name}</span>
+    {count != null ? (
+      <CountBadge>{formatCount(count)} channels</CountBadge>
+    ) : loadingCount ? (
+      <span class="w-16 h-[22px] rounded-full bg-white/6 animate-pulse" aria-hidden="true" />
+    ) : null}
+    <ChevronRight class="w-[18px] h-[18px] shrink-0 text-white opacity-35 group-hover:opacity-90 transition-opacity" aria-hidden="true" />
+  </button>
+));
+
+// "Most channels" card: flag, name and count over a wash of the flag's colours
+const FeaturedCountry = ({ item, count, onClick }) => (
+  <button
+    type="button"
+    onClick={() => onClick(item)}
+    class="group relative h-[148px] p-5 flex flex-col justify-end gap-3 rounded-2xl overflow-hidden text-left bg-[var(--color-card)] border border-[var(--color-line)] hover:border-violet-500/50 hover:shadow-[var(--shadow-card-hover)] transition"
+  >
+    <span class="absolute inset-0 opacity-30 group-hover:opacity-40 transition-opacity scale-150 blur-2xl saturate-150 pointer-events-none" aria-hidden="true">
+      <CountryFlag code={item.code} />
+    </span>
+    <span class="absolute inset-0 bg-[linear-gradient(135deg,transparent,rgb(28_27_43/0.55))] pointer-events-none" aria-hidden="true" />
+    <span class="relative w-10 h-7 rounded-[5px] overflow-hidden ring-1 ring-inset ring-white/20">
+      <CountryFlag code={item.code} />
+    </span>
+    <span class="relative text-lg md:text-xl font-bold tracking-[-0.005em] text-[var(--color-text)] truncate">{item.name}</span>
+    <span class="relative"><CountBadge>{formatCount(count)} channels</CountBadge></span>
+  </button>
+);
 
 // Heart toggle shared by the grid and list cards
 const FavoriteButton = ({ isFavorite, onClick, size = 18 }) => (
@@ -1038,24 +1039,12 @@ export default function CountryBrowser() {
     }
   }, []);
 
-  // Render functions for VirtualList
-  const renderCountryItem = useCallback((item, index) => {
-    const streamInfo = activeTab === 'countries'
-      ? countriesWithStreamCounts.find(c => c.code === item.code)
-      : null;
-    
-    return (
-      <CountryListItem
-        key={`${item.code || item.id || ''}${index}`}
-        item={item}
-        kind={activeTab}
-        selectedItem={selectedItem}
-        streamInfo={streamInfo}
-        loadingStreamCounts={loadingStreamCounts}
-        onClick={handleItemClick}
-      />
-    );
-  }, [activeTab, countriesWithStreamCounts, handleItemClick, loadingStreamCounts, selectedItem]);
+  // Live-stream count per country code, for the row badges
+  const streamCountByCode = useMemo(() => {
+    const map = new Map();
+    for (const c of countriesWithStreamCounts) map.set(c.code, c.streamCount);
+    return map;
+  }, [countriesWithStreamCounts]);
 
   // Adjust virtual list height based on container size
   useEffect(() => {
@@ -1197,6 +1186,21 @@ export default function CountryBrowser() {
     loadFavorites();
   }, [loadFavorites]);
 
+  // "/" focuses the filter field, as hinted by the kbd chip in the design
+  const searchInputRef = useRef(null);
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey) return;
+      const tag = document.activeElement?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement?.isContentEditable) return;
+      if (!searchInputRef.current) return;
+      e.preventDefault();
+      searchInputRef.current.focus();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   // Regions for the filter chips; the page works without them
   useEffect(() => {
     let cancelled = false;
@@ -1212,337 +1216,302 @@ export default function CountryBrowser() {
       ? 'bg-violet-500/20 text-white ring-1 ring-inset ring-violet-400/50'
       : 'text-[var(--color-muted)] hover:text-white hover:bg-white/8'
   }`;
-  const field = 'w-full h-11 pl-11 pr-4 rounded-xl bg-[var(--color-card)] border border-[var(--color-line)] text-sm text-[var(--color-text)] placeholder:text-[var(--color-subtle)] focus:outline-none focus:border-violet-400/70 focus:ring-2 focus:ring-violet-500/25 transition';
-  const panel = 'rounded-2xl border border-[var(--color-hairline)] bg-[var(--color-surface)]/80 backdrop-blur-sm';
+  const field = 'w-full h-11 pl-11 pr-4 rounded-xl bg-[var(--color-card)] border border-white/8 text-sm text-[var(--color-text)] placeholder:text-[var(--color-subtle)] focus:outline-none focus:border-violet-400/70 focus:ring-2 focus:ring-violet-500/25 transition';
+  const chipClass = (on) => `shrink-0 h-9 px-4 rounded-full text-[13px] transition ${
+    on
+      ? 'font-semibold text-white bg-[linear-gradient(135deg,#8b5cf6,#f43f5e)] shadow-[var(--shadow-glow)]'
+      : 'text-[var(--color-muted)] bg-white/[0.04] border border-[var(--color-line)] hover:text-white hover:border-violet-400/40'
+  }`;
   const pageStart = filteredChannels.length > 0 ? (channelsPage - 1) * channelsPerPage + 1 : 0;
   const pageEnd = Math.min(channelsPage * channelsPerPage, filteredChannels.length);
-  const SortArrow = ({ on }) => (on ? (sortOrder === 'asc' ? <ArrowUp class="w-3.5 h-3.5" /> : <ArrowDown class="w-3.5 h-3.5" />) : null);
   const ChannelSortArrow = ({ on }) => (on ? (channelSortOrder === 'asc' ? <ArrowUp class="w-3 h-3" /> : <ArrowDown class="w-3 h-3" />) : null);
 
-  return (
-    <div>
-      <div class="mb-6">
-        {/* Banner */}
-        <div class="page-banner banner-countries mb-6">
-          <p class="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-lilac)] mb-2">Explore</p>
-          <h2 class="text-3xl md:text-4xl font-bold mb-2">Browse channels worldwide</h2>
-          <p class="text-[var(--color-muted)] max-w-xl">
-            Pick a country, category or language to see its live channels, then watch or import the whole playlist.
-            <a
-              href="https://github.com/iptv-org/iptv#playlists"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="see-all ml-1"
-            >
-              Source <ExternalLink class="w-3.5 h-3.5" aria-hidden="true" />
-            </a>
-          </p>
-        </div>
+  const isCountries = activeTab === 'countries';
+  const rowCount = (item) => {
+    if (isCountries) return streamCountByCode.get(item.code) ?? null;
+    return item.channelCount > 0 ? item.channelCount : null;
+  };
+  const totalLive = isCountries ? countriesWithStreamCounts.reduce((sum, c) => sum + (c.streamCount || 0), 0) : 0;
+  const featured = isCountries && !debouncedSearch && countriesWithStreamCounts.length > 0
+    ? [...sortedList]
+      .filter(c => streamCountByCode.get(c.code) > 0)
+      .sort((a, b) => streamCountByCode.get(b.code) - streamCountByCode.get(a.code))
+      .slice(0, 4)
+    : [];
+  const sortedByCount = sortBy === 'streams';
+  const openItem = (item) => {
+    handleItemClick(item);
+    window.scrollTo({ top: 0 });
+  };
 
-        {/* Tabs: segmented control */}
-        <div class="flex flex-col lg:flex-row lg:items-center gap-3 mb-4">
-          <div role="tablist" aria-label="Browse by" class="flex lg:inline-flex p-1 gap-1 rounded-2xl bg-[var(--color-card)] border border-[var(--color-hairline)] lg:self-start">
+  return (
+    <div class="pb-8">
+      {!selectedItem ? (
+        <>
+          {/* Header: title + filter, as in the FigCraft screen-browse frame */}
+          <div class="flex flex-col lg:flex-row lg:items-end gap-5 mb-6">
+            <div class="flex-1 min-w-0">
+              <h2 class="text-3xl md:text-4xl font-bold tracking-[-0.015em] text-[var(--color-text)]">
+                Browse by {singular}
+              </h2>
+              <p class="mt-2 text-base text-[var(--color-muted)]">
+                {loading ? 'Loading…' : isCountries
+                  ? <>{formatCount(countries.length)} countries{totalLive > 0 && <> · {formatCount(totalLive)} live channels</>}. Pick a country to see what’s on.</>
+                  : <>{formatCount(currentList.length)} {activeTab}. Pick one to see what’s on.</>}
+              </p>
+            </div>
+            <div class="lg:pb-1">
+              <div class="relative w-full sm:w-[360px]">
+                <label htmlFor="search-input" class="sr-only">Filter {activeTab}</label>
+                <Search class="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-white opacity-50 pointer-events-none" aria-hidden="true" />
+                <input
+                  ref={searchInputRef}
+                  type="search"
+                  id="search-input"
+                  placeholder={`Filter ${activeTab}`}
+                  class={`${field} pr-12`}
+                  value={searchQuery}
+                  onInput={e => setSearchQuery(e.target.value)}
+                />
+                <kbd class="hidden sm:flex absolute right-3 top-1/2 -translate-y-1/2 h-6 min-w-6 px-1.5 items-center justify-center rounded-md border border-[var(--color-line)] text-xs font-semibold text-[var(--color-muted)] font-sans pointer-events-none">/</kbd>
+              </div>
+            </div>
+          </div>
+
+          {/* Region chips, with the country / category / language switch on the right */}
+          <div class="flex flex-col-reverse md:flex-row md:items-center gap-3 mb-8">
+            {isCountries && regionChips.length > 0 && (
+              <div class="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 min-w-0" role="group" aria-label="Filter by region">
+                {[{ code: '', label: 'All' }, ...regionChips].map(({ code, label }) => (
+                  <button key={code || 'all'} onClick={() => setRegionFilter(code)} aria-pressed={regionFilter === code} class={chipClass(regionFilter === code)}>
+                    {label}
+                  </button>
+                ))}
+              </div>
+            )}
+            <span class="hidden md:block flex-1" />
+          <div class="inline-flex p-1 gap-1 rounded-xl bg-[var(--color-card)] border border-white/8 shrink-0" role="tablist" aria-label="Browse by">
             {TABS.map(({ id, label, icon: Icon }) => (
               <button
                 key={id}
                 role="tab"
                 aria-selected={activeTab === id}
                 onClick={() => setActiveTab(id)}
-                class={`h-10 px-3 sm:px-4 flex-1 lg:flex-none justify-center rounded-xl flex items-center gap-2 text-sm font-semibold transition ${
-                  activeTab === id
-                    ? 'text-white bg-[linear-gradient(135deg,#8b5cf6,#f43f5e)] shadow-[var(--shadow-glow)]'
-                    : 'text-[var(--color-muted)] hover:text-white hover:bg-white/6'
+                title={`Browse by ${TAB_SINGULAR[id]}`}
+                class={`h-9 px-3 rounded-[10px] flex items-center gap-1.5 text-[13px] font-semibold transition ${
+                  activeTab === id ? 'bg-white/10 text-white' : 'text-[var(--color-muted)] hover:text-white'
                 }`}
               >
-                <Icon class="w-4 h-4 hidden sm:block" aria-hidden="true" />
+                <Icon class="w-4 h-4" aria-hidden="true" />
                 {label}
               </button>
             ))}
           </div>
-
-          {/* Search */}
-          <div class="relative grow">
-            <label htmlFor="search-input" class="sr-only">Search {activeTab}</label>
-            <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[var(--color-subtle)] pointer-events-none" aria-hidden="true" />
-            <input
-              type="search"
-              id="search-input"
-              placeholder={`Search ${activeTab}…`}
-              class={field}
-              value={searchQuery}
-              onInput={e => setSearchQuery(e.target.value)}
-            />
           </div>
 
-          {/* Country sorting */}
-          {activeTab === 'countries' && (
-            <div class="inline-flex p-1 gap-1 rounded-xl bg-[var(--color-card)] border border-[var(--color-hairline)] self-start" aria-label="Sort countries">
-              <button onClick={() => toggleSort('streams')} class={iconButton(sortBy === 'streams')} title="Sort by available streams" aria-pressed={sortBy === 'streams'}>
-                <Wifi class="w-4 h-4" aria-hidden="true" /> Streams <SortArrow on={sortBy === 'streams'} />
-              </button>
-              <button onClick={() => toggleSort('name')} class={iconButton(sortBy === 'name')} title="Sort alphabetically" aria-pressed={sortBy === 'name'}>
-                <SortDesc class="w-4 h-4" aria-hidden="true" /> Name <SortArrow on={sortBy === 'name'} />
-              </button>
+          {error && (
+            <div class="bg-rose-500/10 border border-rose-500/30 text-rose-100 p-4 rounded-2xl mb-6 flex items-start gap-3">
+              <AlertCircle class="w-5 h-5 mt-0.5 shrink-0 text-[var(--color-live)]" />
+              <div>
+                <p class="font-semibold">Connection error</p>
+                <p class="whitespace-pre-line text-sm text-rose-100/80">{error}</p>
+              </div>
             </div>
           )}
-        </div>
 
-        {/* Region chips */}
-        {activeTab === 'countries' && regionChips.length > 0 && (
-          <div class="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1" role="group" aria-label="Filter by region">
-            {[{ code: '', label: 'All regions' }, ...regionChips].map(({ code, label }) => {
-              const on = regionFilter === code;
-              return (
-                <button
-                  key={code || 'all'}
-                  onClick={() => setRegionFilter(code)}
-                  aria-pressed={on}
-                  class={`shrink-0 h-9 px-4 rounded-full text-sm font-medium border transition ${
-                    on
-                      ? 'bg-violet-500/20 border-violet-400/60 text-white'
-                      : 'bg-white/[0.04] border-[var(--color-line)] text-[var(--color-muted)] hover:text-white hover:border-violet-400/40'
-                  }`}
-                >
-                  {label}
-                </button>
-              );
-            })}
-          </div>
-        )}
-      </div>
-
-      {/* Error message */}
-      {error && (
-        <div class="bg-rose-500/10 border border-rose-500/30 text-rose-100 p-4 rounded-2xl mb-6 flex items-start gap-3">
-          <AlertCircle class="w-5 h-5 mt-0.5 shrink-0 text-[var(--color-live)]" />
-          <div>
-            <p class="font-semibold">Connection error</p>
-            <p class="whitespace-pre-line text-sm text-rose-100/80">{error}</p>
-            {selectedItem && (
-              <p class="mt-2 text-sm text-rose-100/80">You can still try to import the playlist; some channels may work even if the preview fails.</p>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Main content grid */}
-      <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-        {/* Left sidebar */}
-        <div class={`md:col-span-1 ${panel} flex flex-col h-[45vh] md:h-[72vh] overflow-hidden`}>
-          <div class="flex items-center justify-between px-4 pt-4 pb-2">
-            <span class="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--color-subtle)]">
-              {TABS.find(t => t.id === activeTab)?.label}
-            </span>
-            {!loading && (
-              <span class="text-xs text-[var(--color-subtle)]">{sortedList.length}</span>
-            )}
-          </div>
-          <div ref={listContainerRef} class="flex-1 min-h-0 px-2 pb-2">
-            {loading ? (
-              <div class="flex items-center justify-center h-full">
-                <Loader class="w-7 h-7 animate-spin text-[var(--color-lilac)]" />
+          {/* Most channels */}
+          {featured.length > 0 && (
+            <section class="mb-10">
+              <h3 class="text-xl font-semibold tracking-[-0.005em] mb-4">Most channels</h3>
+              <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                {featured.map(item => (
+                  <FeaturedCountry key={item.code} item={item} count={streamCountByCode.get(item.code)} onClick={openItem} />
+                ))}
               </div>
-            ) : filteredList.length === 0 ? (
-              <div class="text-center py-12">
-                <img src="/brand/pages/empty-search.svg" alt="" width="320" height="200" class="w-36 h-auto mx-auto mb-3" />
+            </section>
+          )}
+
+          {/* All countries */}
+          <section>
+            <div class="flex items-center gap-3 mb-4">
+              <h3 class="text-xl font-semibold tracking-[-0.005em]">All {activeTab}</h3>
+              <span class="flex-1" />
+              {isCountries ? (
+                <button
+                  onClick={() => {
+                    const next = sortedByCount ? 'name' : 'streams';
+                    setSortBy(next);
+                    setSortOrder(next === 'name' ? 'asc' : 'desc');
+                  }}
+                  class="see-all font-semibold"
+                >
+                  Sort: {sortedByCount ? 'most channels' : 'A–Z'}
+                  <ChevronRight class="w-4 h-4 opacity-80" aria-hidden="true" />
+                </button>
+              ) : null}
+            </div>
+
+            {loading ? (
+              <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-4 gap-y-3" aria-busy="true">
+                {Array.from({ length: 12 }, (_, i) => (
+                  <div key={i} class="h-14 rounded-xl bg-[var(--color-card)] border border-[var(--color-hairline)] animate-pulse" />
+                ))}
+              </div>
+            ) : sortedList.length === 0 ? (
+              <div class="py-12 text-center">
+                <img src="/brand/pages/empty-search.svg" alt="" width="320" height="200" class="w-40 h-auto mx-auto mb-3" />
                 <p class="text-[var(--color-muted)]">No {activeTab} found</p>
-                {regionFilter && activeTab === 'countries' && (
-                  <button onClick={() => setRegionFilter('')} class="see-all mt-2">Show all regions</button>
+                {(regionFilter || searchQuery) && (
+                  <button onClick={() => { setRegionFilter(''); setSearchQuery(''); }} class="see-all mt-2">Clear filters</button>
                 )}
               </div>
             ) : (
-              <div class="h-full">
-                {/* Stream count loading indicator */}
-                {activeTab === 'countries' && sortBy === 'streams' && loadingStreamCounts && (
-                  <div class="stream-count-notice mx-1 mb-3 px-3 h-9 rounded-xl bg-violet-500/10 text-[var(--color-lilac)] text-xs font-medium flex items-center gap-2">
-                    <Loader class="w-3.5 h-3.5 animate-spin" />
-                    <span>Counting live streams…</span>
-                  </div>
-                )}
-
-                {!sortedList || sortedList.length === 0 ? (
-                  <div class="text-center py-12">
-                    <img src="/brand/pages/empty-search.svg" alt="" width="320" height="200" class="w-36 h-auto mx-auto mb-3" />
-                    <p class="text-[var(--color-muted)]">No results to display</p>
-                  </div>
-                ) : (
-                  <EnhancedVirtualList
-                    items={sortedList}
-                    height={listHeight}
-                    itemHeight={56}
-                    renderItem={renderCountryItem}
-                    overscan={5}
-                    selectedItem={selectedItem}
-                    aria-label={`List of ${activeTab}`}
-                    tabIndex={keyboardNavigation ? 0 : undefined}
-                    class="focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-500/60 rounded-xl"
-                    onItemsRendered={({visibleStartIndex}) => {
-                      if (keyboardNavigation && visibleStartIndex >= 0) {
-                        setKeyboardFocusIndex(visibleStartIndex);
-                      }
-                    }}
-                    onKeyDown={handleKeyboardNavigation}
+              <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-4 gap-y-3">
+                {sortedList.map(item => (
+                  <CountryRow
+                    key={item.code || item.id}
+                    item={item}
+                    kind={activeTab}
+                    count={rowCount(item)}
+                    loadingCount={isCountries && loadingStreamCounts}
+                    onClick={openItem}
                   />
-                )}
+                ))}
               </div>
             )}
-          </div>
-        </div>
+          </section>
+        </>
+      ) : (
+        <>
+          {/* Selected country / category / language */}
+          <button onClick={() => setSelectedItem(null)} class="see-all font-semibold mb-5">
+            <ChevronLeft class="w-4 h-4" aria-hidden="true" /> All {activeTab}
+          </button>
 
-        {/* Main content area */}
-        <div class={`md:col-span-2 ${panel} p-4 md:p-6 md:h-[72vh] overflow-y-auto`}>
-          {!selectedItem ? (
-            <div class="flex flex-col items-center justify-center h-full min-h-64 text-center">
-              <div class="w-16 h-16 rounded-2xl brand-gradient flex items-center justify-center text-white shadow-[var(--shadow-glow)] [&>svg]:w-7 [&>svg]:h-7">
-                {getTabIcon(activeTab)}
+          <div class="flex flex-col sm:flex-row sm:items-end gap-5 mb-6">
+            <div class="flex items-center gap-4 flex-1 min-w-0">
+              <ItemMark item={selectedItem} kind={activeTab} size="large" />
+              <div class="min-w-0">
+                <h2 class="text-3xl md:text-4xl font-bold tracking-[-0.015em] truncate">{selectedItem.name}</h2>
+                <div class="flex flex-wrap items-center gap-2 mt-2">
+                  <CountBadge>{formatCount(filteredChannels.length)} channels</CountBadge>
+                  {streamsFetched && (
+                    <span class="live-badge">{streamMetrics.streamAvailabilityPercentage}% LIVE</span>
+                  )}
+                </div>
               </div>
-              <h3 class="text-xl font-semibold mt-5">Select a {singular}</h3>
-              <p class="text-[var(--color-muted)] mt-2 max-w-xs">
-                Choose a {singular} from the list to see its channels.
-              </p>
             </div>
-          ) : (
-            <div>
-              {/* Selected item header */}
-              <div class="flex flex-col sm:flex-row sm:items-center gap-4 mb-5">
-                {activeTab === 'countries' ? (
-                  <div class="w-[72px] h-[54px] shrink-0 overflow-hidden rounded-xl ring-1 ring-white/10 shadow-[var(--shadow-card-hover)] bg-[var(--color-card)] flex items-center justify-center">
-                    {selectedItem.code ? <CountryFlag code={selectedItem.code} /> : <Globe class="w-7 h-7 text-[var(--color-subtle)]" />}
-                  </div>
-                ) : activeTab === 'categories' ? (
-                  <img src={`/brand/icons/cat-${selectedItem.id}.svg`} alt="" width="54" height="54" class="w-[54px] h-[54px] shrink-0"
-                    onError={(e) => { e.currentTarget.src = '/brand/channel-fallback.svg'; }} />
-                ) : (
-                  <div class="w-[54px] h-[54px] shrink-0 rounded-xl bg-violet-500/15 flex items-center justify-center text-[var(--color-lilac)]">
-                    <BookOpen class="w-6 h-6" />
-                  </div>
-                )}
-                <div class="flex-1 min-w-0">
-                  <h3 class="text-2xl font-bold flex items-center gap-2 min-w-0">
-                    <span class="truncate">{selectedItem.name}</span>
-                    {selectedItem.code && activeTab !== 'categories' && (
-                      <span class="shrink-0 text-xs font-semibold px-2 h-6 inline-flex items-center rounded-md bg-white/8 text-[var(--color-muted)]">
-                        {selectedItem.code.toUpperCase()}
-                      </span>
-                    )}
-                  </h3>
-                  <div class="flex flex-wrap items-center gap-2 mt-2 text-xs">
-                    <span class="inline-flex items-center h-6 px-2.5 rounded-full bg-white/6 text-[var(--color-muted)] font-medium">
-                      {filteredChannels.length} channels
-                    </span>
-                    {streamsFetched && (
-                      <span class="inline-flex items-center gap-1.5 h-6 px-2.5 rounded-full bg-emerald-500/10 text-emerald-300 font-medium">
-                        {streamMetrics.channelsWithStreams.length > 0 ? <Wifi class="w-3 h-3" /> : <WifiOff class="w-3 h-3" />}
-                        {streamMetrics.streamAvailabilityPercentage}% streaming
-                      </span>
-                    )}
-                  </div>
-                </div>
-                <button
-                  onClick={handleImport}
-                  disabled={importing}
-                  class="btn btn-primary self-start sm:self-center shrink-0 disabled:opacity-70"
-                >
-                  {importing ? <RefreshCw class="w-4 h-4 animate-spin" /> : importSuccess ? <Check class="w-4 h-4" /> : <Download class="w-4 h-4" />}
-                  {importSuccess ? 'Added to playlists' : 'Import playlist'}
-                </button>
+            <button onClick={handleImport} disabled={importing} class="btn btn-primary self-start sm:self-auto shrink-0 disabled:opacity-70">
+              {importing ? <RefreshCw class="w-4 h-4 animate-spin" /> : importSuccess ? <Check class="w-4 h-4" /> : <Download class="w-4 h-4" />}
+              {importSuccess ? 'Added to playlists' : 'Import playlist'}
+            </button>
+          </div>
+
+          {error && (
+            <div class="bg-rose-500/10 border border-rose-500/30 text-rose-100 p-4 rounded-2xl mb-6 flex items-start gap-3">
+              <AlertCircle class="w-5 h-5 mt-0.5 shrink-0 text-[var(--color-live)]" />
+              <div>
+                <p class="font-semibold">Connection error</p>
+                <p class="whitespace-pre-line text-sm text-rose-100/80">{error}</p>
+                <p class="mt-2 text-sm text-rose-100/80">You can still try to import the playlist; some channels may work even if the preview fails.</p>
               </div>
-
-              {/* Channel toolbar */}
-              <div class="flex flex-wrap items-center gap-2 mb-4 pb-4 border-b border-[var(--color-hairline)]">
-                <div class="relative flex-1 min-w-[180px]">
-                  <label htmlFor="channel-filter-input" class="sr-only">Filter channels</label>
-                  <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-subtle)] pointer-events-none" aria-hidden="true" />
-                  <input
-                    type="search"
-                    id="channel-filter-input"
-                    placeholder="Filter channels…"
-                    class={field.replace('h-11', 'h-10')}
-                    value={channelFilter}
-                    onInput={e => setChannelFilter(e.target.value)}
-                  />
-                </div>
-                <div class="inline-flex p-1 gap-1 rounded-xl bg-[var(--color-card)] border border-[var(--color-hairline)]">
-                  <button onClick={() => toggleChannelSort('streams')} class={iconButton(channelSortBy === 'streams')} title="Sort by available streams" aria-label="Sort by available streams" aria-pressed={channelSortBy === 'streams'}>
-                    <Wifi class="w-4 h-4" /> <ChannelSortArrow on={channelSortBy === 'streams'} />
-                  </button>
-                  <button onClick={() => toggleChannelSort('name')} class={iconButton(channelSortBy === 'name')} title="Sort alphabetically" aria-label="Sort alphabetically" aria-pressed={channelSortBy === 'name'}>
-                    <SortDesc class="w-4 h-4" /> <ChannelSortArrow on={channelSortBy === 'name'} />
-                  </button>
-                </div>
-                <div class="inline-flex p-1 gap-1 rounded-xl bg-[var(--color-card)] border border-[var(--color-hairline)]">
-                  <button onClick={() => setViewMode('grid')} class={iconButton(viewMode === 'grid')} title="Grid view" aria-label="Grid view" aria-pressed={viewMode === 'grid'}>
-                    <Grid class="w-4 h-4" />
-                  </button>
-                  <button onClick={() => setViewMode('list')} class={iconButton(viewMode === 'list')} title="List view" aria-label="List view" aria-pressed={viewMode === 'list'}>
-                    <List class="w-4 h-4" />
-                  </button>
-                  <button onClick={refreshStreams} disabled={fetchingStreams} class={iconButton(false)} title="Refresh stream data" aria-label="Refresh stream data">
-                    <RefreshCw class={`w-4 h-4 ${fetchingStreams ? 'animate-spin' : ''}`} />
-                  </button>
-                </div>
-              </div>
-
-              {/* Channels */}
-              {loadingChannels ? (
-                <div class="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-3" aria-busy="true">
-                  {Array.from({ length: 6 }, (_, i) => (
-                    <div key={i} class="h-20 rounded-[14px] bg-[var(--color-card)] border border-[var(--color-hairline)] animate-pulse" />
-                  ))}
-                </div>
-              ) : sortedAndFilteredChannels.length === 0 ? (
-                <div class="py-10 text-center">
-                  <img src="/brand/pages/empty-search.svg" alt="" width="320" height="200" class="w-40 h-auto mx-auto mb-3" />
-                  <p class="font-semibold">No channels found for {selectedItem.name}</p>
-                  <p class="text-sm mt-1 text-[var(--color-muted)]">Try another {singular}, clear the filter, or check your connection.</p>
-                </div>
-              ) : fetchingStreams ? (
-                <div class="py-10 flex flex-col items-center text-[var(--color-muted)]">
-                  <Loader class="animate-spin w-7 h-7 text-[var(--color-lilac)] mb-2" />
-                  <p>Fetching stream data…</p>
-                </div>
-              ) : viewMode === 'grid' ? (
-                <div class="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-3">
-                  {paginatedChannels.map((channel, index) => (
-                    <ChannelGridItem
-                      key={channel.id || channel.url || index}
-                      channel={channel}
-                      isFavorite={isChannelFavorite(channel.id)}
-                      onFavoriteToggle={handleToggleFavorite}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div class="flex flex-col gap-0.5 rounded-2xl border border-[var(--color-hairline)] bg-[var(--color-card)] p-1.5">
-                  {paginatedChannels.map((channel, index) => (
-                    <ChannelListItem
-                      key={channel.id || channel.url || index}
-                      channel={channel}
-                      isFavorite={isChannelFavorite(channel.id)}
-                      onFavoriteToggle={handleToggleFavorite}
-                    />
-                  ))}
-                </div>
-              )}
-
-              {/* Pagination */}
-              {sortedAndFilteredChannels.length > channelsPerPage && (
-                <div class="mt-6 flex items-center justify-between gap-3">
-                  <button onClick={prevPage} disabled={channelsPage <= 1} class="btn btn-secondary disabled:opacity-40 disabled:pointer-events-none">
-                    <ChevronLeft class="w-4 h-4" /> Previous
-                  </button>
-                  <span class="text-sm text-[var(--color-muted)] text-center">
-                    {pageStart}–{pageEnd} <span class="text-[var(--color-subtle)]">of {filteredChannels.length}</span>
-                  </span>
-                  <button onClick={nextPage} disabled={channelsPage >= totalPages} class="btn btn-secondary disabled:opacity-40 disabled:pointer-events-none">
-                    Next <ChevronRight class="w-4 h-4" />
-                  </button>
-                </div>
-              )}
             </div>
           )}
-        </div>
-      </div>
+
+          {/* Channel toolbar */}
+          <div class="flex flex-wrap items-center gap-2 mb-5">
+            <div class="relative flex-1 min-w-[200px] max-w-[360px]">
+              <label htmlFor="channel-filter-input" class="sr-only">Filter channels</label>
+              <Search class="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-white opacity-50 pointer-events-none" aria-hidden="true" />
+              <input
+                type="search"
+                id="channel-filter-input"
+                placeholder="Filter channels"
+                class={field}
+                value={channelFilter}
+                onInput={e => setChannelFilter(e.target.value)}
+              />
+            </div>
+            <span class="flex-1" />
+            <div class="inline-flex p-1 gap-1 rounded-xl bg-[var(--color-card)] border border-[var(--color-hairline)]">
+              <button onClick={() => toggleChannelSort('streams')} class={iconButton(channelSortBy === 'streams')} title="Sort by available streams" aria-label="Sort by available streams" aria-pressed={channelSortBy === 'streams'}>
+                <Wifi class="w-4 h-4" /> <ChannelSortArrow on={channelSortBy === 'streams'} />
+              </button>
+              <button onClick={() => toggleChannelSort('name')} class={iconButton(channelSortBy === 'name')} title="Sort alphabetically" aria-label="Sort alphabetically" aria-pressed={channelSortBy === 'name'}>
+                <SortDesc class="w-4 h-4" /> <ChannelSortArrow on={channelSortBy === 'name'} />
+              </button>
+            </div>
+            <div class="inline-flex p-1 gap-1 rounded-xl bg-[var(--color-card)] border border-[var(--color-hairline)]">
+              <button onClick={() => setViewMode('grid')} class={iconButton(viewMode === 'grid')} title="Grid view" aria-label="Grid view" aria-pressed={viewMode === 'grid'}>
+                <Grid class="w-4 h-4" />
+              </button>
+              <button onClick={() => setViewMode('list')} class={iconButton(viewMode === 'list')} title="List view" aria-label="List view" aria-pressed={viewMode === 'list'}>
+                <List class="w-4 h-4" />
+              </button>
+              <button onClick={refreshStreams} disabled={fetchingStreams} class={iconButton(false)} title="Refresh stream data" aria-label="Refresh stream data">
+                <RefreshCw class={`w-4 h-4 ${fetchingStreams ? 'animate-spin' : ''}`} />
+              </button>
+            </div>
+          </div>
+
+          {/* Channels */}
+          {loadingChannels ? (
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4" aria-busy="true">
+              {Array.from({ length: 9 }, (_, i) => (
+                <div key={i} class="h-20 rounded-[14px] bg-[var(--color-card)] border border-[var(--color-hairline)] animate-pulse" />
+              ))}
+            </div>
+          ) : sortedAndFilteredChannels.length === 0 ? (
+            <div class="py-10 text-center">
+              <img src="/brand/pages/empty-search.svg" alt="" width="320" height="200" class="w-40 h-auto mx-auto mb-3" />
+              <p class="font-semibold">No channels found for {selectedItem.name}</p>
+              <p class="text-sm mt-1 text-[var(--color-muted)]">Try another {singular}, clear the filter, or check your connection.</p>
+            </div>
+          ) : fetchingStreams ? (
+            <div class="py-10 flex flex-col items-center text-[var(--color-muted)]">
+              <Loader class="animate-spin w-7 h-7 text-[var(--color-lilac)] mb-2" />
+              <p>Fetching stream data…</p>
+            </div>
+          ) : viewMode === 'grid' ? (
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              {paginatedChannels.map((channel, index) => (
+                <ChannelGridItem
+                  key={channel.id || channel.url || index}
+                  channel={channel}
+                  isFavorite={isChannelFavorite(channel.id)}
+                  onFavoriteToggle={handleToggleFavorite}
+                />
+              ))}
+            </div>
+          ) : (
+            <div class="flex flex-col gap-0.5 rounded-2xl border border-[var(--color-hairline)] bg-[var(--color-card)] p-1.5">
+              {paginatedChannels.map((channel, index) => (
+                <ChannelListItem
+                  key={channel.id || channel.url || index}
+                  channel={channel}
+                  isFavorite={isChannelFavorite(channel.id)}
+                  onFavoriteToggle={handleToggleFavorite}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Pagination */}
+          {sortedAndFilteredChannels.length > channelsPerPage && (
+            <div class="mt-6 flex items-center justify-between gap-3">
+              <button onClick={prevPage} disabled={channelsPage <= 1} class="btn btn-secondary disabled:opacity-40 disabled:pointer-events-none">
+                <ChevronLeft class="w-4 h-4" /> Previous
+              </button>
+              <span class="text-sm text-[var(--color-muted)] text-center">
+                {pageStart}–{pageEnd} <span class="text-[var(--color-subtle)]">of {filteredChannels.length}</span>
+              </span>
+              <button onClick={nextPage} disabled={channelsPage >= totalPages} class="btn btn-secondary disabled:opacity-40 disabled:pointer-events-none">
+                Next <ChevronRight class="w-4 h-4" />
+              </button>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }
