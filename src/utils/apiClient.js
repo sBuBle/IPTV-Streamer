@@ -1,4 +1,4 @@
-import { get, set } from './idbStorage';
+import { get, set, remove } from './idbStorage';
 import { formatLogoUrl } from './logoService';
 
 // Updated API endpoints based on latest IPTV-org API documentation
@@ -27,6 +27,13 @@ const API_ENDPOINTS = {
 // Cache duration constants (in milliseconds)
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 
+// Cache keys whose stored shape changed. The old entries are multi-megabyte
+// raw downloads, so drop them instead of leaving them in IndexedDB.
+const LEGACY_KEYS = ['api_feeds', 'api_feeds_timestamp', 'api_logos', 'api_logos_timestamp', 'api_streams', 'api_streams_timestamp', 'api_countries', 'api_countries_timestamp'];
+if (typeof indexedDB !== 'undefined') {
+  setTimeout(() => { for (const key of LEGACY_KEYS) remove(key); }, 5000);
+}
+
 // Parsed responses kept for the whole session, so pages don't re-read
 // multi-megabyte arrays from IndexedDB on every visit.
 const memory = new Map(); // cacheKey -> { data, timestamp }
@@ -41,7 +48,10 @@ async function download(url, cacheKey, options) {
   if (!response.ok) {
     throw new Error(`API request failed: ${response.status}`);
   }
-  const data = await response.json();
+  const raw = await response.json();
+  // Keep only what the app reads: smaller to hold in memory, and much faster
+  // to write to and read back from IndexedDB on the next visit
+  const data = options.transform ? options.transform(raw) : raw;
   const timestamp = Date.now();
   memory.set(cacheKey, { data, timestamp });
   // Persist without blocking the caller
@@ -90,12 +100,60 @@ async function fetchWithCache(url, cacheKey, options = {}) {
 
   if (entry) {
     if (Date.now() - entry.timestamp >= CACHE_DURATION && !inflight.has(cacheKey)) {
-      downloadOnce(url, cacheKey, {}).catch(err => console.warn(`Background refresh of ${url} failed:`, err));
+      downloadOnce(url, cacheKey, { transform: options.transform }).catch(err => console.warn(`Background refresh of ${url} failed:`, err));
     }
     return entry.data;
   }
 
   return downloadOnce(url, cacheKey, options);
+}
+
+// streams.json renamed resolution -> quality and http_referrer -> referrer;
+// keep the old names too, since the pages read those
+function normalizeStreams(streams) {
+  if (!Array.isArray(streams)) return streams;
+  return streams.map(stream => ({
+    channel: stream.channel ?? null,
+    feed: stream.feed ?? null,
+    title: stream.title ?? null,
+    url: stream.url,
+    resolution: stream.quality ?? stream.resolution ?? null,
+    status: stream.status ?? null,
+    http_referrer: stream.referrer ?? stream.http_referrer ?? null,
+    user_agent: stream.user_agent ?? null,
+  }));
+}
+
+// logos.json (~6 MB) -> { channelId: url }, preferring the channel-wide logo
+function compactLogos(logos) {
+  const map = {};
+  if (Array.isArray(logos)) {
+    for (const logo of logos) {
+      if (!logo?.channel || !logo.url) continue;
+      if (!(logo.channel in map) || !logo.feed) map[logo.channel] = logo.url;
+    }
+  }
+  return map;
+}
+
+// feeds.json (~8 MB) -> { channelId: [language codes] }
+function compactFeedLanguages(feeds) {
+  const map = {};
+  if (Array.isArray(feeds)) {
+    for (const feed of feeds) {
+      if (!feed?.channel || !Array.isArray(feed.languages) || !feed.languages.length) continue;
+      const list = map[feed.channel] || (map[feed.channel] = []);
+      for (const lang of feed.languages) {
+        const code = String(lang).toLowerCase();
+        if (!list.includes(code)) list.push(code);
+      }
+    }
+  }
+  return map;
+}
+
+function fetchStreams(options = {}) {
+  return fetchWithCache(API_ENDPOINTS.STREAMS, 'api_streams_v2', { ...options, transform: normalizeStreams });
 }
 
 // Streams grouped by channel ID, rebuilt only when streams.json changes
@@ -161,16 +219,9 @@ let logoMapPromise = null;
 export async function loadLogos(options = {}) {
   if (logoMap) return logoMap;
   if (!logoMapPromise) {
-    logoMapPromise = fetchWithCache(API_ENDPOINTS.LOGOS, 'api_logos', options)
+    logoMapPromise = fetchWithCache(API_ENDPOINTS.LOGOS, 'api_logo_map', { ...options, transform: compactLogos })
       .then((logos) => {
-        const map = new Map();
-        if (Array.isArray(logos)) {
-          for (const logo of logos) {
-            if (!logo?.channel || !logo.url) continue;
-            // Prefer the channel-wide logo over feed-specific ones
-            if (!map.has(logo.channel) || !logo.feed) map.set(logo.channel, logo.url);
-          }
-        }
+        const map = new Map(logos && typeof logos === 'object' ? Object.entries(logos) : []);
         logoMap = map;
         return map;
       })
@@ -231,12 +282,12 @@ export async function getLanguages(options = {}) {
 }
 
 /**
- * Get channel feeds (each has `channel` and a `languages` array of ISO 639-3 codes)
+ * Broadcast languages per channel, from feeds.json
  * @param {Object} options - Fetch options
- * @returns {Promise<Array>} List of feeds
+ * @returns {Promise<Object>} { channelId: [ISO 639-3 codes] }
  */
 export async function getFeeds(options = {}) {
-  return fetchWithCache(API_ENDPOINTS.FEEDS, 'api_feeds', options);
+  return fetchWithCache(API_ENDPOINTS.FEEDS, 'api_feed_languages', { ...options, transform: compactFeedLanguages });
 }
 
 // Channel ID -> Set of language codes, built from feeds.json
@@ -251,15 +302,7 @@ async function getChannelLanguageIndex(options = {}) {
     console.warn('Could not load feeds (languages):', err);
   }
   if (feeds !== channelLanguageSource || !channelLanguageIndex) {
-    channelLanguageIndex = new Map();
-    if (Array.isArray(feeds)) {
-      for (const feed of feeds) {
-        if (!feed?.channel || !Array.isArray(feed.languages)) continue;
-        let set = channelLanguageIndex.get(feed.channel);
-        if (!set) channelLanguageIndex.set(feed.channel, (set = new Set()));
-        for (const lang of feed.languages) set.add(String(lang).toLowerCase());
-      }
-    }
+    channelLanguageIndex = new Map(feeds && typeof feeds === 'object' ? Object.entries(feeds) : []);
     channelLanguageSource = feeds;
   }
   return channelLanguageIndex;
@@ -283,7 +326,7 @@ async function getLanguageNames(options = {}) {
 
 function channelLanguages(channel, languageIndex) {
   const fromFeeds = languageIndex?.get(channel.id);
-  if (fromFeeds && fromFeeds.size) return [...fromFeeds];
+  if (fromFeeds && fromFeeds.length) return fromFeeds;
   // Older API versions kept the languages on the channel itself
   return Array.isArray(channel.languages) ? channel.languages.map(l => String(l).toLowerCase()) : [];
 }
@@ -298,7 +341,7 @@ export async function getLanguagesWithChannels(options = {}) {
   const [languages, channels, streams, languageIndex] = await Promise.all([
     getLanguages(options),
     fetchWithCache(API_ENDPOINTS.CHANNELS, 'api_channels', options),
-    fetchWithCache(API_ENDPOINTS.STREAMS, 'api_streams', options).catch(() => null),
+    fetchStreams(options).catch(() => null),
     getChannelLanguageIndex(options),
   ]);
   if (!Array.isArray(languages)) return [];
@@ -323,7 +366,7 @@ export async function getLanguagesWithChannels(options = {}) {
  * @returns {Promise<Array>} List of streams
  */
 export async function getStreams(options = {}) {
-  return fetchWithCache(API_ENDPOINTS.STREAMS, 'api_streams', options);
+  return fetchStreams(options);
 }
 
 /**
@@ -336,7 +379,7 @@ export async function getChannels(filters = {}, options = {}) {
   try {
     const [channels, streams] = await Promise.all([
       fetchWithCache(API_ENDPOINTS.CHANNELS, 'api_channels', options),
-      fetchWithCache(API_ENDPOINTS.STREAMS, 'api_streams', options),
+      fetchStreams(options),
       loadLogos(options)
     ]);
 
@@ -412,7 +455,7 @@ export async function findChannel(nameOrId, options = {}) {
     if (channel) {
       // Get stream URL for this channel
       try {
-        const streams = await fetchWithCache(API_ENDPOINTS.STREAMS, 'api_streams', options);
+        const streams = await fetchStreams(options);
         const channelStreams = getStreamIndex(streams).get(channel.id) || [];
 
         if (channelStreams.length > 0) {
@@ -460,7 +503,7 @@ export async function getChannelDetails(channelId, options = {}) {
     if (!channel) return null;
     
     // Find the stream data
-    const streams = await fetchWithCache(API_ENDPOINTS.STREAMS, 'api_streams', options);
+    const streams = await fetchStreams(options);
     const channelStreams = getStreamIndex(streams).get(channelId) || [];
     
     if (channelStreams.length > 0) {
@@ -507,7 +550,7 @@ export async function getChannelsByCountry(countryCode, options = {}) {
 export async function getCountriesWithCounts(options = {}) {
   try {
     const [countries, channels] = await Promise.all([
-      fetchWithCache(API_ENDPOINTS.COUNTRIES, 'api_countries', options),
+      fetchWithCache(API_ENDPOINTS.COUNTRIES, 'countries', options),
       fetchWithCache(API_ENDPOINTS.CHANNELS, 'api_channels', options)
     ]);
     

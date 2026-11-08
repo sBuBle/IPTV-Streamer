@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@source not '../design';
 
 /*
   Design tokens. The app's markup uses Tailwind's gray-* and blue-* classes
