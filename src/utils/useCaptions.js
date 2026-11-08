@@ -2,11 +2,12 @@
 // closed captions, or the browser's native tracks) plus in-browser auto
 // captions. Cues are drawn by the player itself, never by the browser.
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
-import { startAutoCaptions, setAutoCaptionTask, autoCaptionsSupported } from './autoCaptions';
+import { startAutoCaptions, setAutoCaptionOptions, autoCaptionsSupported } from './autoCaptions';
 import { translateCaption, prepareTranslation, onTranslationProgress, baseLanguage } from './captionTranslate';
 
 const PREF_KEY = 'player-captions';
 const TARGET_KEY = 'player-captions-target'; // '' = show captions as they are
+const SPOKEN_KEY = 'player-captions-spoken'; // auto captions: '' = detect
 const AUTO_LINE_MS = 9000; // how long an auto caption stays up without a new one
 
 function readPref() {
@@ -27,6 +28,14 @@ function readTarget() {
     if (value != null) return value;
     // Users of the old "Translate to English" item keep getting English
     return JSON.parse(localStorage.getItem(PREF_KEY))?.mode === 'auto-en' ? 'en' : '';
+  } catch {
+    return '';
+  }
+}
+
+function readSpoken() {
+  try {
+    return localStorage.getItem(SPOKEN_KEY) || '';
   } catch {
     return '';
   }
@@ -93,6 +102,7 @@ export function useCaptions(videoRef, hlsRef, streamKey, ready) {
   const [tracks, setTracks] = useState([]);
   const [selected, setSelected] = useState('off'); // 'off' | track key | 'auto'
   const [target, setTargetState] = useState(readTarget); // translate into this language ('' = no)
+  const [spoken, setSpokenState] = useState(readSpoken); // auto captions: language spoken ('' = detect)
   const [shownLines, setShownLines] = useState([]);
   const [translateStatus, setTranslateStatus] = useState(null); // { progress } | { error }
   const [lines, setLines] = useState([]);
@@ -267,9 +277,12 @@ export function useCaptions(videoRef, hlsRef, streamKey, ready) {
   const isAuto = selected === 'auto';
   // Whisper itself translates speech into English; other targets go
   // through English and then the caption translator.
-  const task = target ? 'translate' : 'transcribe';
+  const heard = spoken || autoStatus?.detected || '';
+  const task = target && heard !== target ? 'translate' : 'transcribe';
   const taskRef = useRef(task);
   taskRef.current = task;
+  const spokenRef = useRef(spoken);
+  spokenRef.current = spoken;
 
   useEffect(() => {
     const video = videoRef.current;
@@ -280,14 +293,17 @@ export function useCaptions(videoRef, hlsRef, streamKey, ready) {
     }
     let clearTimer = null;
     setLines([]);
-    setAutoStatus(prev => ({ modelReady: !!prev?.modelReady, device: prev?.device, progress: prev?.progress || 0, listening: false, error: null }));
+    setAutoStatus(prev => ({ modelReady: !!prev?.modelReady, device: prev?.device, progress: prev?.progress || 0, listening: false, error: null, detected: '' }));
     const stop = startAutoCaptions(video, {
       task: taskRef.current,
+      language: spokenRef.current,
       onEvent: (msg) => {
         if (msg.type === 'progress') {
           setAutoStatus(prev => ({ ...prev, progress: msg.total ? msg.loaded / msg.total : 0, total: msg.total }));
         } else if (msg.type === 'ready') {
           setAutoStatus(prev => ({ ...prev, modelReady: true, device: msg.device }));
+        } else if (msg.type === 'language') {
+          setAutoStatus(prev => ({ ...prev, detected: msg.language }));
         } else if (msg.type === 'listening') {
           setAutoStatus(prev => ({ ...prev, listening: true }));
         } else if (msg.type === 'text') {
@@ -311,8 +327,18 @@ export function useCaptions(videoRef, hlsRef, streamKey, ready) {
   }, [isAuto, ready, streamKey, videoRef, hlsRef]);
 
   useEffect(() => {
-    if (isAuto) setAutoCaptionTask(task);
-  }, [isAuto, task]);
+    if (isAuto) setAutoCaptionOptions({ task, language: spoken });
+  }, [isAuto, task, spoken]);
+
+  const setSpoken = useCallback((value) => {
+    setSpokenState(value);
+    setAutoStatus(prev => prev && { ...prev, detected: '' });
+    try {
+      localStorage.setItem(SPOKEN_KEY, value);
+    } catch {
+      // ignore
+    }
+  }, []);
 
   useEffect(() => {
     if (!isAuto) setAutoStatus(prev => prev && { ...prev, listening: false, error: null });
@@ -355,7 +381,7 @@ export function useCaptions(videoRef, hlsRef, streamKey, ready) {
   // Translation
   // ---------------------------------------------------------------------------
   const activeEntry = tracks.find(t => t.key === selected);
-  const sourceLang = isAuto ? (task === 'translate' ? 'en' : '') : (activeEntry?.lang || '');
+  const sourceLang = isAuto ? (task === 'translate' ? 'en' : heard) : (activeEntry?.lang || '');
 
   const setTarget = useCallback((value) => {
     setTargetState(value);
@@ -405,6 +431,8 @@ export function useCaptions(videoRef, hlsRef, streamKey, ready) {
     lines: shownLines,
     target,
     setTarget,
+    spoken,
+    setSpoken,
     translateStatus,
     autoStatus,
     autoSupported: autoCaptionsSupported(),

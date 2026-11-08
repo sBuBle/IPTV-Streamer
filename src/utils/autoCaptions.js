@@ -109,7 +109,7 @@ let sharedCtx = null;
  * onEvent receives { type: 'progress' | 'ready' | 'listening' | 'text' | 'error', ... }
  * Returns a stop() function.
  */
-export function startAutoCaptions(video, { task = 'transcribe', onEvent }) {
+export function startAutoCaptions(video, { task = 'transcribe', language = '', onEvent }) {
   let stopped = false;
   let tapNode = null;
   let sourceNode = null;
@@ -120,7 +120,8 @@ export function startAutoCaptions(video, { task = 'transcribe', onEvent }) {
 
   const w = getWorker();
   w.postMessage({ type: 'reset' });
-  w.postMessage({ type: 'load', options: { task } });
+  w.postMessage({ type: 'options', options: { task, language } });
+  w.postMessage({ type: 'load', options: { task, language } });
   if (workerState.ready) onEvent({ type: 'ready', device: workerState.device });
 
   (async () => {
@@ -193,8 +194,8 @@ export function onWorkerTranslationProgress(fn) {
   return () => listeners.delete(listener);
 }
 
-export function setAutoCaptionTask(task) {
-  worker?.postMessage({ type: 'options', options: { task } });
+export function setAutoCaptionOptions(options) {
+  worker?.postMessage({ type: 'options', options });
 }
 
 export function autoCaptionsSupported() {
