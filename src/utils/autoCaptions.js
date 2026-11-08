@@ -35,6 +35,8 @@ registerProcessor('caption-tap', CaptionTap);
 let worker = null;
 let workerState = { ready: false, device: null };
 const listeners = new Set();
+const pending = new Map(); // translation id -> { resolve, reject }
+let nextId = 1;
 
 function getWorker() {
   if (!worker) {
@@ -42,11 +44,22 @@ function getWorker() {
     worker.onmessage = (event) => {
       const msg = event.data;
       if (msg.type === 'ready') workerState = { ready: true, device: msg.device };
+      if (msg.type === 'translated' || msg.type === 'translate-error') {
+        const job = pending.get(msg.id);
+        pending.delete(msg.id);
+        if (job) {
+          if (msg.type === 'translated') job.resolve(msg.text);
+          else job.reject(new Error(msg.message));
+        }
+        return;
+      }
       if (msg.type === 'error' && msg.fatal) {
         // Let the next attempt start from scratch
         worker.terminate();
         worker = null;
         workerState = { ready: false, device: null };
+        pending.forEach(job => job.reject(new Error(msg.message)));
+        pending.clear();
       }
       listeners.forEach(fn => fn(msg));
     };
@@ -161,6 +174,23 @@ export function startAutoCaptions(video, { task = 'transcribe', onEvent }) {
     }
     worker?.postMessage({ type: 'reset' });
   };
+}
+
+// English -> target with a small Opus-MT model in the worker
+export function translateInWorker(text, target) {
+  const w = getWorker();
+  const id = nextId++;
+  return new Promise((resolve, reject) => {
+    pending.set(id, { resolve, reject });
+    w.postMessage({ type: 'translate', id, text, target });
+  });
+}
+
+// Model download progress for translateInWorker: fn({ target, loaded, total })
+export function onWorkerTranslationProgress(fn) {
+  const listener = (msg) => { if (msg.type === 'mt-progress') fn(msg); };
+  listeners.add(listener);
+  return () => listeners.delete(listener);
 }
 
 export function setAutoCaptionTask(task) {

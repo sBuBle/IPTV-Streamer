@@ -188,8 +188,51 @@ async function pump() {
   pump();
 }
 
+// ---------------------------------------------------------------------------
+// English -> other language translation (used when the browser has no
+// built-in Translator). One small Opus-MT model per target language.
+// ---------------------------------------------------------------------------
+const translators = new Map(); // target -> Promise<pipeline>
+
+function getTranslator(target) {
+  if (!translators.has(target)) {
+    const files = new Map();
+    const progress_callback = (info) => {
+      if (info.status === 'progress' && info.total) {
+        files.set(info.file, { loaded: info.loaded, total: info.total });
+        let loaded = 0;
+        let total = 0;
+        files.forEach(f => { loaded += f.loaded; total += f.total; });
+        self.postMessage({ type: 'mt-progress', target, loaded, total });
+      }
+    };
+    const promise = loadLibrary()
+      .then(() => pipeline('translation', `Xenova/opus-mt-en-${target}`, { device: 'wasm', dtype: 'q8', progress_callback }))
+      .catch(err => {
+        translators.delete(target);
+        throw err;
+      });
+    translators.set(target, promise);
+  }
+  return translators.get(target);
+}
+
+async function translate({ id, text, target }) {
+  try {
+    const mt = await getTranslator(target);
+    const out = await mt(text);
+    self.postMessage({ type: 'translated', id, text: (out?.[0]?.translation_text || '').trim() });
+  } catch (err) {
+    self.postMessage({ type: 'translate-error', id, message: err?.message || String(err) });
+  }
+}
+
 self.onmessage = async (event) => {
   const msg = event.data;
+  if (msg.type === 'translate') {
+    translate(msg);
+    return;
+  }
   if (msg.type === 'load') {
     options = { ...options, ...msg.options };
     try {
