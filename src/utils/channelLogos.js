@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'preact/hooks';
 import * as apiClient from './apiClient';
+import { get, set } from './idbStorage';
 
 // Saved channels (history, favorites) often have no logo: they were watched
 // from a stream URL, so only the URL and name were stored. Look the logo up in
@@ -57,6 +58,43 @@ export async function findChannelLogo(channel) {
   return apiClient.getLogoUrl(channelId.split('@')[0]);
 }
 
+// Results of past lookups, kept in IndexedDB so Home, Favorites and History
+// don't download streams.json + logos.json (~10 MB) on every visit just to
+// find logos they already found last time. Misses are retried after a while.
+const LOOKUP_KEY = 'logo_lookup_v1';
+const MISS_TTL = 3 * 24 * 60 * 60 * 1000;
+const MAX_LOOKUPS = 500;
+let lookupCache = null;
+let saveTimer = null;
+
+async function loadLookups() {
+  if (!lookupCache) {
+    lookupCache = get(LOOKUP_KEY)
+      .then(saved => new Map(saved && typeof saved === 'object' ? Object.entries(saved) : []))
+      .catch(() => new Map());
+  }
+  return lookupCache;
+}
+
+function saveLookupsSoon(map) {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    const entries = [...map].slice(-MAX_LOOKUPS);
+    set(LOOKUP_KEY, Object.fromEntries(entries)).catch(() => {});
+  }, 1000);
+}
+
+async function lookupLogo(channel) {
+  const key = channel.id;
+  const lookups = await loadLookups();
+  const known = lookups.get(key);
+  if (known && (known.logo || Date.now() - known.at < MISS_TTL)) return known.logo || null;
+  const logo = await findChannelLogo(channel).catch(() => null);
+  lookups.set(key, { logo: logo || null, at: Date.now() });
+  saveLookupsSoon(lookups);
+  return logo;
+}
+
 /**
  * Logos for a list of saved channels. Returns logoFor(channel), which gives
  * the stored logo right away and the looked-up one once it's known.
@@ -70,7 +108,7 @@ export function useChannelLogos(channels, pick = (item) => item) {
     let cancelled = false;
     const missing = (channels || []).map(pick).filter(ch => ch?.id && !ch.logo && !ch.tvgLogo);
     if (missing.length === 0) return undefined;
-    Promise.all(missing.map(async ch => [ch.id, await findChannelLogo(ch).catch(() => null)]))
+    Promise.all(missing.map(async ch => [ch.id, await lookupLogo(ch)]))
       .then(pairs => {
         if (cancelled) return;
         const next = new Map(pairs.filter(([, logo]) => logo));

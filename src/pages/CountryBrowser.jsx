@@ -8,7 +8,7 @@ import ChannelLogo from '../components/ChannelLogo';
 import CountryFlag from '../components/CountryFlag';
 import { getCountries, getRegions, getCategories, getLanguagesWithChannels, getChannelsByCountry, getStreams, getChannels, getRawChannels } from '../utils/apiClient';
 import * as apiClient from '../utils/apiClient';
-import { debounce, throttle, memoize } from '../utils/performance';
+import { debounce, throttle } from '../utils/performance';
 import { EnhancedVirtualList } from '../components/EnhancedVirtualList';
 import { useNavState } from '../utils/historyManager';
 import { getFavorites, toggleFavorite } from '../utils/favorites'; // Import favorites utilities
@@ -244,6 +244,21 @@ const ChannelListItem = memo(({ channel, isFavorite, onFavoriteToggle }) => {
   );
 });
 
+const STREAM_COUNTS_KEY = 'stream-counts-v2';
+const STREAM_COUNTS_TTL = 24 * 60 * 60 * 1000; // as long as the iptv-org data they come from
+
+function readSavedStreamCounts() {
+  try {
+    const saved = localStorage.getItem(STREAM_COUNTS_KEY);
+    const savedAt = parseInt(localStorage.getItem(`${STREAM_COUNTS_KEY}-timestamp`), 10);
+    if (saved && Date.now() - savedAt < STREAM_COUNTS_TTL) {
+      const counts = JSON.parse(saved);
+      if (Array.isArray(counts)) return counts;
+    }
+  } catch { /* no saved counts */ }
+  return [];
+}
+
 export default function CountryBrowser() {
   // Remembered per history entry, so Back from the player returns to the same list
   const [activeTab, setActiveTab] = useNavState('activeTab', 'countries');
@@ -274,7 +289,9 @@ export default function CountryBrowser() {
   // Country sorting state
   const [sortBy, setSortBy] = useState('streams');
   const [sortOrder, setSortOrder] = useState('desc');
-  const [countriesWithStreamCounts, setCountriesWithStreamCounts] = useState([]);
+  // Start from the saved counts, so the first paint is already in stream
+  // order (instead of A-Z, then re-sorted, downloading flags twice)
+  const [countriesWithStreamCounts, setCountriesWithStreamCounts] = useState(readSavedStreamCounts);
   const [loadingStreamCounts, setLoadingStreamCounts] = useState(false);
   
   // Optimization: Use a ref to track if stream counts are already being loaded
@@ -448,8 +465,10 @@ export default function CountryBrowser() {
               const cacheTimestamp = localStorage.getItem('cached-languages-v2-timestamp');
               
               if (cachedData && cacheTimestamp) {
+                // Counting languages reads channels, streams and feeds, so keep
+                // the result as long as that data (24 hours)
                 const now = Date.now();
-                if (now - parseInt(cacheTimestamp) < 3600000) {
+                if (now - parseInt(cacheTimestamp) < 86400000) {
                   cachedLanguages = JSON.parse(cachedData);
                 }
               }
@@ -492,25 +511,9 @@ export default function CountryBrowser() {
         setStreamCountsLoading(true);
         setLoadingStreamCounts(true);
         
-        // Cache key for stream counts
-        const streamCountsCacheKey = `stream-counts-${sortBy}-${sortOrder}`;
-        
-        // Try to load from cache first
-        let cachedCounts = null;
-        try {
-          const cachedData = localStorage.getItem(streamCountsCacheKey);
-          const cacheTimestamp = localStorage.getItem(`${streamCountsCacheKey}-timestamp`);
-          
-          if (cachedData && cacheTimestamp) {
-            // Check if cache is still valid (30 minutes)
-            const now = Date.now();
-            if (now - parseInt(cacheTimestamp) < 1800000) {
-              cachedCounts = JSON.parse(cachedData);
-            }
-          }
-        } catch (cacheError) {
-          console.warn('Error retrieving stream count cache:', cacheError);
-        }
+        // Counts don't depend on the sort order, so one entry serves every sort
+        const streamCountsCacheKey = STREAM_COUNTS_KEY;
+        const cachedCounts = readSavedStreamCounts();
         
         if (cachedCounts && cachedCounts.length > 0) {
           setCountriesWithStreamCounts(cachedCounts);
@@ -560,7 +563,7 @@ export default function CountryBrowser() {
         setLoadingStreamCounts(false);
       }
     }, 500), // Throttle to once every 500ms
-    [sortBy, sortOrder]
+    []
   );
 
   // Improved sort function with better dependencies
@@ -592,11 +595,6 @@ export default function CountryBrowser() {
       }
     };
   }, []);
-  
-  // Initial data loading
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
   
   // Tab change handler with proper cleanup
   useEffect(() => {
@@ -661,13 +659,7 @@ export default function CountryBrowser() {
         console.log('Fetching channels for country:', item.code);
         
         try {
-          // Try preferred method first
           fetchedChannels = await getChannelsByCountry(item.code);
-          
-          // Fall back to filter method if needed
-          if (!fetchedChannels || fetchedChannels.length === 0) {
-            fetchedChannels = await getChannels({ country: item.code });
-          }
         } catch (error) {
           console.error('Error fetching country channels:', error);
         }
@@ -901,8 +893,14 @@ export default function CountryBrowser() {
     });
   }, [currentList, debouncedSearch, activeTab, regionFilter, regionChips]);
   
-  // Optimize memoized sorted list with lodash memoize
-  const getSortedList = memoize((filteredList, activeTab, sortBy, sortOrder, countriesWithStreamCounts) => {
+  // Live-stream count per country code, for sorting and the row badges
+  const streamCountByCode = useMemo(() => {
+    const map = new Map();
+    for (const c of countriesWithStreamCounts) map.set(c.code, c.streamCount);
+    return map;
+  }, [countriesWithStreamCounts]);
+
+  const sortedList = useMemo(() => {
     if (!filteredList.length) return [];
     
     return [...filteredList].sort((a, b) => {
@@ -919,17 +917,15 @@ export default function CountryBrowser() {
       }
       
       if (sortBy === 'streams') {
-        const countryA = countriesWithStreamCounts.find(c => c.code === a.code) || { streamCount: 0 };
-        const countryB = countriesWithStreamCounts.find(c => c.code === b.code) || { streamCount: 0 };
+        const countA = streamCountByCode.get(a.code) || 0;
+        const countB = streamCountByCode.get(b.code) || 0;
         
-        return sortOrder === 'asc'
-          ? countryA.streamCount - countryB.streamCount
-          : countryB.streamCount - countryA.streamCount;
+        return sortOrder === 'asc' ? countA - countB : countB - countA;
       }
       
       return 0;
     });
-  });
+  }, [filteredList, activeTab, sortBy, sortOrder, streamCountByCode]);
 
   // Memoized filtered channels
   const filteredChannels = useMemo(() => {
@@ -975,15 +971,13 @@ export default function CountryBrowser() {
             const aResolution = a.resolution ? parseInt(a.resolution.replace(/p$/, '')) : 0;
             const bResolution = b.resolution ? parseInt(b.resolution.replace(/p$/, '')) : 0;
             
-            if (aResolution && bResolution) {
+            if (aResolution !== bResolution) {
               return channelSortOrder === 'asc' ? aResolution - bResolution : bResolution - aResolution;
             }
           }
           
-          // Fall back to name sorting if resolution comparison fails
-          return channelSortOrder === 'asc'
-            ? (a.name || '').localeCompare(b.name || '')
-            : (b.name || '').localeCompare(a.name || '');
+          // Same quality: A-Z
+          return (a.name || '').localeCompare(b.name || '');
         }
 
         default:
@@ -1042,13 +1036,6 @@ export default function CountryBrowser() {
       default: return null;
     }
   }, []);
-
-  // Live-stream count per country code, for the row badges
-  const streamCountByCode = useMemo(() => {
-    const map = new Map();
-    for (const c of countriesWithStreamCounts) map.set(c.code, c.streamCount);
-    return map;
-  }, [countriesWithStreamCounts]);
 
   // Adjust virtual list height based on container size
   useEffect(() => {
@@ -1122,11 +1109,6 @@ export default function CountryBrowser() {
   // Add a state for keyboard focus management
   const [keyboardFocusIndex, setKeyboardFocusIndex] = useState(-1);
   const [keyboardNavigation] = useState(true);
-
-  // Initialize sortedList variable to store the memoized result
-  const sortedList = useMemo(() => {
-    return getSortedList(filteredList, activeTab, sortBy, sortOrder, countriesWithStreamCounts);
-  }, [filteredList, activeTab, sortBy, sortOrder, countriesWithStreamCounts, getSortedList]);
 
   // Keyboard arrow key navigation handler needs access to sortedList
   const handleKeyboardNavigation = useCallback((e) => {

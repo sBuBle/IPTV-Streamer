@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { Router } from 'preact-router';
 import { useState, useEffect } from 'preact/hooks';
 import { MoreHorizontal, Settings as SettingsIcon, Home as HomeIcon, Heart, History, Globe, List, Info, PanelLeftClose, PanelLeftOpen, ListVideo } from 'lucide-preact';
-import { getPlaylists, refreshStalePlaylists } from './utils/playlist';
+import { get } from './utils/idbStorage';
 import { getSettings } from './utils/settings';
 import { PictureInPictureProvider } from './contexts/PictureInPictureContext';
 import { PipNavStatus, usePipVisible } from './components/PictureInPictureOverlay';
@@ -62,6 +62,10 @@ function updateDocumentTitle(url) {
   const section = path === '/' ? '/' : '/' + path.split('/')[1];
   const title = PAGE_TITLES[section];
   document.title = title && section !== '/' ? `${title} · IPTV Streamer` : 'IPTV Streamer';
+}
+
+function samePlaylistLinks(a, b) {
+  return a.length === b.length && a.every((p, i) => p.id === b[i]?.id && p.name === b[i]?.name);
 }
 
 function isActive(href, currentUrl) {
@@ -162,8 +166,11 @@ function AppShell() {
   // added or removed on the Playlists page show up without a page reload)
   const loadPlaylists = async () => {
     try {
-      const savedPlaylists = await getPlaylists();
-      setPlaylists(savedPlaylists || []);
+      // Read the list straight from storage: importing utils/playlist here
+      // would pull the M3U parser and the iptv-org client into the first load
+      const savedPlaylists = (await get('playlists')) || [];
+      // Only re-render the sidebar when the list actually changed
+      setPlaylists(prev => samePlaylistLinks(prev, savedPlaylists) ? prev : savedPlaylists);
     } catch (err) {
       console.error('Failed to load playlists for sidebar:', err);
     }
@@ -175,7 +182,10 @@ function AppShell() {
     const days = Number(getSettings().autoRefreshDays) || 0;
     if (days > 0) {
       const timer = setTimeout(() => {
-        refreshStalePlaylists(days).then(count => { if (count > 0) loadPlaylists(); }).catch(() => {});
+        import('./utils/playlist')
+          .then(({ refreshStalePlaylists }) => refreshStalePlaylists(days))
+          .then(count => { if (count > 0) loadPlaylists(); })
+          .catch(() => {});
       }, 4000);
       return () => clearTimeout(timer);
     }

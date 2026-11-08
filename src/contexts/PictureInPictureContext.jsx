@@ -1,5 +1,5 @@
 import { h, createContext } from 'preact';
-import { useState, useContext, useEffect, useRef, useCallback } from 'preact/hooks';
+import { useState, useContext, useEffect, useRef, useCallback, useMemo } from 'preact/hooks';
 import { route } from 'preact-router';
 import { loadHls } from '../utils/loadHls';
 import { savePipState, loadPipState, clearPipState } from '../utils/pipStateManager';
@@ -629,21 +629,23 @@ export function PictureInPictureProvider({ children }) {
     debugLog('PiP Status changed:', pipStatus);
   }, [pipStatus]);
 
+  // Same object until something in it changes, so the app shell re-rendering
+  // (every navigation) doesn't re-render every component that reads PiP state
+  const value = useMemo(() => ({
+    enterPiP,
+    exitPiP,
+    pipVideo,
+    pipChannel,
+    pipStreamUrl: currentStreamUrl,
+    pipError,
+    isPipActive: !!pipVideo,
+    activatePendingPiP,
+    pipStatus,
+    isSupported: isPipSupported()
+  }), [enterPiP, exitPiP, pipVideo, pipChannel, currentStreamUrl, pipError, activatePendingPiP, pipStatus]);
+
   return (
-    <PictureInPictureContext.Provider
-      value={{
-        enterPiP,
-        exitPiP,
-        pipVideo,
-        pipChannel,
-        pipStreamUrl: currentStreamUrl,
-        pipError,
-        isPipActive: !!pipVideo,
-        activatePendingPiP,
-        pipStatus,
-        isSupported: isPipSupported()
-      }}
-    >
+    <PictureInPictureContext.Provider value={value}>
       {children}
     </PictureInPictureContext.Provider>
   );
