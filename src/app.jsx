@@ -5,7 +5,7 @@ import { MoreHorizontal, Settings as SettingsIcon, Home as HomeIcon, Heart, Hist
 import { getPlaylists, refreshStalePlaylists } from './utils/playlist';
 import { getSettings } from './utils/settings';
 import { PictureInPictureProvider } from './contexts/PictureInPictureContext';
-import { PictureInPictureOverlay } from './components/PictureInPictureOverlay';
+import { PipNavStatus, usePipVisible } from './components/PictureInPictureOverlay';
 import { PipAwareAppLayout } from './components/PipAwareAppLayout';
 import { initHistoryListener, handleRouteChange as trackRouteChange } from './utils/historyManager';
 
@@ -106,6 +106,12 @@ function NavLink({ href, label, icon: Icon, page, iconSize = 18, currentUrl, onC
       <span class={`truncate ${collapsed ? 'md:sr-only' : ''}`}>{label}</span>
     </a>
   );
+}
+
+// Red dot on the mobile "More" tab while picture-in-picture is on (its card is in the menu)
+function PipDot() {
+  if (!usePipVisible()) return null;
+  return <span class="absolute -top-0.5 -right-1 w-2 h-2 rounded-full bg-[var(--color-live)]" aria-label="Picture in picture is on" />;
 }
 
 // The channel preview in PlaylistView loads /watch/<id>?preview=true in an
@@ -278,7 +284,10 @@ function AppShell() {
                 </div>
               )}
 
-              <ul class="mt-auto pt-6 space-y-1 px-3 pb-2">
+              <div class="mt-auto pt-6">
+                <PipNavStatus collapsed={collapsed} onNavigate={closeSidebar} />
+              </div>
+              <ul class="pt-3 space-y-1 px-3 pb-2">
                 {SYSTEM_LINKS.map(link => (
                   <li key={link.href}>
                     <NavLink {...link} currentUrl={currentUrl} onClick={closeSidebar} collapsed={collapsed} />
@@ -338,13 +347,15 @@ function AppShell() {
             })}
             <button type="button" onClick={() => setSidebarOpen(true)} aria-expanded={sidebarOpen}
               class="flex flex-col items-center justify-center gap-1 text-[11px] text-[var(--color-subtle)]">
-              <MoreHorizontal size={22} class="opacity-60" />
+              <span class="relative">
+                <MoreHorizontal size={22} class="opacity-60" />
+                <PipDot />
+              </span>
               More
             </button>
           </nav>
         </div>
         
-        <PictureInPictureOverlay />
       </PipAwareAppLayout>
     </PictureInPictureProvider>
   );

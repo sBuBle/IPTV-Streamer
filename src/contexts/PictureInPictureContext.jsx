@@ -636,6 +636,7 @@ export function PictureInPictureProvider({ children }) {
         exitPiP,
         pipVideo,
         pipChannel,
+        pipStreamUrl: currentStreamUrl,
         pipError,
         isPipActive: !!pipVideo,
         activatePendingPiP,
