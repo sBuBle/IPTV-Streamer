@@ -637,6 +637,10 @@ export default function CountryBrowser() {
   // Optimized item click handler with useCallback
   const handleItemClick = useCallback(async (item) => {
     if (!item) return;
+    if (activeTab === 'countries' && item.code) {
+      // The player's "Up next" falls back to the last country opened here
+      try { sessionStorage.setItem('browse-last-country', JSON.stringify({ code: item.code, name: item.name })); } catch { /* not critical */ }
+    }
     
     setSelectedItem(item);
     setLoadingPreview(true);
@@ -1185,6 +1189,17 @@ export default function CountryBrowser() {
   useEffect(() => {
     loadFavorites();
   }, [loadFavorites]);
+
+  // /countries?country=DE (from the player's "Browse Germany" link) opens that country
+  const countryParamHandledRef = useRef(false);
+  useEffect(() => {
+    if (countryParamHandledRef.current || activeTab !== 'countries' || !countries.length) return;
+    countryParamHandledRef.current = true;
+    const code = new URLSearchParams(window.location.search).get('country');
+    if (!code) return;
+    const match = countries.find(c => String(c.code).toUpperCase() === code.toUpperCase());
+    if (match) handleItemClick(match);
+  }, [activeTab, countries, handleItemClick]);
 
   // "/" focuses the filter field, as hinted by the kbd chip in the design
   const searchInputRef = useRef(null);

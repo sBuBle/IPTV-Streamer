@@ -5,8 +5,9 @@ import Hls from 'hls.js';
 import {
   ArrowLeft, Loader, Heart, AlertTriangle, RefreshCw, PlayCircle,
   Volume2, VolumeX, Maximize, Minimize, Settings, PictureInPicture, Play, Pause,
-  ChevronLeft, Share2, Check
+  ChevronLeft, ChevronRight, Share2, Check
 } from 'lucide-preact';
+import CountryFlag from '../components/CountryFlag';
 import ChannelCard from '../components/ChannelCard';
 import { get, set } from '../utils/idbStorage';
 import { getAllChannels } from '../utils/playlist';
@@ -217,32 +218,52 @@ async function findSimilarStreams(channel, currentUrl) {
   return result;
 }
 
-// Channels for the "Up next" column: same category, playlists first, then iptv-org
-async function findUpNext(channel, currentUrl, limit = 7) {
-  const group = channel?.group && channel.group !== 'Uncategorized' ? channel.group : null;
-  const seen = new Set([currentUrl]);
-  const result = [];
-  const push = (item) => {
-    if (!item?.url || seen.has(item.url) || result.length >= limit) return;
-    seen.add(item.url);
-    result.push(item);
-  };
-  if (group) {
-    const wanted = group.toLowerCase();
-    for (const item of await getAllChannels().catch(() => [])) {
-      if ((item?.group || '').toLowerCase() === wanted) {
-        push({ url: item.url, name: cleanChannelTitle(item.name), logo: item.logo || item.tvgLogo || null, group: item.group });
-      }
+// Country of the channel being watched: its iptv-org entry (by channel ID or
+// by stream URL), else the country last opened on the Browse page.
+async function findChannelCountry(channel, currentUrl) {
+  try {
+    const raw = await apiClient.getRawChannels();
+    const byId = (id) => (id && Array.isArray(raw) ? raw.find(ch => ch.id === id) : null);
+    let entry = byId(channel?.channelId);
+    if (!entry && currentUrl) {
+      const streams = await apiClient.getStreams();
+      const stream = Array.isArray(streams) ? streams.find(st => st?.url === currentUrl) : null;
+      entry = byId(stream?.channel);
     }
-    if (result.length < limit) {
-      const apiChannels = await apiClient.getChannels({ category: wanted }).catch(() => []);
-      for (const item of apiChannels) {
-        push({ url: item.url, id: item.id, name: item.name, logo: item.logo || null, group: item.categories?.[0] || group, country: item.country });
-      }
-    }
+    if (entry?.country) return entry.country.toUpperCase();
+  } catch {
+    // iptv-org unreachable: fall back below
   }
-  return result;
+  try {
+    const last = JSON.parse(sessionStorage.getItem('browse-last-country') || 'null');
+    if (last?.code) return String(last.code).toUpperCase();
+  } catch {
+    // ignore
+  }
+  return null;
 }
+
+// "Up next": the other live channels of the same country
+async function findUpNext(channel, currentUrl) {
+  const code = await findChannelCountry(channel, currentUrl);
+  if (!code) return null;
+  const [list, countries] = await Promise.all([
+    apiClient.getChannels({ country: code }).catch(() => []),
+    apiClient.getCountries().catch(() => []),
+  ]);
+  const name = (Array.isArray(countries) ? countries.find(c => c.code === code)?.name : null) || code;
+  const seen = new Set([currentUrl]);
+  const items = [];
+  for (const item of list) {
+    if (!item?.url || seen.has(item.url)) continue;
+    seen.add(item.url);
+    items.push({ url: item.url, id: item.id, name: item.name, logo: item.logo || null, group: item.categories?.[0] || '' });
+  }
+  items.sort((x, y) => (x.name || '').localeCompare(y.name || ''));
+  return { code, name, items };
+}
+
+const UP_NEXT_PAGE = 40;
 
 const capitalize = (text) => (text ? text.charAt(0).toUpperCase() + text.slice(1) : text);
 
@@ -296,7 +317,8 @@ export default function Player({ id, preview = false }) {
   const [qualityLabel, setQualityLabel] = useState(null);
   const [logoFailed, setLogoFailed] = useState(false);
   const [showDebug, setShowDebug] = useState(false);
-  const [upNext, setUpNext] = useState([]);
+  const [upNext, setUpNext] = useState(null); // { code, name, items }
+  const [upNextShown, setUpNextShown] = useState(UP_NEXT_PAGE);
   const [shared, setShared] = useState(false);
 
   const { enterPiP, exitPiP, isPipActive, pipStatus, pipChannel } = usePictureInPicture();
@@ -960,7 +982,7 @@ export default function Player({ id, preview = false }) {
     if (preview || !channel || !streamLoaded) return undefined;
     let cancelled = false;
     findUpNext(channel, streamUrl)
-      .then(list => { if (!cancelled) setUpNext(list); })
+      .then(result => { if (!cancelled) { setUpNext(result); setUpNextShown(UP_NEXT_PAGE); } })
       .catch(() => {});
     return () => { cancelled = true; };
   }, [preview, channel, streamLoaded, streamUrl]);
@@ -1317,7 +1339,7 @@ export default function Player({ id, preview = false }) {
 
   if (preview) return videoBox;
 
-  const metaLine = [capitalize(channel?.group !== 'Uncategorized' ? channel?.group : ''), hostnameOf(streamUrl)]
+  const metaLine = [capitalize(channel?.group !== 'Uncategorized' ? channel?.group : ''), upNext?.name || hostnameOf(streamUrl)]
     .filter(Boolean).join(' · ');
 
   return (
@@ -1369,41 +1391,57 @@ export default function Player({ id, preview = false }) {
                 {shared ? <Check className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
                 {shared ? 'Link copied' : 'Share'}
               </button>
-              <button onClick={handlePictureInPicture} className="btn px-3 text-[var(--color-muted)] hover:text-white hover:bg-white/6" title="Keep playing in a mini player while you browse">
-                <PictureInPicture className="w-4 h-4" />
-                <span className="hidden sm:inline">Mini player</span>
-              </button>
             </div>
           </div>
         </div>
 
-        {/* Up next */}
-        <aside className="flex flex-col gap-3 min-w-0">
-          <div className="flex items-center gap-2">
-            <h2 className="text-base font-semibold text-[var(--color-text)]">Up next</h2>
+        {/* Up next: the other channels of the same country */}
+        <aside className="flex flex-col gap-3 min-w-0 xl:sticky xl:top-6">
+          <div className="flex items-center gap-2 min-w-0">
+            <h2 className="text-base font-semibold text-[var(--color-text)] shrink-0">Up next</h2>
+            {upNext && (
+              <span className="flex items-center gap-1.5 min-w-0 text-[13px] text-[var(--color-muted)]">
+                <span className="w-5 h-3.5 shrink-0 rounded-[3px] overflow-hidden ring-1 ring-inset ring-white/15">
+                  <CountryFlag code={upNext.code} />
+                </span>
+                <span className="truncate">{upNext.name}</span>
+              </span>
+            )}
             <span className="flex-1" />
-            {upNext.length > 0 && channel?.group && (
-              <span className="inline-flex items-center h-[22px] px-2 rounded-full bg-white/6 text-[11px] font-semibold text-[var(--color-muted)]">
-                {capitalize(channel.group)} · {upNext.length}
+            {upNext?.items.length > 0 && (
+              <span className="shrink-0 inline-flex items-center h-[22px] px-2 rounded-full bg-white/6 text-[11px] font-semibold text-[var(--color-muted)]">
+                {upNext.items.length} channels
               </span>
             )}
           </div>
-          {upNext.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-3">
-              {upNext.map(item => (
-                <ChannelCard
-                  key={item.url}
-                  href={item.id ? watchPath(item, { preferId: true }) : watchPathForStream(item.url, item.name)}
-                  name={item.name}
-                  logo={item.logo}
-                  group={capitalize(item.group)}
-                  country={item.country}
-                />
-              ))}
-            </div>
+          {upNext?.items.length > 0 ? (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-3 xl:max-h-[calc(100vh-10rem)] xl:overflow-y-auto xl:pr-1">
+                {upNext.items.slice(0, upNextShown).map(item => (
+                  <ChannelCard
+                    key={item.url}
+                    href={item.id ? watchPath(item, { preferId: true }) : watchPathForStream(item.url, item.name)}
+                    name={item.name}
+                    logo={item.logo}
+                    group={capitalize(item.group)}
+                    country={upNext.code}
+                  />
+                ))}
+                {upNext.items.length > upNextShown && (
+                  <button onClick={() => setUpNextShown(n => n + UP_NEXT_PAGE)} className="btn btn-secondary justify-center">
+                    Show more ({upNext.items.length - upNextShown})
+                  </button>
+                )}
+              </div>
+              <a href={`/countries?country=${encodeURIComponent(upNext.code)}`} className="see-all self-start">
+                Browse {upNext.name} <ChevronRight className="w-4 h-4" />
+              </a>
+            </>
           ) : (
             <div className="rounded-2xl border border-dashed border-[var(--color-line)] p-5 text-sm text-[var(--color-muted)]">
-              {streamLoaded ? 'No other channels in this category yet.' : 'Similar channels appear here once the stream starts.'}
+              {!streamLoaded
+                ? 'Channels from the same country appear here once the stream starts.'
+                : upNext ? `No other live channels from ${upNext.name}.` : 'This stream isn\u2019t linked to a country.'}
             </div>
           )}
         </aside>
