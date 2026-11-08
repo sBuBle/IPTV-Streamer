@@ -3,9 +3,11 @@ import { useEffect, useRef, useState, useCallback } from 'preact/hooks';
 import { route } from 'preact-router';
 import Hls from 'hls.js';
 import {
-  ArrowLeft, Loader, Heart, AlertTriangle, RefreshCw, PlayCircle, PauseCircle,
-  Volume2, VolumeX, Maximize, Minimize, Settings, PictureInPicture, Gauge, Play
+  ArrowLeft, Loader, Heart, AlertTriangle, RefreshCw, PlayCircle,
+  Volume2, VolumeX, Maximize, Minimize, Settings, PictureInPicture, Play, Pause,
+  ChevronLeft, Share2, Check
 } from 'lucide-preact';
+import ChannelCard from '../components/ChannelCard';
 import { get, set } from '../utils/idbStorage';
 import { getAllChannels } from '../utils/playlist';
 import { getChannelColor, getChannelInitials } from '../utils/logoService';
@@ -215,6 +217,35 @@ async function findSimilarStreams(channel, currentUrl) {
   return result;
 }
 
+// Channels for the "Up next" column: same category, playlists first, then iptv-org
+async function findUpNext(channel, currentUrl, limit = 7) {
+  const group = channel?.group && channel.group !== 'Uncategorized' ? channel.group : null;
+  const seen = new Set([currentUrl]);
+  const result = [];
+  const push = (item) => {
+    if (!item?.url || seen.has(item.url) || result.length >= limit) return;
+    seen.add(item.url);
+    result.push(item);
+  };
+  if (group) {
+    const wanted = group.toLowerCase();
+    for (const item of await getAllChannels().catch(() => [])) {
+      if ((item?.group || '').toLowerCase() === wanted) {
+        push({ url: item.url, name: cleanChannelTitle(item.name), logo: item.logo || item.tvgLogo || null, group: item.group });
+      }
+    }
+    if (result.length < limit) {
+      const apiChannels = await apiClient.getChannels({ category: wanted }).catch(() => []);
+      for (const item of apiChannels) {
+        push({ url: item.url, id: item.id, name: item.name, logo: item.logo || null, group: item.categories?.[0] || group, country: item.country });
+      }
+    }
+  }
+  return result;
+}
+
+const capitalize = (text) => (text ? text.charAt(0).toUpperCase() + text.slice(1) : text);
+
 const initialPlayerState = () => ({
   isPlaying: false,
   isMuted: false,
@@ -265,6 +296,8 @@ export default function Player({ id, preview = false }) {
   const [qualityLabel, setQualityLabel] = useState(null);
   const [logoFailed, setLogoFailed] = useState(false);
   const [showDebug, setShowDebug] = useState(false);
+  const [upNext, setUpNext] = useState([]);
+  const [shared, setShared] = useState(false);
 
   const { enterPiP, exitPiP, isPipActive, pipStatus, pipChannel } = usePictureInPicture();
   const pipRef = useRef({ isPipActive, pipStatus, exitPiP });
@@ -922,6 +955,31 @@ export default function Player({ id, preview = false }) {
     return () => document.removeEventListener('keydown', onKeyDown);
   }, [preview]);
 
+  // Fill "Up next" once the stream is playing, so it never competes with it
+  useEffect(() => {
+    if (preview || !channel || !streamLoaded) return undefined;
+    let cancelled = false;
+    findUpNext(channel, streamUrl)
+      .then(list => { if (!cancelled) setUpNext(list); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [preview, channel, streamLoaded, streamUrl]);
+
+  const shareChannel = useCallback(async () => {
+    const url = window.location.href;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: channel?.name || 'IPTV Streamer', url });
+        return;
+      }
+      await navigator.clipboard.writeText(url);
+      setShared(true);
+      setTimeout(() => setShared(false), 2000);
+    } catch {
+      // share sheet dismissed or clipboard blocked
+    }
+  }, [channel]);
+
   // ---------------------------------------------------------------------------
   // Render
   // ---------------------------------------------------------------------------
@@ -932,9 +990,11 @@ export default function Player({ id, preview = false }) {
   const displayName = channel?.name || (streamUrl ? nameFromUrl(streamUrl) : '');
   const containerClass = preview
     ? 'relative w-full h-full overflow-hidden bg-black'
-    : 'relative w-full aspect-video max-h-[calc(100vh-8rem)] overflow-hidden bg-black rounded-lg';
+    : 'relative w-full aspect-video max-h-[calc(100vh-12rem)] overflow-hidden bg-black rounded-2xl ring-1 ring-[var(--color-hairline)]';
+  const showOverlayTitle = !preview && playerState.isFullscreen;
+  const ctlButton = 'w-9 h-9 rounded-full flex items-center justify-center text-white/90 hover:text-white hover:bg-white/10 transition-colors';
 
-  return (
+  const videoBox = (
     <div
       ref={containerRef}
       className={`${containerClass} select-none ${controlsVisible ? '' : 'cursor-none'}`}
@@ -952,7 +1012,7 @@ export default function Player({ id, preview = false }) {
       {/* Loading */}
       {loading && !error && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 z-10 pointer-events-none">
-          <Loader className="w-12 h-12 text-blue-500 animate-spin mb-4" />
+          <Loader className="w-12 h-12 text-[var(--color-lilac)] animate-spin mb-4" />
           <p className="text-gray-300">Loading stream...</p>
         </div>
       )}
@@ -986,7 +1046,7 @@ export default function Player({ id, preview = false }) {
             <div className="p-4 flex flex-wrap gap-3 bg-gray-800/50">
               <button
                 onClick={retryStream}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors flex items-center gap-2"
+                className="btn btn-primary"
               >
                 <RefreshCw className="w-4 h-4" />
                 Retry
@@ -994,7 +1054,7 @@ export default function Player({ id, preview = false }) {
               {!preview && (
                 <button
                   onClick={() => goBack()}
-                  className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors flex items-center gap-2"
+                  className="btn btn-secondary"
                 >
                   <ArrowLeft className="w-4 h-4" />
                   Go back
@@ -1030,7 +1090,7 @@ export default function Player({ id, preview = false }) {
           className="absolute inset-0 flex flex-col items-center justify-center gap-2 sm:gap-4 bg-black/30 z-10"
           onClick={(e) => { e.stopPropagation(); handleUnmute(); }}
         >
-          <div className="bg-blue-600/90 p-3 sm:p-6 rounded-full animate-pulse-slow shadow-lg">
+          <div className="p-4 sm:p-6 rounded-full bg-white/15 border border-white/25 backdrop-blur-xl shadow-[var(--shadow-glow)] animate-pulse-slow">
             {videoRef.current?.paused
               ? <Play className="w-8 h-8 sm:w-16 sm:h-16 text-white" />
               : <Volume2 className="w-8 h-8 sm:w-16 sm:h-16 text-white" />}
@@ -1041,8 +1101,18 @@ export default function Player({ id, preview = false }) {
         </button>
       )}
 
-      {/* Top bar: back button and channel info */}
-      {!preview && controlsVisible && (
+      {/* LIVE / quality badges, as in the FigCraft player frame */}
+      {!preview && !showOverlayTitle && streamLoaded && !error && controlsVisible && (
+        <div className="absolute top-4 left-4 sm:top-5 sm:left-5 flex items-center gap-2 z-30 pointer-events-none">
+          {isLive && <span className="live-badge">LIVE</span>}
+          {qualityLabel && (
+            <span className="inline-flex items-center h-[22px] px-2 rounded-full bg-violet-500/20 text-[var(--color-lilac)] text-[11px] font-bold tracking-wide">{qualityLabel}</span>
+          )}
+        </div>
+      )}
+
+      {/* Top bar in fullscreen: back button and channel info */}
+      {showOverlayTitle && controlsVisible && (
         <div className="absolute top-0 left-0 right-0 p-3 sm:p-4 bg-linear-to-b from-black/80 to-transparent z-30">
           <div className="flex items-center gap-3 min-w-0">
             <button
@@ -1084,7 +1154,7 @@ export default function Player({ id, preview = false }) {
       {/* Bottom controls */}
       {streamLoaded && !error && controlsVisible && (
         <div
-          className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/80 to-transparent p-3 sm:p-4 z-30"
+          className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-[rgb(18_17_29/0.92)] to-transparent px-3 sm:px-5 pt-8 pb-3 sm:pb-4 z-30"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex flex-col gap-3">
@@ -1101,10 +1171,10 @@ export default function Player({ id, preview = false }) {
                 >
                   <div className="relative w-full h-1.5 group-hover/seek:h-2 transition-[height] bg-white/20 rounded-full overflow-hidden">
                     <div className="absolute inset-y-0 left-0 bg-white/30" style={{ width: `${bufferedProgress}%` }} />
-                    <div className="absolute inset-y-0 left-0 bg-blue-500" style={{ width: `${progress}%` }} />
+                    <div className="absolute inset-y-0 left-0 bg-[linear-gradient(90deg,#8b5cf6,#f43f5e)]" style={{ width: `${progress}%` }} />
                   </div>
                   <div
-                    className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3.5 h-3.5 bg-blue-500 rounded-full shadow-sm opacity-0 group-hover/seek:opacity-100 transition-opacity"
+                    className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-3.5 h-3.5 bg-white rounded-full shadow-sm opacity-0 group-hover/seek:opacity-100 transition-opacity"
                     style={{ left: `${progress}%` }}
                   />
                 </div>
@@ -1116,16 +1186,17 @@ export default function Player({ id, preview = false }) {
               <div className="flex items-center gap-2 sm:gap-3">
                 <button
                   onClick={togglePlay}
-                  className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+                  className={ctlButton}
                   title={playerState.isPlaying ? 'Pause (k)' : 'Play (k)'}
+                  aria-label={playerState.isPlaying ? 'Pause' : 'Play'}
                 >
-                  {playerState.isPlaying ? <PauseCircle className="w-7 h-7" /> : <PlayCircle className="w-7 h-7" />}
+                  {playerState.isPlaying ? <Pause className="w-[22px] h-[22px] fill-current" /> : <Play className="w-[22px] h-[22px] fill-current" />}
                 </button>
 
                 <div className="flex items-center gap-2">
                   <button
                     onClick={toggleMute}
-                    className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+                    className={ctlButton}
                     title={playerState.isMuted ? 'Unmute (m)' : 'Mute (m)'}
                   >
                     {playerState.isMuted || playerState.volume === 0
@@ -1134,15 +1205,15 @@ export default function Player({ id, preview = false }) {
                   </button>
                   <div
                     ref={volumeBarRef}
-                    className="hidden md:flex items-center w-24 h-4 cursor-pointer touch-none"
+                    className="hidden md:flex items-center w-20 h-4 cursor-pointer touch-none"
                     onPointerDown={onVolumePointerDown}
                     onPointerMove={onVolumePointerMove}
                     onPointerUp={onVolumePointerUp}
                     onPointerCancel={onVolumePointerUp}
                   >
-                    <div className="w-full h-1.5 bg-white/20 rounded-full overflow-hidden">
+                    <div className="w-full h-1 bg-white/20 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-blue-500 rounded-full"
+                        className="h-full bg-white rounded-full"
                         style={{ width: `${playerState.isMuted ? 0 : playerState.volume * 100}%` }}
                       />
                     </div>
@@ -1150,25 +1221,21 @@ export default function Player({ id, preview = false }) {
                 </div>
 
                 {isLive && (
-                  <div className="flex items-center">
-                    <div className="w-2 h-2 rounded-full bg-red-500 mr-1.5 animate-pulse" />
-                    <span className="text-xs font-medium text-red-500">LIVE</span>
-                  </div>
-                )}
-
-                {qualityLabel && (
-                  <div className="hidden md:flex items-center gap-1 text-xs bg-black/30 px-2 py-1 rounded-sm text-gray-300">
-                    <Gauge className="w-3 h-3" />
-                    <span>{qualityLabel}</span>
+                  <div className="flex items-center gap-1.5 ml-1">
+                    <span className="w-2 h-2 rounded-full bg-[var(--color-live)] shadow-[0_0_6px_rgb(251_113_133/0.7)]" />
+                    <span className="text-xs font-bold tracking-[0.06em] text-[var(--color-text)]">LIVE</span>
                   </div>
                 )}
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1 sm:gap-2">
+                <span className="hidden md:inline text-xs font-semibold text-[var(--color-muted)] mr-1">
+                  {currentQuality === 'auto' ? 'Auto' : 'Manual'}{qualityLabel ? ` · ${qualityLabel}` : ''}
+                </span>
                 {!preview && (
                   <button
                     onClick={handlePictureInPicture}
-                    className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+                    className={ctlButton}
                     title="Picture in Picture (keeps playing while you browse)"
                   >
                     <PictureInPicture className="w-5 h-5" />
@@ -1179,17 +1246,17 @@ export default function Player({ id, preview = false }) {
                   <div className="relative">
                     <button
                       onClick={() => setShowQualityMenu(open => !open)}
-                      className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+                      className={ctlButton}
                       title="Quality"
                     >
                       <Settings className="w-5 h-5" />
                     </button>
                     {showQualityMenu && (
-                      <div className="absolute bottom-full right-0 mb-2 w-44 max-h-64 overflow-y-auto bg-gray-900 rounded-lg shadow-lg p-2 z-40">
+                      <div className="absolute bottom-full right-0 mb-2 w-44 max-h-64 overflow-y-auto bg-[var(--color-card)] border border-[var(--color-line)] rounded-xl shadow-[var(--shadow-card-hover)] p-1.5 z-40">
                         <div className="text-xs text-gray-400 mb-1 px-2">Quality</div>
                         <button
                           onClick={() => handleQualityChange('auto')}
-                          className={`w-full text-left px-3 py-1.5 rounded-sm ${currentQuality === 'auto' ? 'bg-blue-600 text-white' : 'hover:bg-white/10'}`}
+                          className={`w-full text-left px-3 py-1.5 rounded-lg text-sm ${currentQuality === 'auto' ? 'bg-violet-500/25 text-white' : 'hover:bg-white/10'}`}
                         >
                           Auto
                         </button>
@@ -1197,7 +1264,7 @@ export default function Player({ id, preview = false }) {
                           <button
                             key={quality.id}
                             onClick={() => handleQualityChange(quality.id)}
-                            className={`w-full text-left px-3 py-1.5 rounded-sm ${currentQuality === quality.id ? 'bg-blue-600 text-white' : 'hover:bg-white/10'}`}
+                            className={`w-full text-left px-3 py-1.5 rounded-lg text-sm ${currentQuality === quality.id ? 'bg-violet-500/25 text-white' : 'hover:bg-white/10'}`}
                           >
                             {quality.name}
                           </button>
@@ -1207,11 +1274,11 @@ export default function Player({ id, preview = false }) {
                   </div>
                 )}
 
-                {!preview && (
+                {showOverlayTitle && (
                   <button
                     onClick={toggleFavorite}
                     disabled={!channel}
-                    className={`w-8 h-8 rounded-full ${isFavorite ? 'bg-red-600/30 text-red-500' : 'bg-white/10 hover:bg-white/20'} flex items-center justify-center transition-colors disabled:opacity-50`}
+                    className={`${ctlButton} ${isFavorite ? 'text-rose-400' : ''} disabled:opacity-50`}
                     title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
                   >
                     <Heart className={isFavorite ? 'w-5 h-5 fill-current' : 'w-5 h-5'} />
@@ -1220,7 +1287,7 @@ export default function Player({ id, preview = false }) {
 
                 <button
                   onClick={toggleFullscreen}
-                  className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
+                  className={ctlButton}
                   title={playerState.isFullscreen ? 'Exit fullscreen (f)' : 'Fullscreen (f)'}
                 >
                   {playerState.isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
@@ -1245,6 +1312,102 @@ export default function Player({ id, preview = false }) {
           <div className="break-all">URL: {streamUrl || id}</div>
         </div>
       )}
+    </div>
+  );
+
+  if (preview) return videoBox;
+
+  const metaLine = [capitalize(channel?.group !== 'Uncategorized' ? channel?.group : ''), hostnameOf(streamUrl)]
+    .filter(Boolean).join(' · ');
+
+  return (
+    <div className="pb-8">
+      {/* Top bar: back + breadcrumb */}
+      <div className="flex items-center gap-3 mb-5 min-w-0">
+        <button onClick={() => goBack()} className="btn h-9 px-3 text-[var(--color-muted)] hover:text-white hover:bg-white/6">
+          <ChevronLeft className="w-4 h-4" /> Back
+        </button>
+        <nav className="flex items-center gap-2 text-sm min-w-0" aria-label="Breadcrumb">
+          {channel?.group && channel.group !== 'Uncategorized' && (
+            <>
+              <span className="text-[var(--color-muted)] shrink-0">{capitalize(channel.group)}</span>
+              <span className="text-[var(--color-subtle)]">/</span>
+            </>
+          )}
+          <span className="font-semibold text-[var(--color-text)] truncate">{displayName}</span>
+        </nav>
+      </div>
+
+      <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_360px] gap-6 items-start">
+        <div className="flex flex-col gap-4 min-w-0">
+          {videoBox}
+
+          {/* Channel info */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 sm:px-5 sm:min-h-24 rounded-2xl bg-[var(--color-card)] border border-[var(--color-hairline)]">
+            <div className="flex items-center gap-4 flex-1 min-w-0">
+              {channel?.logo && !logoFailed ? (
+                <img src={channel.logo} alt="" className="w-14 h-14 shrink-0 rounded-xl object-contain bg-white/5 p-1.5" onError={() => setLogoFailed(true)} />
+              ) : (
+                <div className="w-14 h-14 shrink-0 rounded-xl flex items-center justify-center" style={{ backgroundColor: getChannelColor(displayName || '?') }}>
+                  <span className="text-white text-lg font-bold">{getChannelInitials(displayName || '?')}</span>
+                </div>
+              )}
+              <div className="min-w-0">
+                <h1 className="text-xl font-bold tracking-[-0.005em] text-[var(--color-text)] truncate">{displayName || 'Loading…'}</h1>
+                <div className="flex items-center gap-2 mt-1.5 min-w-0">
+                  {(isLive || loading) && <span className="live-badge shrink-0">LIVE</span>}
+                  {metaLine && <span className="text-[13px] text-[var(--color-muted)] truncate">{metaLine}</span>}
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <button onClick={toggleFavorite} disabled={!channel} className="btn btn-secondary disabled:opacity-50" aria-pressed={isFavorite}>
+                <Heart className={`w-4 h-4 ${isFavorite ? 'text-rose-400 fill-rose-400' : ''}`} />
+                {isFavorite ? 'Favorited' : 'Favorite'}
+              </button>
+              <button onClick={shareChannel} className="btn btn-secondary">
+                {shared ? <Check className="w-4 h-4" /> : <Share2 className="w-4 h-4" />}
+                {shared ? 'Link copied' : 'Share'}
+              </button>
+              <button onClick={handlePictureInPicture} className="btn px-3 text-[var(--color-muted)] hover:text-white hover:bg-white/6" title="Keep playing in a mini player while you browse">
+                <PictureInPicture className="w-4 h-4" />
+                <span className="hidden sm:inline">Mini player</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Up next */}
+        <aside className="flex flex-col gap-3 min-w-0">
+          <div className="flex items-center gap-2">
+            <h2 className="text-base font-semibold text-[var(--color-text)]">Up next</h2>
+            <span className="flex-1" />
+            {upNext.length > 0 && channel?.group && (
+              <span className="inline-flex items-center h-[22px] px-2 rounded-full bg-white/6 text-[11px] font-semibold text-[var(--color-muted)]">
+                {capitalize(channel.group)} · {upNext.length}
+              </span>
+            )}
+          </div>
+          {upNext.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-3">
+              {upNext.map(item => (
+                <ChannelCard
+                  key={item.url}
+                  href={item.id ? watchPath(item, { preferId: true }) : watchPathForStream(item.url, item.name)}
+                  name={item.name}
+                  logo={item.logo}
+                  group={capitalize(item.group)}
+                  country={item.country}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-dashed border-[var(--color-line)] p-5 text-sm text-[var(--color-muted)]">
+              {streamLoaded ? 'No other channels in this category yet.' : 'Similar channels appear here once the stream starts.'}
+            </div>
+          )}
+        </aside>
+      </div>
     </div>
   );
 }
