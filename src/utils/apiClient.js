@@ -265,6 +265,22 @@ async function getChannelLanguageIndex(options = {}) {
   return channelLanguageIndex;
 }
 
+// Language code -> name, from languages.json
+let languageNameMap = null;
+async function getLanguageNames(options = {}) {
+  if (languageNameMap) return languageNameMap;
+  try {
+    const languages = await getLanguages(options);
+    if (Array.isArray(languages) && languages.length) {
+      languageNameMap = new Map(languages.map(lang => [String(lang.code).toLowerCase(), lang.name]));
+      return languageNameMap;
+    }
+  } catch (err) {
+    console.warn('Could not load language names:', err);
+  }
+  return new Map();
+}
+
 function channelLanguages(channel, languageIndex) {
   const fromFeeds = languageIndex?.get(channel.id);
   if (fromFeeds && fromFeeds.size) return [...fromFeeds];
@@ -332,7 +348,12 @@ export async function getChannels(filters = {}, options = {}) {
     const country = filters.country?.toLowerCase();
     const language = filters.language?.toLowerCase();
 
-    const languageIndex = language ? await getChannelLanguageIndex(options) : null;
+    // Languages live in feeds.json; attach them to every channel so the
+    // cards can show them (not only when filtering by language)
+    const [languageIndex, languageNames] = await Promise.all([
+      getChannelLanguageIndex(options),
+      getLanguageNames(options),
+    ]);
 
     const filtered = (category || country || language)
       ? channels.filter(channel =>
@@ -345,7 +366,9 @@ export async function getChannels(filters = {}, options = {}) {
     const index = getStreamIndex(streams);
     return filtered.map(channel => {
       const result = withBestStream(channel, index);
-      if (languageIndex) result.languages = channelLanguages(channel, languageIndex);
+      const codes = channelLanguages(channel, languageIndex);
+      result.languages = codes;
+      result.languageNames = codes.map(code => languageNames.get(code) || code.toUpperCase());
       return result;
     });
   } catch (error) {
