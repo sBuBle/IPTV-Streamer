@@ -287,3 +287,16 @@ h1, h2, h3 {
 @media (prefers-reduced-motion: reduce) {
   .logo-fade-in { animation: none; }
 }
+
+/* Player subtitles: FigCraft caption chips, one per line */
+.caption-text span {
+  display: inline;
+  color: #fff;
+  background: rgb(18 17 29 / 0.8);
+  padding: 0.12em 0.5em;
+  border-radius: 0.4em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.5);
+  white-space: pre-wrap;
+}
