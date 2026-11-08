@@ -132,9 +132,11 @@ const ChannelGridItem = memo(({ channel, index, isFavorite, onFavoriteToggle }) 
         </div>
       </div>
       <div class="mt-auto pt-2 flex justify-between items-center">
-        <span class="text-xs bg-gray-800 px-2 py-0.5 rounded-sm">
-          {channel.languages?.[0] || 'Unknown'}
-        </span>
+        {(channel.languageNames?.[0] || channel.languages?.[0]) ? (
+          <span class="text-xs bg-gray-800 px-2 py-0.5 rounded-sm truncate max-w-[60%]" title={(channel.languageNames || channel.languages).join(', ')}>
+            {channel.languageNames?.[0] || channel.languages[0]}
+          </span>
+        ) : <span />}
         <div class="flex items-center gap-1">
           {/* Add favorite toggle button */}
           <button
@@ -211,7 +213,7 @@ const ChannelListItem = memo(({ channel, index, isFavorite, onFavoriteToggle }) 
           )}
           {channel.languages?.[0] && (
             <span class="text-xs bg-gray-800 px-1.5 py-0.5 rounded-sm text-gray-300">
-              {channel.languages[0]}
+              {channel.languageNames?.[0] || channel.languages[0]}
             </span>
           )}
           {channel.resolution && (
@@ -926,7 +928,8 @@ export default function CountryBrowser() {
       return (c.name && c.name.toLowerCase().includes(query)) || 
              (c.id && String(c.id).toLowerCase().includes(query)) ||
              (c.categories && c.categories.some(cat => cat.toLowerCase().includes(query))) ||
-             (c.languages && c.languages.some(lang => lang.toLowerCase().includes(query)));
+             (c.languages && c.languages.some(lang => lang.toLowerCase().includes(query))) ||
+             (c.languageNames && c.languageNames.some(lang => lang.toLowerCase().includes(query)));
     });
   }, [channels, debouncedChannelFilter]);
   
