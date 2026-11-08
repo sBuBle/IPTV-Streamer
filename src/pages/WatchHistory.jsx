@@ -6,6 +6,7 @@ import { toggleFavorite as toggleFavoriteUtil } from '../utils/favorites'; // Ad
 import { History, Search, Trash2, PlayCircle, Calendar, Clock, Heart, AlertCircle, Filter, Grid, List as ListIcon } from 'lucide-preact';
 import ChannelLogo from '../components/ChannelLogo';
 import * as apiClient from '../utils/apiClient';
+import { watchPath } from '../utils/watchLinks';
 
 export default function WatchHistory() {
   const [history, setHistory] = useState([]);
@@ -255,11 +256,11 @@ export default function WatchHistory() {
                     return (
                       <a
                         key={item.timestamp}
-                        href={`/watch/${encodeURIComponent(item.channel.id)}`}
+                        href={watchPath(item.channel)}
                         onClick={(e) => {
                           if (e.ctrlKey || e.metaKey || e.button !== 0) return; 
                           e.preventDefault();
-                          route(`/watch/${encodeURIComponent(item.channel.id)}`);
+                          route(watchPath(item.channel));
                         }}
                         class="bg-gray-700 p-3 rounded-lg hover:bg-gray-600 transition-colors group"
                       >
@@ -313,11 +314,11 @@ export default function WatchHistory() {
                     return (
                       <a
                         key={item.timestamp}
-                        href={`/watch/${encodeURIComponent(item.channel.id)}`}
+                        href={watchPath(item.channel)}
                         onClick={(e) => {
                           if (e.ctrlKey || e.metaKey || e.button !== 0) return; 
                           e.preventDefault();
-                          route(`/watch/${encodeURIComponent(item.channel.id)}`);
+                          route(watchPath(item.channel));
                         }}
                         class="flex items-center p-4 hover:bg-gray-700 transition-colors relative group"
                       >

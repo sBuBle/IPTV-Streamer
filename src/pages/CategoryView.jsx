@@ -15,6 +15,7 @@ import { getCategories, getAllChannels } from "../utils/playlist";
 import ChannelLogo from "../components/ChannelLogo";
 import { get, set, has } from '../utils/idbStorage';
 import * as apiClient from "../utils/apiClient";
+import { watchPath } from '../utils/watchLinks';
 
 // Convert from wouter's useRoute to preact-router's props pattern
 export default function CategoryView(props) {
@@ -522,9 +523,7 @@ export default function CategoryView(props) {
                   channel && (
                     <a
                       key={channel.id || `channel-${Math.random()}`}
-                      href={`/watch/${encodeURIComponent(
-                        channel.url || channel.id
-                      )}`}
+                      href={watchPath(channel)}
                       class="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition-colors"
                     >
                       <div class="flex items-center gap-3 mb-3">
@@ -589,9 +588,7 @@ export default function CategoryView(props) {
                   channel && (
                     <a
                       key={channel.id || `channel-${Math.random()}`}
-                      href={`/watch/${encodeURIComponent(
-                        channel.url || channel.id
-                      )}`}
+                      href={watchPath(channel)}
                       class="flex items-center p-4 hover:bg-gray-700 transition-colors border-b border-gray-700 last:border-0"
                     >
                       <ChannelLogo

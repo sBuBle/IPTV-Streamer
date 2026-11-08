@@ -6,6 +6,8 @@ const API_ENDPOINTS = {
   // Core data endpoints
   CHANNELS: 'https://iptv-org.github.io/api/channels.json',
   STREAMS: 'https://iptv-org.github.io/api/streams.json',
+  // Channel feeds; since 2025 the broadcast languages live here, not on channels
+  FEEDS: 'https://iptv-org.github.io/api/feeds.json',
   GUIDES: 'https://iptv-org.github.io/api/guides.json',
   
   // Classification endpoints
@@ -229,6 +231,77 @@ export async function getLanguages(options = {}) {
 }
 
 /**
+ * Get channel feeds (each has `channel` and a `languages` array of ISO 639-3 codes)
+ * @param {Object} options - Fetch options
+ * @returns {Promise<Array>} List of feeds
+ */
+export async function getFeeds(options = {}) {
+  return fetchWithCache(API_ENDPOINTS.FEEDS, 'api_feeds', options);
+}
+
+// Channel ID -> Set of language codes, built from feeds.json
+let channelLanguageIndex = null;
+let channelLanguageSource = null;
+
+async function getChannelLanguageIndex(options = {}) {
+  let feeds = null;
+  try {
+    feeds = await getFeeds(options);
+  } catch (err) {
+    console.warn('Could not load feeds (languages):', err);
+  }
+  if (feeds !== channelLanguageSource || !channelLanguageIndex) {
+    channelLanguageIndex = new Map();
+    if (Array.isArray(feeds)) {
+      for (const feed of feeds) {
+        if (!feed?.channel || !Array.isArray(feed.languages)) continue;
+        let set = channelLanguageIndex.get(feed.channel);
+        if (!set) channelLanguageIndex.set(feed.channel, (set = new Set()));
+        for (const lang of feed.languages) set.add(String(lang).toLowerCase());
+      }
+    }
+    channelLanguageSource = feeds;
+  }
+  return channelLanguageIndex;
+}
+
+function channelLanguages(channel, languageIndex) {
+  const fromFeeds = languageIndex?.get(channel.id);
+  if (fromFeeds && fromFeeds.size) return [...fromFeeds];
+  // Older API versions kept the languages on the channel itself
+  return Array.isArray(channel.languages) ? channel.languages.map(l => String(l).toLowerCase()) : [];
+}
+
+/**
+ * Languages that at least one channel with a stream is broadcast in.
+ * Falls back to the full languages list if feeds can't be loaded.
+ * @param {Object} options - Fetch options
+ * @returns {Promise<Array>} List of languages ({ code, name, channelCount })
+ */
+export async function getLanguagesWithChannels(options = {}) {
+  const [languages, channels, streams, languageIndex] = await Promise.all([
+    getLanguages(options),
+    fetchWithCache(API_ENDPOINTS.CHANNELS, 'api_channels', options),
+    fetchWithCache(API_ENDPOINTS.STREAMS, 'api_streams', options).catch(() => null),
+    getChannelLanguageIndex(options),
+  ]);
+  if (!Array.isArray(languages)) return [];
+  if (!languageIndex.size || !Array.isArray(channels)) return languages;
+
+  const streamIndex = getStreamIndex(streams);
+  const counts = new Map();
+  for (const channel of channels) {
+    if (streamIndex.size && !streamIndex.has(channel.id)) continue;
+    for (const code of channelLanguages(channel, languageIndex)) {
+      counts.set(code, (counts.get(code) || 0) + 1);
+    }
+  }
+  return languages
+    .filter(lang => counts.has(String(lang.code).toLowerCase()))
+    .map(lang => ({ ...lang, channelCount: counts.get(String(lang.code).toLowerCase()) }));
+}
+
+/**
  * Get streams data
  * @param {Object} options - Fetch options
  * @returns {Promise<Array>} List of streams
@@ -259,16 +332,22 @@ export async function getChannels(filters = {}, options = {}) {
     const country = filters.country?.toLowerCase();
     const language = filters.language?.toLowerCase();
 
+    const languageIndex = language ? await getChannelLanguageIndex(options) : null;
+
     const filtered = (category || country || language)
       ? channels.filter(channel =>
           (!category || (Array.isArray(channel.categories) && channel.categories.some(c => c.toLowerCase() === category))) &&
           (!country || matchesCountry(channel, country)) &&
-          (!language || (Array.isArray(channel.languages) && channel.languages.some(l => l.toLowerCase() === language)))
+          (!language || channelLanguages(channel, languageIndex).includes(language))
         )
       : channels;
 
     const index = getStreamIndex(streams);
-    return filtered.map(channel => withBestStream(channel, index));
+    return filtered.map(channel => {
+      const result = withBestStream(channel, index);
+      if (languageIndex) result.languages = channelLanguages(channel, languageIndex);
+      return result;
+    });
   } catch (error) {
     console.error('Error getting channels:', error);
     return [];
