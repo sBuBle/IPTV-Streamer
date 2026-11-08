@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { Router } from 'preact-router';
 import { useState, useEffect } from 'preact/hooks';
-import { MoreHorizontal, Settings as SettingsIcon, Home as HomeIcon, Heart, History, Globe, List, Info } from 'lucide-preact';
+import { MoreHorizontal, Settings as SettingsIcon, Home as HomeIcon, Heart, History, Globe, List, Info, PanelLeftClose, PanelLeftOpen } from 'lucide-preact';
 import { getPlaylists } from './utils/playlist';
 import { PictureInPictureProvider } from './contexts/PictureInPictureContext';
 import { PictureInPictureOverlay } from './components/PictureInPictureOverlay';
@@ -80,13 +80,14 @@ function BrandMark({ size = 32 }) {
   );
 }
 
-function NavLink({ href, label, icon: Icon, page, iconSize = 18, currentUrl, onClick }) {
+function NavLink({ href, label, icon: Icon, page, iconSize = 18, currentUrl, onClick, collapsed = false }) {
   const active = isActive(href, currentUrl);
   const preload = page ? () => page.preload().catch(() => {}) : undefined;
   return (
     <a
       href={href}
-      class={`group relative flex items-center gap-3 px-3 h-10 rounded-[10px] text-sm transition-colors ${
+      title={collapsed ? label : undefined}
+      class={`group relative flex items-center gap-3 px-3 h-10 rounded-[10px] text-sm transition-colors ${collapsed ? 'md:justify-center md:px-0' : ''} ${
         active
           ? 'bg-violet-500/12 text-white font-semibold'
           : 'text-[var(--color-muted)] font-medium hover:bg-white/5 hover:text-[var(--color-text)]'
@@ -97,8 +98,8 @@ function NavLink({ href, label, icon: Icon, page, iconSize = 18, currentUrl, onC
       onFocus={preload}
     >
       {active && <span class="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-1 rounded-r-full brand-gradient" aria-hidden="true" />}
-      <Icon size={iconSize} class={active ? 'text-white' : 'opacity-55 group-hover:opacity-90'} />
-      <span class="truncate">{label}</span>
+      <Icon size={iconSize} class={`shrink-0 ${active ? 'text-white' : 'opacity-55 group-hover:opacity-90'}`} />
+      <span class={`truncate ${collapsed ? 'md:sr-only' : ''}`}>{label}</span>
     </a>
   );
 }
@@ -130,6 +131,15 @@ export function App() {
 function AppShell() {
   const [playlists, setPlaylists] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  // Desktop: the sidebar can slide down to a slim icon rail (remembered)
+  const [collapsed, setCollapsed] = useState(() => {
+    try { return localStorage.getItem('sidebar-collapsed') === '1'; } catch { return false; }
+  });
+  const toggleCollapsed = () => setCollapsed(value => {
+    const next = !value;
+    try { localStorage.setItem('sidebar-collapsed', next ? '1' : '0'); } catch { /* not critical */ }
+    return next;
+  });
   const [currentUrl, setCurrentUrl] = useState(typeof window !== 'undefined' ? window.location.pathname : '/');
   
   // Take over scroll restoration and track in-app history (used by the
@@ -181,36 +191,62 @@ function AppShell() {
         <div class="min-h-screen flex text-white">
           {/* Sidebar */}
           <div 
-            class={`fixed md:sticky md:top-0 md:h-screen inset-y-0 left-0 z-30 w-60 bg-[var(--color-surface)]/95 backdrop-blur-xl border-r border-[var(--color-hairline)] transform ${
+            class={`fixed md:sticky md:top-0 md:h-screen inset-y-0 left-0 z-30 w-60 ${collapsed ? 'md:w-[72px]' : 'md:w-60'} shrink-0 overflow-hidden bg-[var(--color-surface)]/95 backdrop-blur-xl border-r border-[var(--color-hairline)] transform ${
               sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
-            } transition-transform duration-200 ease-in-out flex flex-col`}
+            } transition-[transform,width] duration-200 ease-in-out flex flex-col`}
           >
             {/* Sidebar header */}
-            <div class="px-4 h-16 flex items-center">
-              <a href="/" class="flex items-center gap-3" onClick={closeSidebar}>
+            <div class={`px-4 h-16 flex items-center gap-2 ${collapsed ? 'md:px-0 md:justify-center' : ''}`}>
+              <a href="/" class="flex items-center gap-3 min-w-0" onClick={closeSidebar} title="IPTV Streamer">
                 <BrandMark size={34} />
-                <span class="leading-tight">
+                <span class={`leading-tight whitespace-nowrap ${collapsed ? 'md:hidden' : ''}`}>
                   <span class="block font-display text-[17px] font-bold tracking-tight">IPTV Streamer</span>
                   <span class="block text-[11px] text-gray-500">Live TV, worldwide</span>
                 </span>
               </a>
+              {!collapsed && (
+                <button
+                  type="button"
+                  onClick={toggleCollapsed}
+                  class="hidden md:flex ml-auto w-8 h-8 shrink-0 items-center justify-center rounded-lg text-[var(--color-subtle)] hover:text-white hover:bg-white/6 transition-colors"
+                  title="Collapse menu"
+                  aria-label="Collapse menu"
+                  aria-expanded="true"
+                >
+                  <PanelLeftClose size={18} />
+                </button>
+              )}
             </div>
+            {collapsed && (
+              <div class="hidden md:flex justify-center pb-2">
+                <button
+                  type="button"
+                  onClick={toggleCollapsed}
+                  class="w-10 h-10 flex items-center justify-center rounded-[10px] text-[var(--color-subtle)] hover:text-white hover:bg-white/6 transition-colors"
+                  title="Expand menu"
+                  aria-label="Expand menu"
+                  aria-expanded="false"
+                >
+                  <PanelLeftOpen size={18} />
+                </button>
+              </div>
+            )}
             
             {/* Sidebar navigation */}
             <nav class="flex-1 flex flex-col py-2 overflow-y-auto" aria-label="Main">
-              <div class="px-5 pb-2 text-[11px] font-semibold uppercase tracking-wider text-[var(--color-subtle)]">Watch</div>
+              <div class={`px-5 pb-2 text-[11px] font-semibold uppercase tracking-wider text-[var(--color-subtle)] ${collapsed ? 'md:hidden' : ''}`}>Watch</div>
               <ul class="space-y-1 px-3">
                 {MAIN_LINKS.map(link => (
                   <li key={link.href}>
-                    <NavLink {...link} currentUrl={currentUrl} onClick={closeSidebar} />
+                    <NavLink {...link} currentUrl={currentUrl} onClick={closeSidebar} collapsed={collapsed} />
                   </li>
                 ))}
               </ul>
 
               {playlists.length > 0 && (
-                <div class="mt-6">
-                  <div class="px-5 pb-2 text-[11px] font-semibold uppercase tracking-wider text-[var(--color-subtle)]">Your playlists</div>
-                  <ul class="space-y-1 px-3">
+                <div class={`mt-6 ${collapsed ? 'md:mt-4 md:pt-4 md:border-t md:border-[var(--color-hairline)] md:mx-3' : ''}`}>
+                  <div class={`px-5 pb-2 ${collapsed ? 'md:hidden' : ''} text-[11px] font-semibold uppercase tracking-wider text-[var(--color-subtle)]`}>Your playlists</div>
+                  <ul class={`space-y-1 px-3 ${collapsed ? 'md:px-0' : ''}`}>
                     {playlists.map(playlist => (
                       <li key={playlist.id}>
                         <NavLink
@@ -221,6 +257,7 @@ function AppShell() {
                           page={PlaylistView}
                           currentUrl={currentUrl}
                           onClick={closeSidebar}
+                          collapsed={collapsed}
                         />
                       </li>
                     ))}
@@ -231,7 +268,7 @@ function AppShell() {
               <ul class="mt-auto pt-6 space-y-1 px-3 pb-2">
                 {SYSTEM_LINKS.map(link => (
                   <li key={link.href}>
-                    <NavLink {...link} currentUrl={currentUrl} onClick={closeSidebar} />
+                    <NavLink {...link} currentUrl={currentUrl} onClick={closeSidebar} collapsed={collapsed} />
                   </li>
                 ))}
               </ul>
