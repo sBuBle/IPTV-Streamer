@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { useState, useEffect, useRef } from 'preact/hooks';
+import { useState, useEffect, useRef, useMemo } from 'preact/hooks';
 // Same IndexedDB store the rest of the app (Settings, playlist utils) writes to
 import { get, set, remove } from '../utils/idbStorage';
 import { 
@@ -11,6 +11,8 @@ import { route } from 'preact-router';
 import { useNavState } from '../utils/historyManager';
 import ChannelLogo from '../components/ChannelLogo';
 import { refreshPlaylist, getComprehensiveChannelLogo } from '../utils/playlist';
+
+const RENDER_PAGE_SIZE = 120;
 
 export default function PlaylistView(props) {
   // Get id from props instead of wouter's useRoute
@@ -609,11 +611,12 @@ export default function PlaylistView(props) {
   // Filter channels based on search query, category, and sort
   const getFilteredAndSortedChannels = () => {
     // First filter by search query
-    let filtered = channels.filter(channel => 
-      channel.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (channel.group && channel.group.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (channel.country && channel.country.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (channel.tvgId && channel.tvgId.toLowerCase().includes(searchQuery.toLowerCase()))
+    const query = searchQuery.trim().toLowerCase();
+    let filtered = !query ? channels : channels.filter(channel => 
+      (channel.name || '').toLowerCase().includes(query) ||
+      (channel.group && channel.group.toLowerCase().includes(query)) ||
+      (channel.country && channel.country.toLowerCase().includes(query)) ||
+      (channel.tvgId && channel.tvgId.toLowerCase().includes(query))
     );
     
     // Then filter by active category if not 'all'
@@ -632,20 +635,21 @@ export default function PlaylistView(props) {
     }
     
     // Apply sorting
+    const playedAt = new Map(recentlyPlayed.map(r => [r.id, r.playedAt]));
     const sorted = [...filtered].sort((a, b) => {
       let comparison = 0;
       
       switch (sortOption) {
         case 'name':
-          comparison = a.name.localeCompare(b.name);
+          comparison = (a.name || '').localeCompare(b.name || '');
           break;
         case 'group':
           comparison = (a.group || 'Uncategorized').localeCompare(b.group || 'Uncategorized');
           break;
         case 'recent': {
           // Find timestamps from recently played
-          const aTimestamp = recentlyPlayed.find(r => r.id === a.id)?.playedAt || '0';
-          const bTimestamp = recentlyPlayed.find(r => r.id === b.id)?.playedAt || '0';
+          const aTimestamp = playedAt.get(a.id) || '0';
+          const bTimestamp = playedAt.get(b.id) || '0';
           comparison = bTimestamp.localeCompare(aTimestamp); // Default to newest first
           break;
         }
@@ -689,9 +693,43 @@ export default function PlaylistView(props) {
 
 
 
-  // Apply our filters and sorting
-  const filteredChannels = getFilteredAndSortedChannels();
-  const groupedChannels = groupChannels(filteredChannels);
+  // Apply our filters and sorting (only when their inputs change)
+  const filteredChannels = useMemo(
+    getFilteredAndSortedChannels,
+    [channels, searchQuery, activeCategory, sortOption, sortDirection, recentlyPlayed]
+  );
+
+  // Big playlists can hold thousands of channels; render them in pages as the
+  // user scrolls instead of building every card at once.
+  const [renderLimit, setRenderLimit] = useNavState('renderLimit', RENDER_PAGE_SIZE);
+  const filtersChangedRef = useRef(false);
+  useEffect(() => {
+    // Skip the first run so a restored (Back) entry keeps its limit
+    if (!filtersChangedRef.current) {
+      filtersChangedRef.current = true;
+      return;
+    }
+    setRenderLimit(RENDER_PAGE_SIZE);
+  }, [playlistId, searchQuery, activeCategory, sortOption, sortDirection]);
+
+  const visibleCount = Math.min(renderLimit, filteredChannels.length);
+  const groupedChannels = useMemo(
+    () => groupChannels(filteredChannels.slice(0, visibleCount)),
+    [filteredChannels, visibleCount]
+  );
+  const hasMoreChannels = visibleCount < filteredChannels.length;
+  const showMoreChannels = () => setRenderLimit(limit => limit + RENDER_PAGE_SIZE);
+
+  const loadMoreRef = useRef(null);
+  useEffect(() => {
+    const node = loadMoreRef.current;
+    if (!node || !hasMoreChannels || typeof IntersectionObserver === 'undefined') return;
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some(entry => entry.isIntersecting)) showMoreChannels();
+    }, { rootMargin: '800px 0px' });
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [hasMoreChannels, visibleCount, loading]);
 
   // Fix for the "Cannot read properties of null" error
   useEffect(() => {
@@ -1204,6 +1242,17 @@ export default function PlaylistView(props) {
                 </div>
               </div>
             ))
+          )}
+          {hasMoreChannels && (
+            <div ref={loadMoreRef} className="flex flex-col items-center gap-2 py-6 text-sm text-gray-400">
+              <span>Showing {visibleCount} of {filteredChannels.length} channels</span>
+              <button
+                onClick={showMoreChannels}
+                className="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-white"
+              >
+                Show more
+              </button>
+            </div>
           )}
         </div>
       )}

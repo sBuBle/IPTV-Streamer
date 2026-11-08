@@ -5,13 +5,13 @@ import { route } from 'preact-router';
 import { Globe, Search, Loader, AlertCircle, PlayCircle, Download, Check, Tv2, BookOpen, RefreshCw, Plus, Filter, Grid, List, Wifi, WifiOff, ArrowDown, ArrowUp, SortDesc } from 'lucide-preact';
 import { getPlaylists, savePlaylist, fetchPlaylist, formatLogoUrl } from '../utils/playlist';
 import ChannelLogo from '../components/ChannelLogo';
-import { getCountries, getCategories, getLanguages, getChannelsByCountry, getStreams, getChannels } from '../utils/apiClient';
+import CountryFlag from '../components/CountryFlag';
+import { getCountries, getCategories, getLanguages, getChannelsByCountry, getStreams, getChannels, getRawChannels } from '../utils/apiClient';
 import * as apiClient from '../utils/apiClient';
 import { debounce, throttle, memoize } from '../utils/performance';
 import { EnhancedVirtualList } from '../components/EnhancedVirtualList';
 import { useNavState } from '../utils/historyManager';
 import { getFavorites, toggleFavorite } from '../utils/favorites'; // Import favorites utilities
-import 'flag-icons/css/flag-icons.min.css';
 
 const TAB_SINGULAR = { countries: 'country', categories: 'category', languages: 'language' };
 
@@ -39,11 +39,7 @@ const CountryListItem = memo(({ item, selectedItem, streamInfo, loadingStreamCou
       <div class="flex items-center gap-3 w-full">
         <div class="w-8 h-6 shrink-0 overflow-hidden rounded-sm shadow-xs bg-gray-900">
           {countryCode && (
-            <span 
-              class={`fi fi-${countryCode.toLowerCase()}`}
-              style={{ display: 'block', width: '100%', height: '100%' }}
-              aria-hidden="true"
-            ></span>
+            <CountryFlag code={countryCode} />
           )}
         </div>
         <span class="flex-1">{item.name} {item.code && <span class="text-gray-400 text-sm">({item.code.toUpperCase()})</span>}</span>
@@ -507,7 +503,7 @@ export default function CountryBrowser() {
         }
         
         // Count channels and playable streams per country in one pass
-        const [allChannels, allStreams] = await Promise.all([getChannels(), getStreams()]);
+        const [allChannels, allStreams] = await Promise.all([getRawChannels(), getStreams()]);
         const channelCountry = new Map();
         const channelCounts = {};
         for (const ch of allChannels || []) {
@@ -1340,11 +1336,7 @@ export default function CountryBrowser() {
                   <div class="flex items-center gap-4">
                     <div class="w-16 h-12 overflow-hidden rounded-sm shadow-lg bg-gray-900 flex items-center justify-center">
                       {selectedItem.code ? (
-                        <span 
-                          class={`fi fi-${selectedItem.code.toLowerCase()}`}
-                          style={{ display: 'block', width: '100%', height: '100%' }}
-                          aria-hidden="true"
-                        ></span>
+                        <CountryFlag code={selectedItem.code} />
                       ) : (
                         <Globe class="w-8 h-8 text-gray-600" />
                       )}
