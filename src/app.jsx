@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { Router } from 'preact-router';
 import { useState, useEffect } from 'preact/hooks';
-import { Tv2, Menu, Settings as SettingsIcon, Home as HomeIcon, Heart, History, Globe, List, Info } from 'lucide-preact';
+import { Menu, Settings as SettingsIcon, Home as HomeIcon, Heart, History, Globe, List, Info } from 'lucide-preact';
 import { getPlaylists } from './utils/playlist';
 import { PictureInPictureProvider } from './contexts/PictureInPictureContext';
 import { PictureInPictureOverlay } from './components/PictureInPictureOverlay';
@@ -58,21 +58,38 @@ function isActive(href, currentUrl) {
   return path === href || path.startsWith(href + '/');
 }
 
+// Logo mark drawn in VectorCraft (design/brand has the editable source)
+function BrandMark({ size = 32 }) {
+  return (
+    <img
+      src="/brand/logo-mark.svg"
+      width={size}
+      height={size}
+      alt=""
+      class="shrink-0 rounded-lg shadow-lg shadow-blue-900/40"
+      style={{ width: `${size}px`, height: `${size}px` }}
+    />
+  );
+}
+
 function NavLink({ href, label, icon: Icon, page, iconSize = 18, currentUrl, onClick }) {
   const active = isActive(href, currentUrl);
   const preload = page ? () => page.preload().catch(() => {}) : undefined;
   return (
     <a
       href={href}
-      class={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-        active ? 'bg-blue-600/20 text-blue-300' : 'hover:bg-gray-700 text-gray-200'
+      class={`group relative flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+        active
+          ? 'bg-blue-500/15 text-white'
+          : 'text-gray-400 hover:bg-white/5 hover:text-gray-100'
       }`}
       aria-current={active ? 'page' : undefined}
       onClick={onClick}
       onMouseEnter={preload}
       onFocus={preload}
     >
-      <Icon size={iconSize} />
+      {active && <span class="absolute left-0 top-1/2 -translate-y-1/2 h-5 w-1 rounded-r-full brand-gradient" aria-hidden="true" />}
+      <Icon size={iconSize} class={active ? 'text-blue-300' : 'text-gray-500 group-hover:text-gray-300'} />
       <span class="truncate">{label}</span>
     </a>
   );
@@ -153,19 +170,22 @@ function AppShell() {
   return (
     <PictureInPictureProvider>
       <PipAwareAppLayout>
-        <div class="min-h-screen flex bg-gray-900 text-white">
+        <div class="min-h-screen flex text-white">
           {/* Sidebar */}
           <div 
-            class={`fixed md:sticky md:top-0 md:h-screen inset-y-0 left-0 z-30 w-64 bg-gray-800 transform ${
+            class={`fixed md:sticky md:top-0 md:h-screen inset-y-0 left-0 z-30 w-64 bg-gray-950/80 backdrop-blur-xl border-r border-white/5 transform ${
               sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
             } transition-transform duration-200 ease-in-out flex flex-col`}
           >
             {/* Sidebar header */}
-            <div class="p-4 border-b border-gray-700">
-              <div class="flex items-center gap-2">
-                <Tv2 class="text-blue-500" size={24} />
-                <span class="text-xl font-bold">IPTV Streamer</span>
-              </div>
+            <div class="px-4 h-16 flex items-center">
+              <a href="/" class="flex items-center gap-3" onClick={closeSidebar}>
+                <BrandMark size={34} />
+                <span class="leading-tight">
+                  <span class="block font-display text-[17px] font-bold tracking-tight">IPTV Streamer</span>
+                  <span class="block text-[11px] text-gray-500">Live TV, worldwide</span>
+                </span>
+              </a>
             </div>
             
             {/* Sidebar navigation */}
@@ -179,8 +199,8 @@ function AppShell() {
 
                 {/* Playlists section */}
                 {playlists.length > 0 && (
-                  <li class="mt-4">
-                    <div class="px-3 py-1 text-xs text-gray-400">Your Playlists</div>
+                  <li class="mt-6">
+                    <div class="px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-gray-500">Your Playlists</div>
                     <ul class="mt-1 space-y-1">
                       {playlists.map(playlist => (
                         <li key={playlist.id}>
@@ -200,8 +220,8 @@ function AppShell() {
                 )}
 
                 {/* System section */}
-                <li class="mt-4">
-                  <div class="px-3 py-1 text-xs text-gray-400">System</div>
+                <li class="mt-6">
+                  <div class="px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-gray-500">System</div>
                   <ul class="mt-1 space-y-1">
                     {SYSTEM_LINKS.map(link => (
                       <li key={link.href}>
@@ -217,7 +237,7 @@ function AppShell() {
           {/* Sidebar overlay */}
           {sidebarOpen && (
             <div 
-              class="fixed inset-0 bg-black/50 z-20 md:hidden"
+              class="fixed inset-0 bg-black/60 backdrop-blur-sm z-20 md:hidden"
               onClick={() => setSidebarOpen(false)}
             ></div>
           )}
@@ -225,23 +245,23 @@ function AppShell() {
           {/* Main content */}
           <div class="flex-1 flex flex-col min-w-0">
             {/* Top bar (mobile only: the sidebar is always visible on larger screens) */}
-            <header class="md:hidden sticky top-0 z-10 bg-gray-800 h-14 flex items-center px-4 gap-3">
+            <header class="md:hidden sticky top-0 z-10 bg-gray-950/80 backdrop-blur-xl border-b border-white/5 h-14 flex items-center px-4 gap-3">
               <button
-                class="p-1 -ml-1 rounded-sm hover:bg-gray-700"
+                class="p-1.5 -ml-1.5 rounded-lg hover:bg-white/10"
                 onClick={() => setSidebarOpen(!sidebarOpen)}
                 aria-label={sidebarOpen ? 'Close menu' : 'Open menu'}
                 aria-expanded={sidebarOpen}
               >
                 <Menu size={24} />
               </button>
-              <a href="/" class="flex items-center gap-2 font-semibold">
-                <Tv2 class="text-blue-500" size={20} />
+              <a href="/" class="flex items-center gap-2 font-display font-bold tracking-tight">
+                <BrandMark size={26} />
                 IPTV Streamer
               </a>
             </header>
             
             {/* Content area */}
-            <main class="flex-1 p-4 md:p-6 overflow-auto">
+            <main class="flex-1 p-4 md:p-8 overflow-auto">
               <Router onChange={handleRouteChange}>
                 <Home path="/" />
                 <Player path="/watch/:id" />

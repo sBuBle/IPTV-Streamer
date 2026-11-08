@@ -70,10 +70,10 @@ export default function Home() {
 
   // Featured categories - static list for quick access
   const featuredCategories = [
-    { id: 'news', name: 'News', icon: <Globe className="w-6 h-6" /> },
-    { id: 'sports', name: 'Sports', icon: <Trophy className="w-6 h-6" /> },
-    { id: 'movies', name: 'Movies', icon: <Film className="w-6 h-6" /> },
-    { id: 'music', name: 'Music', icon: <Music className="w-6 h-6" /> },
+    { id: 'news', name: 'News', icon: <Globe className="w-6 h-6" />, tint: 'from-sky-500/30' },
+    { id: 'sports', name: 'Sports', icon: <Trophy className="w-6 h-6" />, tint: 'from-emerald-500/30' },
+    { id: 'movies', name: 'Movies', icon: <Film className="w-6 h-6" />, tint: 'from-rose-500/30' },
+    { id: 'music', name: 'Music', icon: <Music className="w-6 h-6" />, tint: 'from-amber-500/30' },
   ];
 
   // Recently Watched section rendering
@@ -90,7 +90,7 @@ export default function Home() {
       <a
         key={item.id}
         href={`/watch/${encodeURIComponent(item.id)}`}
-        className="bg-gray-800 p-4 rounded-lg flex items-center gap-3 hover:bg-gray-700 transition-colors"
+        className="bg-gray-800 p-4 rounded-xl flex items-center gap-3 hover:bg-gray-700 hover:-translate-y-0.5 transition"
       >
         <ChannelLogo
           src={logoUrl}
@@ -120,16 +120,40 @@ export default function Home() {
 
   return (
     <div>
-      {/* Welcome Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Welcome to IPTV Streamer</h1>
-        <p className="text-gray-400">
-          Your personal streaming hub for managing and watching IPTV channels
-        </p>
-      </div>
+      {/* Hero */}
+      <section className="hero relative overflow-hidden rounded-2xl mb-8 px-6 py-10 md:px-10 md:py-14 border border-white/10">
+        <div className="relative max-w-xl">
+          <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-200 bg-white/10 rounded-full px-3 py-1 mb-4">
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-signal)] animate-pulse" aria-hidden="true" />
+            Live now
+          </span>
+          <h1 className="text-4xl md:text-5xl font-extrabold leading-[1.05] mb-3">
+            Thousands of channels, <span className="brand-text">one remote.</span>
+          </h1>
+          <p className="text-gray-300 mb-7">
+            Free live TV from around the world, plus your own M3U playlists, in one place.
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <a
+              href="/countries"
+              className="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-5 rounded-xl flex items-center gap-2 transition-colors"
+            >
+              <Globe className="w-5 h-5" />
+              Browse All Channels
+            </a>
+            <a
+              href="/settings"
+              className="bg-white/10 hover:bg-white/15 backdrop-blur text-white font-semibold py-3 px-5 rounded-xl flex items-center gap-2 transition-colors"
+            >
+              <List className="w-5 h-5" />
+              Manage Playlists
+            </a>
+          </div>
+        </div>
+      </section>
       
       {/* Quick Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
         <div className="bg-gray-800 p-4 rounded-lg flex items-center gap-4">
           <div className="bg-blue-900/50 p-3 rounded-lg">
             <Tv2 className="w-6 h-6 text-blue-400" />
@@ -171,25 +195,6 @@ export default function Home() {
         </div>
       </div>
       
-      {/* Quick Access Buttons */}
-      <div className="flex flex-wrap gap-4 mb-8">
-        <a
-          href="/countries"
-          className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-5 rounded-lg flex items-center gap-2 transition-colors"
-        >
-          <Globe className="w-5 h-5" />
-          Browse All Channels
-        </a>
-        
-        <a
-          href="/settings"
-          className="bg-gray-700 hover:bg-gray-600 text-white py-3 px-5 rounded-lg flex items-center gap-2 transition-colors"
-        >
-          <List className="w-5 h-5" />
-          Manage Playlists
-        </a>
-      </div>
-      
       {/* Featured Categories */}
       <div className="mb-10">
         <h2 className="text-xl font-bold mb-4">Featured Categories</h2>
@@ -198,12 +203,12 @@ export default function Home() {
             <a
               key={category.id}
               href={`/category/${category.id}`}
-              className="bg-gray-800 p-6 rounded-lg text-center hover:bg-gray-700 transition-colors"
+              className={`group relative overflow-hidden bg-gray-800 rounded-xl p-5 h-28 flex flex-col justify-between bg-gradient-to-br ${category.tint} to-transparent hover:-translate-y-0.5 hover:bg-gray-700 transition`}
             >
-              <div className="flex justify-center mb-2">
+              <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center group-hover:scale-105 transition-transform">
                 {category.icon}
               </div>
-              <div className="font-medium">{category.name}</div>
+              <div className="font-display font-semibold text-lg">{category.name}</div>
             </a>
           ))}
         </div>

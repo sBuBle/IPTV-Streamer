@@ -1,1 +1,23 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 21h10"/><rect width="20" height="14" x="2" y="3" rx="2"/><path d="m10 8 4 2-4 2z" fill="#3b82f6"/></svg>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="64" height="64" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="linear-gradient-1" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8b5cf6"/>
+      <stop offset="1" stop-color="#f43f5e"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="32" y1="0" x2="32" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.18"/>
+      <stop offset="0.55" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <title>IPTV Streamer mark</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M14 0 L50 0 C57.732 0 64 6.268 64 14 L64 50 C64 57.732 57.732 64 50 64 L14 64 C6.268 64 0 57.732 0 50 L0 14 C0 6.268 6.268 0 14 0 Z" fill="url(#linear-gradient-1)"/>
+    <path d="M14 0 L50 0 C57.732 0 64 6.268 64 14 L64 50 C64 57.732 57.732 64 50 64 L14 64 C6.268 64 0 57.732 0 50 L0 14 C0 6.268 6.268 0 14 0 Z" fill="url(#linear-gradient-2)"/>
+    <path d="M26.5 27.068 L26.5 36.932 C26.5 39.977 27.809 40.723 30.427 39.168 L38.735 34.236 C41.245 32.745 41.245 31.255 38.735 29.764 L30.427 24.832 C27.809 23.277 26.5 24.023 26.5 27.068 Z" fill="#ffffff"/>
+    <path d="M45.108 22.149 C49.631 27.938 49.631 36.062 45.108 41.851" fill="none" stroke="#ffffff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M19.892 41.851 C15.369 36.062 15.369 27.938 19.892 22.149" fill="none" stroke="#ffffff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M50.624 17.84 C57.125 26.161 57.125 37.839 50.624 46.16" fill="none" stroke="#ffffff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.65"/>
+    <path d="M14.376 46.16 C7.875 37.839 7.875 26.161 14.376 17.84" fill="none" stroke="#ffffff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round" opacity="0.65"/>
+  </g>
+</svg>
