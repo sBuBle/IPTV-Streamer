@@ -1201,6 +1201,24 @@ export default function CountryBrowser() {
     if (match) handleItemClick(match);
   }, [activeTab, countries, handleItemClick]);
 
+  // Render the list in batches: the first rows paint at once, more are added
+  // when the sentinel under the grid scrolls near the viewport
+  const LIST_BATCH = 36;
+  const [visibleCount, setVisibleCount] = useState(LIST_BATCH);
+  const loadMoreRef = useRef(null);
+  useEffect(() => {
+    setVisibleCount(LIST_BATCH);
+  }, [activeTab, regionFilter, debouncedSearch, sortBy, sortOrder]);
+  useEffect(() => {
+    const el = loadMoreRef.current;
+    if (!el || typeof IntersectionObserver === 'undefined') return undefined;
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some(e => e.isIntersecting)) setVisibleCount(n => n + LIST_BATCH);
+    }, { rootMargin: '600px 0px' });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [visibleCount, sortedList.length, selectedItem]);
+
   // "/" focuses the filter field, as hinted by the kbd chip in the design
   const searchInputRef = useRef(null);
   useEffect(() => {
@@ -1382,7 +1400,7 @@ export default function CountryBrowser() {
               </div>
             ) : (
               <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-4 gap-y-3">
-                {sortedList.map(item => (
+                {sortedList.slice(0, visibleCount).map(item => (
                   <CountryRow
                     key={item.code || item.id}
                     item={item}
@@ -1392,6 +1410,13 @@ export default function CountryBrowser() {
                     onClick={openItem}
                   />
                 ))}
+              </div>
+            )}
+            {!loading && sortedList.length > visibleCount && (
+              <div ref={loadMoreRef} class="flex justify-center pt-6">
+                <button onClick={() => setVisibleCount(n => n + LIST_BATCH)} class="btn btn-secondary">
+                  Show more ({sortedList.length - visibleCount})
+                </button>
               </div>
             )}
           </section>
