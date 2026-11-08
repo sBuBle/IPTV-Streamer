@@ -17,7 +17,9 @@ const TAB_SINGULAR = { countries: 'country', categories: 'category', languages: 
 
 // Memoized simple components for better performance
 const CountryListItem = memo(({ item, selectedItem, streamInfo, loadingStreamCounts, onClick }) => {
-  const isSelected = selectedItem && selectedItem.code === item.code;
+  // Countries and languages have a `code`, categories only an `id`
+  const itemKey = item.code || item.id;
+  const isSelected = !!selectedItem && !!itemKey && (selectedItem.code || selectedItem.id) === itemKey;
   const countryCode = item.code || '';
   
   return (
