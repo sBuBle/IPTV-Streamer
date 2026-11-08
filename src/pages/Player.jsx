@@ -5,10 +5,11 @@ import Hls from 'hls.js';
 import {
   ArrowLeft, Loader, Heart, AlertTriangle, RefreshCw, PlayCircle,
   Volume2, VolumeX, Maximize, Minimize, Settings, PictureInPicture, Play, Pause,
-  ChevronLeft, ChevronRight, Share2, Check
+  ChevronLeft, ChevronRight, Share2, Check, Captions
 } from 'lucide-preact';
 import CountryFlag from '../components/CountryFlag';
 import ChannelCard from '../components/ChannelCard';
+import { CaptionMenu, CaptionOverlay } from '../components/Captions';
 import { get, set } from '../utils/idbStorage';
 import { getAllChannels } from '../utils/playlist';
 import { getChannelColor, getChannelInitials } from '../utils/logoService';
@@ -18,6 +19,7 @@ import * as apiClient from '../utils/apiClient';
 import { parseWatchKey, resolveWatchKey, watchPath, watchPathForStream } from '../utils/watchLinks';
 import { BUFFER_PRESETS, getSettings, useSettings } from '../utils/settings';
 import { findChannelId, findChannelLogo } from '../utils/channelLogos';
+import { useCaptions } from '../utils/useCaptions';
 
 const LOAD_TIMEOUT_MS = 25000;
 const CONTROLS_HIDE_MS = 3000;
@@ -36,6 +38,11 @@ const hlsConfig = (settings = getSettings()) => ({
   levelLoadingMaxRetry: 3,
   fragLoadingTimeOut: 20000,
   fragLoadingMaxRetry: 5,
+  // In-band CEA-608 captions rarely say which language they are in
+  captionsTextTrack1Label: 'Closed captions',
+  captionsTextTrack1LanguageCode: '',
+  captionsTextTrack2Label: 'Closed captions 2',
+  captionsTextTrack2LanguageCode: '',
 });
 
 // Clean names like `-1 tvg-id="x" group-title="y",Channel Name`
@@ -331,6 +338,8 @@ export default function Player({ id, preview = false }) {
   const [upNextShown, setUpNextShown] = useState(UP_NEXT_PAGE);
   const { showUpNext } = useSettings();
   const [shared, setShared] = useState(false);
+  const [showCaptionMenu, setShowCaptionMenu] = useState(false);
+  const captions = useCaptions(videoRef, hlsRef, `${streamUrl}|${reloadToken}`, streamLoaded && !error);
 
   const { enterPiP, exitPiP, isPipActive, pipStatus, pipChannel } = usePictureInPicture();
   const pipRef = useRef({ isPipActive, pipStatus, exitPiP });
@@ -365,6 +374,7 @@ export default function Player({ id, preview = false }) {
     setCurrentQuality('auto');
     setQualityLabel(null);
     setShowQualityMenu(false);
+    setShowCaptionMenu(false);
     setIsLive(false);
     setCurrentTime(0);
     setDuration(0);
@@ -937,7 +947,7 @@ export default function Player({ id, preview = false }) {
 
   // Keyboard shortcuts
   const shortcutsRef = useRef(null);
-  shortcutsRef.current = { togglePlay, toggleFullscreen, toggleMute, setVolume, isLive, showControlsTemporarily, playerState };
+  shortcutsRef.current = { togglePlay, toggleFullscreen, toggleMute, setVolume, isLive, showControlsTemporarily, playerState, toggleCaptions: captions.toggle };
 
   useEffect(() => {
     if (preview) return;
@@ -978,6 +988,9 @@ export default function Player({ id, preview = false }) {
           break;
         case 'i':
           setShowDebug(v => !v);
+          break;
+        case 'c':
+          s.toggleCaptions();
           break;
         default:
           return;
@@ -1032,7 +1045,7 @@ export default function Player({ id, preview = false }) {
   const videoBox = (
     <div
       ref={containerRef}
-      className={`${containerClass} select-none ${controlsVisible ? '' : 'cursor-none'}`}
+      className={`${containerClass} @container select-none ${controlsVisible ? '' : 'cursor-none'}`}
       onPointerMove={showControlsTemporarily}
       onPointerDown={onContainerPointerDown}
     >
@@ -1277,10 +1290,30 @@ export default function Player({ id, preview = false }) {
                   </button>
                 )}
 
+                {!preview && (
+                  <div className="relative">
+                    <button
+                      onClick={() => { setShowCaptionMenu(open => !open); setShowQualityMenu(false); }}
+                      className={`${ctlButton} ${captions.selected !== 'off' ? 'text-[var(--color-lilac)]' : ''}`}
+                      title="Subtitles (c)"
+                      aria-label="Subtitles"
+                      aria-pressed={captions.selected !== 'off'}
+                    >
+                      <Captions className="w-5 h-5" />
+                    </button>
+                    {captions.selected !== 'off' && (
+                      <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-3.5 h-0.5 rounded-full bg-[var(--color-lilac)] pointer-events-none" />
+                    )}
+                    {showCaptionMenu && (
+                      <CaptionMenu captions={captions} onClose={() => setShowCaptionMenu(false)} />
+                    )}
+                  </div>
+                )}
+
                 {qualities.length > 1 && (
                   <div className="relative">
                     <button
-                      onClick={() => setShowQualityMenu(open => !open)}
+                      onClick={() => { setShowQualityMenu(open => !open); setShowCaptionMenu(false); }}
                       className={ctlButton}
                       title="Quality"
                     >
@@ -1331,6 +1364,17 @@ export default function Player({ id, preview = false }) {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Subtitles / captions */}
+      {streamLoaded && !error && !needsInteraction && (
+        <CaptionOverlay
+          lines={captions.lines}
+          isAuto={captions.isAuto}
+          autoStatus={captions.autoStatus}
+          raised={controlsVisible}
+          compact={preview}
+        />
       )}
 
       {/* Debug overlay (press "i") */}
