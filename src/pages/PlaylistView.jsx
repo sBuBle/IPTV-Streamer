@@ -528,9 +528,9 @@ export default function PlaylistView(props) {
     }
   };
 
-  // Redirect to settings page with focus on adding playlist
+  // Redirect to the Playlists page with focus on adding playlist
   const goToAddPlaylist = () => {
-    route('/settings');
+    route('/playlists');
   };
 
   // Export playlist to M3U file
@@ -799,7 +799,7 @@ export default function PlaylistView(props) {
         <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 sm:gap-3">
           <div className="max-w-full overflow-hidden">
             <a 
-              href="/settings" 
+              href="/playlists" 
               className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-1 sm:mb-2 text-sm sm:text-base"
             >
               <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />

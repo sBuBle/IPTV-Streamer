@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { Router } from 'preact-router';
 import { useState, useEffect } from 'preact/hooks';
-import { MoreHorizontal, Settings as SettingsIcon, Home as HomeIcon, Heart, History, Globe, List, Info, PanelLeftClose, PanelLeftOpen } from 'lucide-preact';
+import { MoreHorizontal, Settings as SettingsIcon, Home as HomeIcon, Heart, History, Globe, List, Info, PanelLeftClose, PanelLeftOpen, ListVideo } from 'lucide-preact';
 import { getPlaylists, refreshStalePlaylists } from './utils/playlist';
 import { getSettings } from './utils/settings';
 import { PictureInPictureProvider } from './contexts/PictureInPictureContext';
@@ -15,6 +15,7 @@ import { lazyPage } from './components/lazyPage';
 const Home = lazyPage(() => import('./pages/Home'));
 const Player = lazyPage(() => import('./pages/Player'));
 const SettingsPage = lazyPage(() => import('./pages/Settings'));
+const Playlists = lazyPage(() => import('./pages/Playlists'));
 const Favorites = lazyPage(() => import('./pages/Favorites'));
 const WatchHistory = lazyPage(() => import('./pages/WatchHistory'));
 const CountryBrowser = lazyPage(() => import('./pages/CountryBrowser'));
@@ -27,6 +28,7 @@ const MAIN_LINKS = [
   { href: '/favorites', label: 'Favorites', icon: Heart, page: Favorites },
   { href: '/history', label: 'Watch History', icon: History, page: WatchHistory },
   { href: '/countries', label: 'Browse countries', icon: Globe, page: CountryBrowser },
+  { href: '/playlists', label: 'Playlists', icon: ListVideo, page: Playlists },
 ];
 
 // Mobile bottom tab bar (FigCraft "Mobile Home")
@@ -48,6 +50,7 @@ const PAGE_TITLES = {
   '/history': 'Watch History',
   '/countries': 'Browse by Country',
   '/settings': 'Settings',
+  '/playlists': 'Playlists',
   '/about': 'About',
   '/watch': 'Now Playing',
   '/playlist': 'Playlist',
@@ -150,7 +153,7 @@ function AppShell() {
   }
   
   // Load playlists for the sidebar (again after each navigation, so playlists
-  // added or removed in Settings show up without a page reload)
+  // added or removed on the Playlists page show up without a page reload)
   const loadPlaylists = async () => {
     try {
       const savedPlaylists = await getPlaylists();
@@ -162,7 +165,7 @@ function AppShell() {
 
   useEffect(() => {
     loadPlaylists();
-    // Settings > Playlists > "Refresh automatically": update old playlists in the background
+    // Playlists > "Update automatically": update old playlists in the background
     const days = Number(getSettings().autoRefreshDays) || 0;
     if (days > 0) {
       const timer = setTimeout(() => {
@@ -309,6 +312,7 @@ function AppShell() {
                 <Home path="/" />
                 <Player path="/watch/:id" />
                 <SettingsPage path="/settings" />
+                <Playlists path="/playlists" />
                 <Favorites path="/favorites" />
                 <WatchHistory path="/history" />
                 <CountryBrowser path="/countries" />
