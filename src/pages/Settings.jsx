@@ -36,7 +36,7 @@ export default function SettingsPage() {
         setNewPlaylistName(`${hostName.charAt(0).toUpperCase() + hostName.slice(1)} Playlist`);
         
         // Clear the URL parameter to avoid reapplying on refresh
-        window.history.replaceState({}, document.title, '/settings');
+        window.history.replaceState(window.history.state, document.title, '/settings');
       }
     } catch (err) {
       console.error('Error parsing URL parameters:', err);

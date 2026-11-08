@@ -127,7 +127,7 @@ export function PictureInPictureOverlay() {
           
           {/* Status indicator */}
           {pipStatus && pipStatus !== 'active' && pipStatus !== 'inactive' && !showDebug && (
-            <span className="text-xs bg-black/30 px-1.5 py-0.5 rounded">
+            <span className="text-xs bg-black/30 px-1.5 py-0.5 rounded-sm">
               {pipStatus}
             </span>
           )}
@@ -149,7 +149,7 @@ export function PictureInPictureOverlay() {
         
         {/* Debug info */}
         {showDebug && (
-          <div className="bg-black/50 p-2 rounded mb-2 text-xs">
+          <div className="bg-black/50 p-2 rounded-sm mb-2 text-xs">
             <div>Status: <span className="text-blue-300">{pipStatus}</span></div>
             <div>Has Video: <span className="text-blue-300">{pipVideo ? 'Yes' : 'No'}</span></div>
             <div>Has Channel: <span className="text-blue-300">{pipChannel ? 'Yes' : 'No'}</span></div>
@@ -162,7 +162,7 @@ export function PictureInPictureOverlay() {
                   e.stopPropagation();
                   activatePendingPiP();
                 }}
-                className="mt-1 px-2 py-0.5 bg-blue-800 hover:bg-blue-700 rounded text-xs flex items-center gap-1"
+                className="mt-1 px-2 py-0.5 bg-blue-800 hover:bg-blue-700 rounded-sm text-xs flex items-center gap-1"
               >
                 <RefreshCw className="w-3 h-3" /> Retry Activation
               </button>
@@ -172,7 +172,7 @@ export function PictureInPictureOverlay() {
         
         {/* Special message for pending activation */}
         {showActivationMessage && (
-          <div className="flex items-center gap-2 bg-blue-800/50 px-2 py-1.5 rounded">
+          <div className="flex items-center gap-2 bg-blue-800/50 px-2 py-1.5 rounded-sm">
             <Maximize className="w-4 h-4 text-blue-300" />
             <span className="text-sm text-blue-100">Click to activate PiP</span>
           </div>
@@ -180,7 +180,7 @@ export function PictureInPictureOverlay() {
         
         {/* Status message */}
         {statusMessage && !showActivationMessage && (
-          <div className="flex items-center gap-1 bg-black/30 px-2 py-0.5 rounded">
+          <div className="flex items-center gap-1 bg-black/30 px-2 py-0.5 rounded-sm">
             {pipStatus === 'error' ? (
               <AlertTriangle className="w-3 h-3 text-yellow-400" />
             ) : (

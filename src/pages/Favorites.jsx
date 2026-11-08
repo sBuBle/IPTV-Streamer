@@ -268,13 +268,13 @@ export default function Favorites() {
                             <img 
                               src={logoUrl}
                               alt={channel.name} 
-                              class="w-12 h-12 rounded flex-shrink-0 object-cover bg-gray-900"
+                              class="w-12 h-12 rounded-sm shrink-0 object-cover bg-gray-900"
                               onError={(e) => {
                                 e.target.onerror = null;
                                 e.target.style.display = 'none';
                                 e.target.parentNode.innerHTML = `
                                   <div 
-                                    class="w-12 h-12 rounded flex-shrink-0 flex items-center justify-center"
+                                    class="w-12 h-12 rounded-sm shrink-0 flex items-center justify-center"
                                     style="background-color: ${getChannelColor(channel.name)}"
                                   >
                                     <div class="text-white text-sm font-bold">
@@ -286,7 +286,7 @@ export default function Favorites() {
                             />
                           ) : (
                             <div 
-                              class="w-12 h-12 rounded flex-shrink-0 flex items-center justify-center"
+                              class="w-12 h-12 rounded-sm shrink-0 flex items-center justify-center"
                               style={{ backgroundColor: getChannelColor(channel.name) }}
                             >
                               <div class="text-white text-sm font-bold">
@@ -360,14 +360,14 @@ export default function Favorites() {
                           <img 
                             src={logoUrl}
                             alt={channel.name} 
-                            class="w-12 h-12 rounded-md flex-shrink-0 object-cover bg-gray-900 mr-3"
+                            class="w-12 h-12 rounded-md shrink-0 object-cover bg-gray-900 mr-3"
                             data-channel={channel.id}
                             onError={(e) => {
                               e.target.onerror = null;
                               e.target.style.display = 'none';
                               e.target.parentNode.innerHTML = `
                                 <div 
-                                  class="w-12 h-12 rounded-md flex-shrink-0 flex items-center justify-center mr-3"
+                                  class="w-12 h-12 rounded-md shrink-0 flex items-center justify-center mr-3"
                                   style="background-color: ${getChannelColor(channel.name)}"
                                 >
                                   <div class="text-white text-lg font-bold">
@@ -379,7 +379,7 @@ export default function Favorites() {
                           />
                         ) : (
                           <div 
-                            class="w-12 h-12 rounded-md flex-shrink-0 flex items-center justify-center mr-3"
+                            class="w-12 h-12 rounded-md shrink-0 flex items-center justify-center mr-3"
                             style={{ backgroundColor: getChannelColor(channel.name) }}
                           >
                             <div class="text-white text-lg font-bold">
@@ -419,7 +419,7 @@ export default function Favorites() {
                           )}
                         </div>
                         
-                        <Heart class="w-5 h-5 text-red-500 fill-current flex-shrink-0 mr-2" />
+                        <Heart class="w-5 h-5 text-red-500 fill-current shrink-0 mr-2" />
                       </a>
                       
                       <button

@@ -7,7 +7,7 @@ import { getPlaylists } from './utils/playlist';
 import { PictureInPictureProvider } from './contexts/PictureInPictureContext';
 import { PictureInPictureOverlay } from './components/PictureInPictureOverlay';
 import { PipAwareAppLayout } from './components/PipAwareAppLayout';
-import { initHistoryListener } from './utils/historyManager';
+import { initHistoryListener, handleRouteChange as trackRouteChange } from './utils/historyManager';
 
 import Home from './pages/Home';
 import Player from './pages/Player';
@@ -19,16 +19,40 @@ import PlaylistView from './pages/PlaylistView';
 import CategoryView from './pages/CategoryView';
 import About from './pages/About';
 
-// Main app component with sidebar and routing
+// The channel preview in PlaylistView loads /watch/<id>?preview=true in an
+// iframe. Render only the player there: no sidebar, no router (so the iframe
+// never adds entries to the browser history), no PiP restore.
+function getPreviewId() {
+  if (typeof window === 'undefined') return null;
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('preview') !== 'true') return null;
+  const match = window.location.pathname.match(/^\/watch\/(.+)$/);
+  return match ? match[1] : null;
+}
+
 export function App() {
+  const previewId = getPreviewId();
+  if (previewId) {
+    return (
+      <div class="w-screen h-screen bg-black text-white">
+        <Player id={decodeURIComponent(previewId)} preview />
+      </div>
+    );
+  }
+  return <AppShell />;
+}
+
+// Main app component with sidebar and routing
+function AppShell() {
   const [playlists, setPlaylists] = useState([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [currentUrl, setCurrentUrl] = useState(typeof window !== 'undefined' ? window.location.pathname : '/');
   
-  // Initialize history listener for scroll restoration on navigation
-  useEffect(() => {
+  // Take over scroll restoration and track in-app history (used by the
+  // player's Back button and by list pages to restore their state)
+  if (typeof window !== 'undefined') {
     initHistoryListener();
-  }, []);
+  }
   
   // Load playlists for the sidebar
   useEffect(() => {
@@ -46,12 +70,13 @@ export function App() {
   
   // Enhanced route change handler to preserve PiP state
   const handleRouteChange = (event) => {
+    trackRouteChange();
     setSidebarOpen(false);
     setCurrentUrl(event.url);
-    
-    // We don't need to do anything special with PiP here
-    // since we're using sessionStorage for persistence
   };
+
+  // Sidebar links: preact-router handles the navigation, just close the drawer
+  const closeSidebar = () => setSidebarOpen(false);
 
   return (
     <PictureInPictureProvider>
@@ -79,7 +104,7 @@ export function App() {
                   <a 
                     href="/" 
                     class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-700 transition-colors"
-                    onClick={handleRouteChange}
+                    onClick={closeSidebar}
                   >
                     <HomeIcon size={18} />
                     <span>Home</span>
@@ -90,7 +115,7 @@ export function App() {
                   <a 
                     href="/favorites" 
                     class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-700 transition-colors"
-                    onClick={handleRouteChange}
+                    onClick={closeSidebar}
                   >
                     <Heart size={18} />
                     <span>Favorites</span>
@@ -101,7 +126,7 @@ export function App() {
                   <a 
                     href="/history" 
                     class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-700 transition-colors"
-                    onClick={handleRouteChange}
+                    onClick={closeSidebar}
                   >
                     <History size={18} />
                     <span>Watch History</span>
@@ -112,7 +137,7 @@ export function App() {
                   <a 
                     href="/countries" 
                     class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-700 transition-colors"
-                    onClick={handleRouteChange}
+                    onClick={closeSidebar}
                   >
                     <Globe size={18} />
                     <span>Browse by Country</span>
@@ -129,7 +154,7 @@ export function App() {
                           <a 
                             href={`/playlist/${playlist.id}`}
                             class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-700 transition-colors"
-                            onClick={handleRouteChange}
+                            onClick={closeSidebar}
                           >
                             <List size={16} />
                             <span class="truncate">{playlist.name}</span>
@@ -148,7 +173,7 @@ export function App() {
                       <a 
                         href="/settings" 
                         class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-700 transition-colors"
-                        onClick={handleRouteChange}
+                        onClick={closeSidebar}
                       >
                         <SettingsIcon size={18} />
                         <span>Settings</span>
@@ -158,7 +183,7 @@ export function App() {
                       <a 
                         href="/about" 
                         class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-700 transition-colors"
-                        onClick={handleRouteChange}
+                        onClick={closeSidebar}
                       >
                         <Info size={18} />
                         <span>About</span>

@@ -268,13 +268,13 @@ export default function WatchHistory() {
                             <img 
                               src={logoUrl}
                               alt={item.channel.name} 
-                              class="w-10 h-10 rounded flex-shrink-0 object-cover bg-gray-900"
+                              class="w-10 h-10 rounded-sm shrink-0 object-cover bg-gray-900"
                               onError={(e) => {
                                 e.target.onerror = null;
                                 e.target.style.display = 'none';
                                 e.target.parentNode.innerHTML = `
                                   <div 
-                                    class="w-10 h-10 rounded flex-shrink-0 flex items-center justify-center"
+                                    class="w-10 h-10 rounded-sm shrink-0 flex items-center justify-center"
                                     style="background-color: ${getChannelColor(item.channel.name)}"
                                   >
                                     <div class="text-white text-sm font-bold">
@@ -286,7 +286,7 @@ export default function WatchHistory() {
                             />
                           ) : (
                             <div 
-                              class="w-10 h-10 rounded flex-shrink-0 flex items-center justify-center"
+                              class="w-10 h-10 rounded-sm shrink-0 flex items-center justify-center"
                               style={{ backgroundColor: getChannelColor(item.channel.name) }}
                             >
                               <div class="text-white text-sm font-bold">
@@ -347,13 +347,13 @@ export default function WatchHistory() {
                           <img 
                             src={logoUrl}
                             alt={item.channel.name} 
-                            class="w-12 h-12 rounded-md flex-shrink-0 object-cover bg-gray-900 mr-3"
+                            class="w-12 h-12 rounded-md shrink-0 object-cover bg-gray-900 mr-3"
                             onError={(e) => {
                               e.target.onerror = null;
                               e.target.style.display = 'none';
                               e.target.parentNode.innerHTML = `
                                 <div 
-                                  class="w-12 h-12 rounded-md flex-shrink-0 flex items-center justify-center mr-3"
+                                  class="w-12 h-12 rounded-md shrink-0 flex items-center justify-center mr-3"
                                   style="background-color: ${getChannelColor(item.channel.name)}"
                                 >
                                   <div class="text-white text-lg font-bold">
@@ -365,7 +365,7 @@ export default function WatchHistory() {
                           />
                         ) : (
                           <div 
-                            class="w-12 h-12 rounded-md flex-shrink-0 flex items-center justify-center mr-3"
+                            class="w-12 h-12 rounded-md shrink-0 flex items-center justify-center mr-3"
                             style={{ backgroundColor: getChannelColor(item.channel.name) }}
                           >
                             <div class="text-white text-lg font-bold">

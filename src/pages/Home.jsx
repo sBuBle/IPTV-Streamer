@@ -96,20 +96,20 @@ export default function Home() {
           <img 
             src={logoUrl}
             alt={item.name || 'Channel logo'}
-            className="w-12 h-12 rounded-md flex-shrink-0 object-cover bg-gray-900"
+            className="w-12 h-12 rounded-md shrink-0 object-cover bg-gray-900"
             loading="lazy"
             onError={(e) => {
               e.target.onerror = null;
               e.target.style.display = 'none';
               e.target.parentNode.innerHTML = 
-                `<div class="w-12 h-12 rounded-md flex-shrink-0 flex items-center justify-center" style="background-color: ${getChannelColor(item.name)}">
+                `<div class="w-12 h-12 rounded-md shrink-0 flex items-center justify-center" style="background-color: ${getChannelColor(item.name)}">
                   <div class="text-white text-sm font-bold">${getChannelInitials(item.name)}</div>
                 </div>`;
             }}
           />
         ) : (
           <div 
-            className="w-12 h-12 rounded-md flex-shrink-0 flex items-center justify-center"
+            className="w-12 h-12 rounded-md shrink-0 flex items-center justify-center"
             style={{ backgroundColor: getChannelColor(item.name) }}
           >
             <div className="text-white text-sm font-bold">

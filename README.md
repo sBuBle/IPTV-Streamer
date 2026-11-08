@@ -33,17 +33,17 @@ The application is available at [https://your-deployment-url.com](https://your-d
 
 2. Install dependencies:
    ```bash
-   npm install
+   bun install
    ```
 
 3. Start the development server:
    ```bash
-   npm run dev
+   bun run dev
    ```
 
 4. Build for production:
    ```bash
-   npm run build
+   bun run build
    ```
 
 ## Usage
