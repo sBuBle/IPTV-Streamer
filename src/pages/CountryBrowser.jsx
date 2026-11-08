@@ -2,11 +2,11 @@ import { h } from 'preact';
 import { useState, useEffect, useCallback, useMemo, useRef } from 'preact/hooks';
 import { memo } from 'preact/compat';
 import { route } from 'preact-router';
-import { Globe, Search, Loader, AlertCircle, PlayCircle, Download, Check, Tv2, BookOpen, RefreshCw, Plus, Filter, Grid, List, Wifi, WifiOff, ArrowDown, ArrowUp, SortDesc, ChevronRight } from 'lucide-preact';
+import { Globe, Search, Loader, AlertCircle, Download, Check, Tv2, BookOpen, RefreshCw, Grid, List, Wifi, WifiOff, ArrowDown, ArrowUp, SortDesc, ChevronRight, ChevronLeft, Heart, Play, ExternalLink } from 'lucide-preact';
 import { getPlaylists, savePlaylist, fetchPlaylist, formatLogoUrl } from '../utils/playlist';
 import ChannelLogo from '../components/ChannelLogo';
 import CountryFlag from '../components/CountryFlag';
-import { getCountries, getCategories, getLanguagesWithChannels, getChannelsByCountry, getStreams, getChannels, getRawChannels } from '../utils/apiClient';
+import { getCountries, getRegions, getCategories, getLanguagesWithChannels, getChannelsByCountry, getStreams, getChannels, getRawChannels } from '../utils/apiClient';
 import * as apiClient from '../utils/apiClient';
 import { debounce, throttle, memoize } from '../utils/performance';
 import { EnhancedVirtualList } from '../components/EnhancedVirtualList';
@@ -15,6 +15,16 @@ import { getFavorites, toggleFavorite } from '../utils/favorites'; // Import fav
 import { watchPath } from '../utils/watchLinks';
 
 const TAB_SINGULAR = { countries: 'country', categories: 'category', languages: 'language' };
+const TABS = [
+  { id: 'countries', label: 'Countries', icon: Globe },
+  { id: 'categories', label: 'Categories', icon: Tv2 },
+  { id: 'languages', label: 'Languages', icon: BookOpen },
+];
+// Region chips shown above the country list (codes from iptv-org regions.json)
+const REGION_CHIPS = [
+  ['EUR', 'Europe'], ['ASIA', 'Asia'], ['AMER', 'Americas'], ['AFR', 'Africa'],
+  ['MIDEAST', 'Middle East'], ['OCE', 'Oceania'],
+];
 
 // Memoized simple components for better performance
 const CountryListItem = memo(({ item, kind, selectedItem, streamInfo, loadingStreamCounts, onClick }) => {
@@ -86,11 +96,44 @@ const CountryListItem = memo(({ item, kind, selectedItem, streamInfo, loadingStr
   );
 });
 
-// Memoized channel grid item
-const ChannelGridItem = memo(({ channel, index, isFavorite, onFavoriteToggle }) => {
+// Heart toggle shared by the grid and list cards
+const FavoriteButton = ({ isFavorite, onClick, size = 18 }) => (
+  <button
+    type="button"
+    onClick={onClick}
+    class={`shrink-0 w-9 h-9 rounded-full flex items-center justify-center transition ${
+      isFavorite ? 'bg-rose-500/15' : 'hover:bg-white/8'
+    }`}
+    title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+    aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+    aria-pressed={isFavorite}
+  >
+    <Heart
+      size={size}
+      class={isFavorite ? 'text-rose-400 fill-rose-400' : 'text-white opacity-45 group-hover:opacity-100'}
+      aria-hidden="true"
+    />
+  </button>
+);
+
+// Small "HD" / "1080p" style tag
+const MetaTag = ({ children, title }) => (
+  <span class="shrink-0 inline-flex items-center h-5 px-1.5 rounded-md bg-white/6 border border-[var(--color-hairline)] text-[10px] font-semibold text-[var(--color-muted)] uppercase tracking-wide" title={title}>
+    {children}
+  </span>
+);
+
+const capitalize = (text) => (text ? text.charAt(0).toUpperCase() + text.slice(1) : text);
+const channelLanguage = (channel) => channel.languageNames?.[0] || channel.languages?.[0] || '';
+
+// Channel card in the FigCraft style (see components/ChannelCard.jsx), with a real
+// favorite toggle and an "offline" state for channels without a stream.
+const ChannelGridItem = memo(({ channel, isFavorite, onFavoriteToggle }) => {
   const logoSrc = channel.logo || apiClient.getLogoUrl(channel.id || channel.name);
   const hasStream = !!channel.url;
-  
+  const language = channelLanguage(channel);
+  const subtitle = [capitalize(channel.categories?.[0]) || 'General', language].filter(Boolean).join(' · ');
+
   const handleFavoriteClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -99,155 +142,104 @@ const ChannelGridItem = memo(({ channel, index, isFavorite, onFavoriteToggle }) 
 
   return (
     <div
-      class={`bg-[var(--color-card)] border border-[var(--color-hairline)] p-3 rounded-[14px] transition flex flex-col ${hasStream ? 'hover:bg-[var(--color-card-hover)] hover:border-violet-500/40 hover:shadow-[var(--shadow-card-hover)]' : 'opacity-60'}`}
+      class={`channel-card group relative flex items-center gap-3 p-3 min-h-20 rounded-[14px] border border-[var(--color-hairline)] bg-[var(--color-card)] transition ${
+        hasStream ? 'hover:bg-[var(--color-card-hover)] hover:border-violet-500/40 hover:shadow-[var(--shadow-card-hover)]' : ''
+      }`}
     >
-      <div class="flex items-center gap-3 mb-2">
-        <div class="w-12 h-12 rounded-md shrink-0 relative overflow-hidden">
+      <a
+        href={hasStream ? watchPath(channel, { preferId: true }) : undefined}
+        aria-disabled={!hasStream}
+        class={`flex items-center gap-3 flex-1 min-w-0 ${hasStream ? '' : 'cursor-default'}`}
+      >
+        <div class={`relative w-14 h-14 shrink-0 rounded-xl overflow-hidden ${hasStream ? '' : 'grayscale opacity-60'}`}>
           <ChannelLogo
             src={logoSrc}
             name={channel.name}
-            alt={channel.name || 'Channel logo'}
-            imgClass="w-12 h-12 rounded-xl object-contain bg-white/5 p-1"
-            fallbackClass="w-12 h-12 rounded-xl flex items-center justify-center"
-            textClass="text-sm"
+            alt=""
+            imgClass="w-14 h-14 object-contain bg-white/5 p-1.5"
+            fallbackClass="w-14 h-14 flex items-center justify-center"
+            textClass="text-lg tracking-tight"
           />
-        </div>
-        <div class="flex-1 min-w-0">
-          <h5 class="font-medium text-sm truncate flex items-center gap-1">
-            {channel.name || 'Unnamed Channel'}
-            {hasStream ? (
-              <Wifi class="w-3 h-3 text-green-500 shrink-0" />
-            ) : (
-              <WifiOff class="w-3 h-3 text-red-500 shrink-0" />
-            )}
-          </h5>
-          <p class="text-xs text-gray-400 truncate">
-            {channel.categories?.[0] || 'General'}
-            {channel.resolution && (
-              <span class="ml-1 bg-gray-800 px-1 py-0.5 rounded-sm text-xs">
-                {channel.resolution}
-              </span>
-            )}
-          </p>
-        </div>
-      </div>
-      <div class="mt-auto pt-2 flex justify-between items-center">
-        {(channel.languageNames?.[0] || channel.languages?.[0]) ? (
-          <span class="text-xs bg-gray-800 px-2 py-0.5 rounded-sm truncate max-w-[60%]" title={(channel.languageNames || channel.languages).join(', ')}>
-            {channel.languageNames?.[0] || channel.languages[0]}
-          </span>
-        ) : <span />}
-        <div class="flex items-center gap-1">
-          {/* Add favorite toggle button */}
-          <button
-            onClick={handleFavoriteClick}
-            class="p-1.5 bg-gray-800 rounded-full hover:bg-gray-700"
-            title={isFavorite ? "Remove from favorites" : "Add to favorites"}
-          >
-            <svg 
-              class={`w-4 h-4 ${isFavorite ? 'text-red-500 fill-current' : 'text-gray-400'}`}
-              viewBox="0 0 24 24" 
-              stroke="currentColor" 
-              stroke-width="2" 
-              fill="none"
-            >
-              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-            </svg>
-          </button>
-          
-          {hasStream ? (
-            <a
-              href={watchPath(channel, { preferId: true })}
-              class="p-1.5 bg-blue-600 rounded-full hover:bg-blue-700"
-            >
-              <PlayCircle class="w-4 h-4" />
-            </a>
-          ) : (
-            <span class="p-1.5 bg-gray-800 rounded-full text-gray-500">
-              <PlayCircle class="w-4 h-4" />
+          {hasStream && (
+            <span class="absolute inset-0 flex items-center justify-center bg-[rgb(18_17_29/0.7)] opacity-0 group-hover:opacity-100 transition-opacity" aria-hidden="true">
+              <Play size={22} class="text-white fill-white" />
             </span>
           )}
         </div>
-      </div>
+        <div class="flex-1 min-w-0">
+          <div class={`text-sm font-semibold truncate ${hasStream ? 'text-[var(--color-text)]' : 'text-[var(--color-muted)]'}`}>
+            {channel.name || 'Unnamed Channel'}
+          </div>
+          <div class="flex items-center gap-2 mt-1.5 min-w-0">
+            {hasStream ? (
+              <span class="live-badge shrink-0">LIVE</span>
+            ) : (
+              <span class="shrink-0 inline-flex items-center gap-1 h-[22px] px-2 rounded-full bg-white/5 text-[11px] font-semibold text-[var(--color-subtle)]">
+                <WifiOff class="w-3 h-3" aria-hidden="true" /> OFFLINE
+              </span>
+            )}
+            <span class="text-xs text-[var(--color-muted)] truncate" title={(channel.languageNames || channel.languages || []).join(', ') || undefined}>
+              {subtitle}
+            </span>
+            {channel.resolution && <MetaTag>{channel.resolution}</MetaTag>}
+          </div>
+        </div>
+      </a>
+      <FavoriteButton isFavorite={isFavorite} onClick={handleFavoriteClick} />
     </div>
   );
 });
 
-// Memoized channel list item
-const ChannelListItem = memo(({ channel, index, isFavorite, onFavoriteToggle }) => {
+// Compact row for the list view
+const ChannelListItem = memo(({ channel, isFavorite, onFavoriteToggle }) => {
   const logoSrc = channel.logo || apiClient.getLogoUrl(channel.id || channel.name);
   const hasStream = !!channel.url;
-  
+  const language = channelLanguage(channel);
+
   const handleFavoriteClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
     onFavoriteToggle(channel);
   };
-  
+
   return (
-    <a
-      href={hasStream ? watchPath(channel, { preferId: true }) : '#'}
-      class={`flex items-center gap-3 bg-gray-700 p-3 rounded-lg ${hasStream ? 'hover:bg-gray-600 transition-colors' : 'opacity-60 cursor-default'}`}
-      onClick={e => !hasStream && e.preventDefault()}
+    <div
+      class={`group flex items-center gap-3 px-3 py-2 rounded-xl border border-transparent transition ${
+        hasStream ? 'hover:bg-[var(--color-card-hover)] hover:border-violet-500/30' : ''
+      }`}
     >
-      <div class="w-10 h-10 rounded-md shrink-0 relative overflow-hidden">
-        <ChannelLogo
-          src={logoSrc}
-          name={channel.name}
-          alt={channel.name || 'Channel logo'}
-          imgClass="w-10 h-10 rounded-md object-contain bg-gray-900"
-          fallbackClass="w-10 h-10 rounded-md flex items-center justify-center"
-          textClass="text-xs"
-        />
-      </div>
-      <div class="flex-1 min-w-0">
-        <h5 class="font-medium text-sm truncate">
-          {channel.name || 'Unnamed Channel'}
-          {channel.id && (
-            <span class="text-xs text-gray-400 ml-1">({channel.id})</span>
-          )}
-        </h5>
-        <div class="flex items-center gap-2">
-          {channel.categories?.[0] && (
-            <span class="text-xs text-gray-400">{channel.categories[0]}</span>
-          )}
-          {channel.languages?.[0] && (
-            <span class="text-xs bg-gray-800 px-1.5 py-0.5 rounded-sm text-gray-300">
-              {channel.languageNames?.[0] || channel.languages[0]}
-            </span>
-          )}
-          {channel.resolution && (
-            <span class="text-xs bg-blue-900/50 border border-blue-800 px-1.5 py-0.5 rounded-sm text-gray-100">
-              {channel.resolution}
-            </span>
-          )}
+      <a
+        href={hasStream ? watchPath(channel, { preferId: true }) : undefined}
+        aria-disabled={!hasStream}
+        class={`flex items-center gap-3 flex-1 min-w-0 ${hasStream ? '' : 'cursor-default'}`}
+      >
+        <div class={`w-10 h-10 rounded-lg shrink-0 relative overflow-hidden ${hasStream ? '' : 'grayscale opacity-60'}`}>
+          <ChannelLogo
+            src={logoSrc}
+            name={channel.name}
+            alt=""
+            imgClass="w-10 h-10 object-contain bg-white/5 p-1"
+            fallbackClass="w-10 h-10 flex items-center justify-center"
+            textClass="text-xs"
+          />
         </div>
-      </div>
-      <div class="flex items-center gap-2">
-        {/* Add favorite button */}
-        <button
-          onClick={handleFavoriteClick}
-          class="p-1.5 rounded-sm shrink-0"
-          title={isFavorite ? "Remove from favorites" : "Add to favorites"}
-        >
-          <svg 
-            class={`w-5 h-5 ${isFavorite ? 'text-red-500 fill-current' : 'text-gray-400 hover:text-red-400'}`}
-            viewBox="0 0 24 24" 
-            stroke="currentColor" 
-            stroke-width="2" 
-            fill="none"
-          >
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-          </svg>
-        </button>
-        
+        <div class="flex-1 min-w-0">
+          <div class={`text-sm font-semibold truncate ${hasStream ? 'text-[var(--color-text)]' : 'text-[var(--color-muted)]'}`}>
+            {channel.name || 'Unnamed Channel'}
+          </div>
+          <div class="text-xs text-[var(--color-muted)] truncate">
+            {[capitalize(channel.categories?.[0]), language].filter(Boolean).join(' · ') || 'General'}
+          </div>
+        </div>
+        {channel.resolution && <MetaTag>{channel.resolution}</MetaTag>}
         {hasStream ? (
-          <PlayCircle class="w-5 h-5 shrink-0 text-blue-400" />
+          <span class="live-badge shrink-0 hidden sm:inline-flex">LIVE</span>
         ) : (
-          <WifiOff class="w-4 h-4 shrink-0 text-red-500" />
+          <WifiOff class="w-4 h-4 shrink-0 text-[var(--color-subtle)]" aria-label="No stream" />
         )}
-      </div>
-    </a>
+      </a>
+      <FavoriteButton isFavorite={isFavorite} onClick={handleFavoriteClick} size={16} />
+    </div>
   );
 });
 
@@ -260,6 +252,8 @@ export default function CountryBrowser() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedItem, setSelectedItem] = useNavState('selectedItem', null);
+  const [regionFilter, setRegionFilter] = useNavState('regionFilter', '');
+  const [regions, setRegions] = useState([]);
   const [importing, setImporting] = useState(false);
   const [importSuccess, setImportSuccess] = useState(false);
   const [previewChannels, setPreviewChannels] = useState([]);
@@ -875,17 +869,32 @@ export default function CountryBrowser() {
   }, [activeTab, categories, countries, languages]);
   
   // Memoized filtered list
+  // Region chips that exist in regions.json, with the country codes in each
+  const regionChips = useMemo(() => REGION_CHIPS
+    .map(([code, label]) => {
+      const region = regions.find(r => r.code === code);
+      return region?.countries?.length
+        ? { code, label, countries: new Set(region.countries.map(c => String(c).toUpperCase())) }
+        : null;
+    })
+    .filter(Boolean), [regions]);
+
   const filteredList = useMemo(() => {
-    if (!debouncedSearch) return currentList;
+    let list = currentList;
+    const region = activeTab === 'countries' && regionFilter
+      ? regionChips.find(r => r.code === regionFilter)
+      : null;
+    if (region) list = list.filter(item => region.countries.has(String(item.code || '').toUpperCase()));
+    if (!debouncedSearch) return list;
     
     const query = debouncedSearch.toLowerCase();
-    return currentList.filter(item => {
+    return list.filter(item => {
       // More comprehensive search
       return item.name?.toLowerCase().includes(query) || 
              item.code?.toLowerCase().includes(query) ||
              (item.id && String(item.id).toLowerCase().includes(query));
     });
-  }, [currentList, debouncedSearch]);
+  }, [currentList, debouncedSearch, activeTab, regionFilter, regionChips]);
   
   // Optimize memoized sorted list with lodash memoize
   const getSortedList = memoize((filteredList, activeTab, sortBy, sortOrder, countriesWithStreamCounts) => {
@@ -1060,7 +1069,7 @@ export default function CountryBrowser() {
       
       // Account for the stream count loading indicator if present
       let adjustedHeight = containerHeight;
-      const loadingIndicator = listContainerRef.current.querySelector('.bg-blue-900\\/30');
+      const loadingIndicator = listContainerRef.current.querySelector('.stream-count-notice');
       if (loadingIndicator) {
         adjustedHeight -= loadingIndicator.offsetHeight + 12; // height + margin
       }
@@ -1188,401 +1197,345 @@ export default function CountryBrowser() {
     loadFavorites();
   }, [loadFavorites]);
 
+  // Regions for the filter chips; the page works without them
+  useEffect(() => {
+    let cancelled = false;
+    getRegions()
+      .then(list => { if (!cancelled && Array.isArray(list)) setRegions(list); })
+      .catch(err => console.warn('Could not load regions:', err));
+    return () => { cancelled = true; };
+  }, []);
+
+  const singular = TAB_SINGULAR[activeTab] || 'item';
+  const iconButton = (active) => `h-9 min-w-9 px-2 rounded-[10px] flex items-center justify-center gap-1 text-xs font-semibold transition ${
+    active
+      ? 'bg-violet-500/20 text-white ring-1 ring-inset ring-violet-400/50'
+      : 'text-[var(--color-muted)] hover:text-white hover:bg-white/8'
+  }`;
+  const field = 'w-full h-11 pl-11 pr-4 rounded-xl bg-[var(--color-card)] border border-[var(--color-line)] text-sm text-[var(--color-text)] placeholder:text-[var(--color-subtle)] focus:outline-none focus:border-violet-400/70 focus:ring-2 focus:ring-violet-500/25 transition';
+  const panel = 'rounded-2xl border border-[var(--color-hairline)] bg-[var(--color-surface)]/80 backdrop-blur-sm';
+  const pageStart = filteredChannels.length > 0 ? (channelsPage - 1) * channelsPerPage + 1 : 0;
+  const pageEnd = Math.min(channelsPage * channelsPerPage, filteredChannels.length);
+  const SortArrow = ({ on }) => (on ? (sortOrder === 'asc' ? <ArrowUp class="w-3.5 h-3.5" /> : <ArrowDown class="w-3.5 h-3.5" />) : null);
+  const ChannelSortArrow = ({ on }) => (on ? (channelSortOrder === 'asc' ? <ArrowUp class="w-3 h-3" /> : <ArrowDown class="w-3 h-3" />) : null);
+
   return (
     <div>
-      <div class="mb-8">
-        {/* Title and description */}
+      <div class="mb-6">
+        {/* Banner */}
         <div class="page-banner banner-countries mb-6">
-        <h2 class="text-3xl font-bold mb-2">
-          Browse IPTV Playlists
-        </h2>
-        <p class="text-gray-300">
-          Browse and import playlists from the iptv-org repository.
-          <a
-            href="https://github.com/iptv-org/iptv#playlists"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="ml-1 text-blue-400 hover:underline"
-          >
-            View Source
-          </a>
-        </p>
-        </div>
-        
-        {/* Tabs */}
-        <div class="flex border-b border-gray-700 mb-6">
-          {['countries', 'categories', 'languages'].map(tab => (
-            <button 
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              class={`flex items-center gap-2 px-4 py-2 -mb-px ${
-                activeTab === tab 
-                  ? 'border-l border-t border-r rounded-t border-gray-700 text-blue-400 bg-gray-800' 
-                  : 'text-gray-400 hover:text-gray-300'
-              }`}
+          <p class="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-lilac)] mb-2">Explore</p>
+          <h2 class="text-3xl md:text-4xl font-bold mb-2">Browse channels worldwide</h2>
+          <p class="text-[var(--color-muted)] max-w-xl">
+            Pick a country, category or language to see its live channels, then watch or import the whole playlist.
+            <a
+              href="https://github.com/iptv-org/iptv#playlists"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="see-all ml-1"
             >
-              {tab === 'countries' && <Globe class="w-5 h-5" />}
-              {tab === 'categories' && <Tv2 class="w-5 h-5" />}
-              {tab === 'languages' && <BookOpen class="w-5 h-5" />}
-              {tab.charAt(0).toUpperCase() + tab.slice(1)}
-            </button>
-          ))}
+              Source <ExternalLink class="w-3.5 h-3.5" aria-hidden="true" />
+            </a>
+          </p>
         </div>
-        
-        {/* Search and sorting controls */}
-        <div class="flex flex-col md:flex-row gap-3 mb-4">
+
+        {/* Tabs: segmented control */}
+        <div class="flex flex-col lg:flex-row lg:items-center gap-3 mb-4">
+          <div role="tablist" aria-label="Browse by" class="flex lg:inline-flex p-1 gap-1 rounded-2xl bg-[var(--color-card)] border border-[var(--color-hairline)] lg:self-start">
+            {TABS.map(({ id, label, icon: Icon }) => (
+              <button
+                key={id}
+                role="tab"
+                aria-selected={activeTab === id}
+                onClick={() => setActiveTab(id)}
+                class={`h-10 px-3 sm:px-4 flex-1 lg:flex-none justify-center rounded-xl flex items-center gap-2 text-sm font-semibold transition ${
+                  activeTab === id
+                    ? 'text-white bg-[linear-gradient(135deg,#8b5cf6,#f43f5e)] shadow-[var(--shadow-glow)]'
+                    : 'text-[var(--color-muted)] hover:text-white hover:bg-white/6'
+                }`}
+              >
+                <Icon class="w-4 h-4 hidden sm:block" aria-hidden="true" />
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {/* Search */}
           <div class="relative grow">
+            <label htmlFor="search-input" class="sr-only">Search {activeTab}</label>
+            <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[var(--color-subtle)] pointer-events-none" aria-hidden="true" />
             <input
-              type="text"
+              type="search"
               id="search-input"
-              aria-label={`Search ${activeTab}`}
-              placeholder={`Search ${activeTab}...`}
-              class="w-full px-4 py-2 bg-gray-800 rounded-lg pl-10"
+              placeholder={`Search ${activeTab}…`}
+              class={field}
               value={searchQuery}
               onInput={e => setSearchQuery(e.target.value)}
             />
-            <label htmlFor="search-input" class="sr-only">Search {activeTab}</label>
-            <Search class="absolute left-3 top-2.5 w-5 h-5 text-gray-400" aria-hidden="true" />
           </div>
-          
+
+          {/* Country sorting */}
           {activeTab === 'countries' && (
-            <div class="flex gap-2">
-              <button
-                onClick={() => toggleSort('streams')}
-                class={`px-3 py-2 rounded-lg flex items-center gap-1 ${
-                  sortBy === 'streams' ? 'bg-blue-600' : 'bg-gray-700'
-                }`}
-                title="Sort by available streams"
-              >
-                <Wifi class="w-4 h-4" />
-                Streams
-                {sortBy === 'streams' && (
-                  sortOrder === 'asc' ? <ArrowUp class="w-3 h-3" /> : <ArrowDown class="w-3 h-3" />
-                )}
+            <div class="inline-flex p-1 gap-1 rounded-xl bg-[var(--color-card)] border border-[var(--color-hairline)] self-start" aria-label="Sort countries">
+              <button onClick={() => toggleSort('streams')} class={iconButton(sortBy === 'streams')} title="Sort by available streams" aria-pressed={sortBy === 'streams'}>
+                <Wifi class="w-4 h-4" aria-hidden="true" /> Streams <SortArrow on={sortBy === 'streams'} />
               </button>
-              <button
-                onClick={() => toggleSort('name')}
-                class={`px-3 py-2 rounded-lg flex items-center gap-1 ${
-                  sortBy === 'name' ? 'bg-blue-600' : 'bg-gray-700'
-                }`}
-                title="Sort alphabetically"
-              >
-                <SortDesc class="w-4 h-4" />
-                Name
-                {sortBy === 'name' && (
-                  sortOrder === 'asc' ? <ArrowUp class="w-3 h-3" /> : <ArrowDown class="w-3 h-3" />
-                )}
+              <button onClick={() => toggleSort('name')} class={iconButton(sortBy === 'name')} title="Sort alphabetically" aria-pressed={sortBy === 'name'}>
+                <SortDesc class="w-4 h-4" aria-hidden="true" /> Name <SortArrow on={sortBy === 'name'} />
               </button>
             </div>
           )}
         </div>
+
+        {/* Region chips */}
+        {activeTab === 'countries' && regionChips.length > 0 && (
+          <div class="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1" role="group" aria-label="Filter by region">
+            {[{ code: '', label: 'All regions' }, ...regionChips].map(({ code, label }) => {
+              const on = regionFilter === code;
+              return (
+                <button
+                  key={code || 'all'}
+                  onClick={() => setRegionFilter(code)}
+                  aria-pressed={on}
+                  class={`shrink-0 h-9 px-4 rounded-full text-sm font-medium border transition ${
+                    on
+                      ? 'bg-violet-500/20 border-violet-400/60 text-white'
+                      : 'bg-white/[0.04] border-[var(--color-line)] text-[var(--color-muted)] hover:text-white hover:border-violet-400/40'
+                  }`}
+                >
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Error message */}
       {error && (
-        <div class="bg-red-900/30 border border-red-900 text-red-200 p-4 rounded-lg mb-6 flex items-start gap-2">
-          <AlertCircle class="w-5 h-5 mt-0.5 shrink-0" />
+        <div class="bg-rose-500/10 border border-rose-500/30 text-rose-100 p-4 rounded-2xl mb-6 flex items-start gap-3">
+          <AlertCircle class="w-5 h-5 mt-0.5 shrink-0 text-[var(--color-live)]" />
           <div>
-            <p class="font-medium">Connection Error</p>
-            <p class="whitespace-pre-line">{error}</p>
+            <p class="font-semibold">Connection error</p>
+            <p class="whitespace-pre-line text-sm text-rose-100/80">{error}</p>
             {selectedItem && (
-              <p class="mt-2 text-sm">You can still try to import the playlist - some channels may work even if the preview fails.</p>
+              <p class="mt-2 text-sm text-rose-100/80">You can still try to import the playlist; some channels may work even if the preview fails.</p>
             )}
           </div>
         </div>
       )}
 
       {/* Main content grid */}
-      <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
         {/* Left sidebar */}
-        <div 
-          ref={listContainerRef}
-          class="md:col-span-1 bg-gray-800 rounded-lg p-4 h-[70vh] overflow-hidden"
-        >
-          {loading ? (
-            <div class="flex items-center justify-center h-full">
-              <Loader class="w-8 h-8 animate-spin text-blue-500" />
-            </div>
-          ) : filteredList.length === 0 ? (
-            <div class="text-center py-12">
-              <p class="text-gray-400">No {activeTab} found</p>
-            </div>
-          ) : (
-            <div class="h-full">
-              {/* Stream count loading indicator */}
-              {activeTab === 'countries' && sortBy === 'streams' && loadingStreamCounts && (
-                <div class="bg-blue-900/30 text-blue-200 p-2 rounded-lg mb-3 text-sm flex items-center gap-2">
-                  <Loader class="w-4 h-4 animate-spin" />
-                  <span>Loading stream availability data...</span>
-                </div>
-              )}
-              
-              {/* Error state for virtualized list */}
-              {!sortedList || sortedList.length === 0 ? (
-                <div class="text-center py-12">
-                  <img src="/brand/pages/empty-search.svg" alt="" width="320" height="200" class="w-40 h-auto mx-auto mb-3" />
-                  <p class="text-gray-400">No results to display</p>
-                </div>
-              ) : (
-                <EnhancedVirtualList
-                  items={sortedList}
-                  height={listHeight} 
-                  itemHeight={56}
-                  renderItem={renderCountryItem}
-                  overscan={5}
-                  selectedItem={selectedItem}
-                  aria-label={`List of ${activeTab}`}
-                  tabIndex={keyboardNavigation ? 0 : undefined}
-                  class="focus:outline-hidden focus:ring-2 focus:ring-blue-500 rounded-lg"
-                  onItemsRendered={({visibleStartIndex}) => {
-                    // Restore keyboard navigation functionality
-                    if (keyboardNavigation && visibleStartIndex >= 0) {
-                      setKeyboardFocusIndex(visibleStartIndex);
-                    }
-                  }}
-                  onKeyDown={handleKeyboardNavigation}
-                />
-              )}
-            </div>
-          )}
+        <div class={`md:col-span-1 ${panel} flex flex-col h-[45vh] md:h-[72vh] overflow-hidden`}>
+          <div class="flex items-center justify-between px-4 pt-4 pb-2">
+            <span class="text-xs font-semibold uppercase tracking-[0.12em] text-[var(--color-subtle)]">
+              {TABS.find(t => t.id === activeTab)?.label}
+            </span>
+            {!loading && (
+              <span class="text-xs text-[var(--color-subtle)]">{sortedList.length}</span>
+            )}
+          </div>
+          <div ref={listContainerRef} class="flex-1 min-h-0 px-2 pb-2">
+            {loading ? (
+              <div class="flex items-center justify-center h-full">
+                <Loader class="w-7 h-7 animate-spin text-[var(--color-lilac)]" />
+              </div>
+            ) : filteredList.length === 0 ? (
+              <div class="text-center py-12">
+                <img src="/brand/pages/empty-search.svg" alt="" width="320" height="200" class="w-36 h-auto mx-auto mb-3" />
+                <p class="text-[var(--color-muted)]">No {activeTab} found</p>
+                {regionFilter && activeTab === 'countries' && (
+                  <button onClick={() => setRegionFilter('')} class="see-all mt-2">Show all regions</button>
+                )}
+              </div>
+            ) : (
+              <div class="h-full">
+                {/* Stream count loading indicator */}
+                {activeTab === 'countries' && sortBy === 'streams' && loadingStreamCounts && (
+                  <div class="stream-count-notice mx-1 mb-3 px-3 h-9 rounded-xl bg-violet-500/10 text-[var(--color-lilac)] text-xs font-medium flex items-center gap-2">
+                    <Loader class="w-3.5 h-3.5 animate-spin" />
+                    <span>Counting live streams…</span>
+                  </div>
+                )}
+
+                {!sortedList || sortedList.length === 0 ? (
+                  <div class="text-center py-12">
+                    <img src="/brand/pages/empty-search.svg" alt="" width="320" height="200" class="w-36 h-auto mx-auto mb-3" />
+                    <p class="text-[var(--color-muted)]">No results to display</p>
+                  </div>
+                ) : (
+                  <EnhancedVirtualList
+                    items={sortedList}
+                    height={listHeight}
+                    itemHeight={56}
+                    renderItem={renderCountryItem}
+                    overscan={5}
+                    selectedItem={selectedItem}
+                    aria-label={`List of ${activeTab}`}
+                    tabIndex={keyboardNavigation ? 0 : undefined}
+                    class="focus:outline-hidden focus-visible:ring-2 focus-visible:ring-violet-500/60 rounded-xl"
+                    onItemsRendered={({visibleStartIndex}) => {
+                      if (keyboardNavigation && visibleStartIndex >= 0) {
+                        setKeyboardFocusIndex(visibleStartIndex);
+                      }
+                    }}
+                    onKeyDown={handleKeyboardNavigation}
+                  />
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Main content area */}
-        <div class="md:col-span-2 bg-gray-800 rounded-lg p-6 h-[70vh] overflow-y-auto">
+        <div class={`md:col-span-2 ${panel} p-4 md:p-6 md:h-[72vh] overflow-y-auto`}>
           {!selectedItem ? (
-            <div class="flex flex-col items-center justify-center h-full text-center">
-              {getTabIcon(activeTab)}
-              <h3 class="text-xl font-semibold text-gray-400 mt-4">Select a {TAB_SINGULAR[activeTab] || 'item'}</h3>
-              <p class="text-gray-500 mt-2">
-                Choose a {TAB_SINGULAR[activeTab] || 'item'} from the list to view channels
+            <div class="flex flex-col items-center justify-center h-full min-h-64 text-center">
+              <div class="w-16 h-16 rounded-2xl brand-gradient flex items-center justify-center text-white shadow-[var(--shadow-glow)] [&>svg]:w-7 [&>svg]:h-7">
+                {getTabIcon(activeTab)}
+              </div>
+              <h3 class="text-xl font-semibold mt-5">Select a {singular}</h3>
+              <p class="text-[var(--color-muted)] mt-2 max-w-xs">
+                Choose a {singular} from the list to see its channels.
               </p>
             </div>
           ) : (
             <div>
-              {/* Item header with improved flag handling */}
-              {activeTab === 'countries' && selectedItem && (
-                <div class="mb-6">
-                  <div class="flex items-center gap-4">
-                    <div class="w-16 h-12 overflow-hidden rounded-sm shadow-lg bg-gray-900 flex items-center justify-center">
-                      {selectedItem.code ? (
-                        <CountryFlag code={selectedItem.code} />
-                      ) : (
-                        <Globe class="w-8 h-8 text-gray-600" />
-                      )}
-                    </div>
-                    <div>
-                      <h3 class="text-2xl font-bold flex items-center gap-2">
-                        {selectedItem.name} 
-                        {selectedItem.code && (
-                          <span class="bg-gray-700 text-sm px-2 py-1 rounded-sm">
-                            {selectedItem.code.toUpperCase()}
-                          </span>
-                        )}
-                      </h3>
-                      <div class="flex items-center gap-2 text-sm text-gray-400 mt-1">
-                        <span>{filteredChannels.length} channels available</span>
-                        {streamsFetched && (
-                          <span class="flex items-center gap-1 px-2 py-0.5 bg-gray-700 rounded-sm">
-                            {streamMetrics.streamAvailabilityPercentage}% with streams
-                            {streamMetrics.channelsWithStreams.length > 0 ? (
-                              <Wifi class="w-3 h-3 text-green-500" />
-                            ) : (
-                              <WifiOff class="w-3 h-3 text-red-500" />
-                            )}
-                          </span>
-                        )}
-                      </div>
-                    </div>
+              {/* Selected item header */}
+              <div class="flex flex-col sm:flex-row sm:items-center gap-4 mb-5">
+                {activeTab === 'countries' ? (
+                  <div class="w-[72px] h-[54px] shrink-0 overflow-hidden rounded-xl ring-1 ring-white/10 shadow-[var(--shadow-card-hover)] bg-[var(--color-card)] flex items-center justify-center">
+                    {selectedItem.code ? <CountryFlag code={selectedItem.code} /> : <Globe class="w-7 h-7 text-[var(--color-subtle)]" />}
                   </div>
-                </div>
-              )}
-              {activeTab !== 'countries' && (
-                <div class="mb-6">
-                  <h3 class="text-2xl font-bold flex items-center gap-2">
-                    {selectedItem.name}
-                    {activeTab === 'languages' && selectedItem.code && (
-                      <span class="bg-gray-700 text-sm px-2 py-1 rounded-sm">
+                ) : activeTab === 'categories' ? (
+                  <img src={`/brand/icons/cat-${selectedItem.id}.svg`} alt="" width="54" height="54" class="w-[54px] h-[54px] shrink-0"
+                    onError={(e) => { e.currentTarget.src = '/brand/channel-fallback.svg'; }} />
+                ) : (
+                  <div class="w-[54px] h-[54px] shrink-0 rounded-xl bg-violet-500/15 flex items-center justify-center text-[var(--color-lilac)]">
+                    <BookOpen class="w-6 h-6" />
+                  </div>
+                )}
+                <div class="flex-1 min-w-0">
+                  <h3 class="text-2xl font-bold flex items-center gap-2 min-w-0">
+                    <span class="truncate">{selectedItem.name}</span>
+                    {selectedItem.code && activeTab !== 'categories' && (
+                      <span class="shrink-0 text-xs font-semibold px-2 h-6 inline-flex items-center rounded-md bg-white/8 text-[var(--color-muted)]">
                         {selectedItem.code.toUpperCase()}
                       </span>
                     )}
                   </h3>
-                  <div class="flex items-center gap-2 text-sm text-gray-400 mt-1">
-                    <span>{filteredChannels.length} channels available</span>
+                  <div class="flex flex-wrap items-center gap-2 mt-2 text-xs">
+                    <span class="inline-flex items-center h-6 px-2.5 rounded-full bg-white/6 text-[var(--color-muted)] font-medium">
+                      {filteredChannels.length} channels
+                    </span>
                     {streamsFetched && (
-                      <span class="flex items-center gap-1 px-2 py-0.5 bg-gray-700 rounded-sm">
-                        {streamMetrics.streamAvailabilityPercentage}% with streams
-                        {streamMetrics.channelsWithStreams.length > 0 ? (
-                          <Wifi class="w-3 h-3 text-green-500" />
-                        ) : (
-                          <WifiOff class="w-3 h-3 text-red-500" />
-                        )}
+                      <span class="inline-flex items-center gap-1.5 h-6 px-2.5 rounded-full bg-emerald-500/10 text-emerald-300 font-medium">
+                        {streamMetrics.channelsWithStreams.length > 0 ? <Wifi class="w-3 h-3" /> : <WifiOff class="w-3 h-3" />}
+                        {streamMetrics.streamAvailabilityPercentage}% streaming
                       </span>
                     )}
                   </div>
                 </div>
-              )}
-
-              {/* Channel controls with added channel sorting */}
-              <div class="flex flex-wrap items-center justify-between gap-3 mb-4 pb-4 border-b border-gray-700">
-                <div class="flex-1 min-w-[200px]">
-                  <div class="relative">
-                    <input
-                      type="text"
-                      id="channel-filter-input"
-                      aria-label="Filter channels"
-                      placeholder="Filter channels..."
-                      class="w-full px-4 py-2 bg-gray-700 rounded-lg pl-10 text-sm"
-                      value={channelFilter}
-                      onInput={e => setChannelFilter(e.target.value)}
-                    />
-                    <label htmlFor="channel-filter-input" class="sr-only">Filter channels</label>
-                    <Search class="absolute left-3 top-2.5 w-4 h-4 text-gray-400" aria-hidden="true" />
-                  </div>
-                </div>
-                <div class="flex items-center gap-2">
-                  {/* Channel sort buttons */}
-                  <div class="flex gap-1 mr-1 items-center">
-                    <button
-                      onClick={() => toggleChannelSort('streams')}
-                      class={`p-1.5 rounded flex items-center gap-1 text-xs ${
-                        channelSortBy === 'streams' ? 'bg-blue-600' : 'bg-gray-700'
-                      }`}
-                      title="Sort by available streams"
-                    >
-                      <Wifi class="w-3 h-3" />
-                      {channelSortBy === 'streams' && (
-                        channelSortOrder === 'asc' ? <ArrowUp class="w-3 h-3" /> : <ArrowDown class="w-3 h-3" />
-                      )}
-                    </button>
-                    <button
-                      onClick={() => toggleChannelSort('name')}
-                      class={`p-1.5 rounded-sm flex items-center gap-1 text-xs ${channelSortBy === 'name' ? 'bg-blue-600' : 'bg-gray-700'}`}
-                      title="Sort alphabetically"
-                    >
-                      <SortDesc class="w-3 h-3" />
-                      {channelSortBy === 'name' && (
-                        channelSortOrder === 'asc' ? <ArrowUp class="w-3 h-3" /> : <ArrowDown class="w-3 h-3" />
-                      )}
-                    </button>
-                  </div>
-                
-                  <button 
-                    onClick={refreshStreams} 
-                    disabled={fetchingStreams}
-                    title="Refresh stream data" 
-                    class={`p-1.5 rounded-sm ${fetchingStreams ? 'bg-blue-800' : 'bg-blue-600 hover:bg-blue-700'}`}
-                  >
-                    <RefreshCw class={`w-4 h-4 ${fetchingStreams ? 'animate-spin' : ''}`} />
-                  </button>
-                  
-                  <button 
-                    onClick={() => setViewMode('grid')}
-                    class={`p-1.5 rounded-sm ${viewMode === 'grid' ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'}`}
-                    title="Grid view"
-                  >
-                    <Grid class="w-4 h-4" />
-                  </button>
-                  
-                  <button 
-                    onClick={() => setViewMode('list')}
-                    class={`p-1.5 rounded-sm ${viewMode === 'list' ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'}`}
-                    title="List view"
-                  >
-                    <List class="w-4 h-4" />
-                  </button>
-                  <span class="text-sm text-gray-400 ml-2">
-                    {filteredChannels.length > 0 ? `${(channelsPage - 1) * channelsPerPage + 1}-${Math.min(channelsPage * channelsPerPage, filteredChannels.length)} of ${filteredChannels.length}` : '0 items'}
-                  </span>
-
-                  <button 
-                    onClick={prevPage} 
-                    disabled={channelsPage <= 1}
-                    class={`p-1.5 rounded-sm ${channelsPage <= 1 ? 'text-gray-600' : 'bg-gray-700 hover:bg-gray-600'}`}
-                  >
-                    &#8592;
-                  </button>
-                  <button 
-                    onClick={nextPage} 
-                    disabled={channelsPage >= totalPages}
-                    class={`p-1.5 rounded-sm ${channelsPage >= totalPages ? 'text-gray-600' : 'bg-gray-700 hover:bg-gray-600'}`}
-                  >
-                    &#8594;
-                  </button>
-                </div>
-                {selectedItem && (
-                  <button
-                    onClick={handleImport}
-                    disabled={importing}
-                    class="px-3 py-1.5 bg-blue-600 text-white rounded-sm hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm"
-                  >
-                    {importing ? <RefreshCw class="w-4 h-4 animate-spin" /> : <Plus class="w-4 h-4" />}
-                    {importSuccess ? 'Added!' : 'Import Playlist'}
-                  </button>
-                )}
+                <button
+                  onClick={handleImport}
+                  disabled={importing}
+                  class="btn btn-primary self-start sm:self-center shrink-0 disabled:opacity-70"
+                >
+                  {importing ? <RefreshCw class="w-4 h-4 animate-spin" /> : importSuccess ? <Check class="w-4 h-4" /> : <Download class="w-4 h-4" />}
+                  {importSuccess ? 'Added to playlists' : 'Import playlist'}
+                </button>
               </div>
 
-              {/* Channel content area - now using sortedAndFilteredChannels */}
+              {/* Channel toolbar */}
+              <div class="flex flex-wrap items-center gap-2 mb-4 pb-4 border-b border-[var(--color-hairline)]">
+                <div class="relative flex-1 min-w-[180px]">
+                  <label htmlFor="channel-filter-input" class="sr-only">Filter channels</label>
+                  <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-subtle)] pointer-events-none" aria-hidden="true" />
+                  <input
+                    type="search"
+                    id="channel-filter-input"
+                    placeholder="Filter channels…"
+                    class={field.replace('h-11', 'h-10')}
+                    value={channelFilter}
+                    onInput={e => setChannelFilter(e.target.value)}
+                  />
+                </div>
+                <div class="inline-flex p-1 gap-1 rounded-xl bg-[var(--color-card)] border border-[var(--color-hairline)]">
+                  <button onClick={() => toggleChannelSort('streams')} class={iconButton(channelSortBy === 'streams')} title="Sort by available streams" aria-label="Sort by available streams" aria-pressed={channelSortBy === 'streams'}>
+                    <Wifi class="w-4 h-4" /> <ChannelSortArrow on={channelSortBy === 'streams'} />
+                  </button>
+                  <button onClick={() => toggleChannelSort('name')} class={iconButton(channelSortBy === 'name')} title="Sort alphabetically" aria-label="Sort alphabetically" aria-pressed={channelSortBy === 'name'}>
+                    <SortDesc class="w-4 h-4" /> <ChannelSortArrow on={channelSortBy === 'name'} />
+                  </button>
+                </div>
+                <div class="inline-flex p-1 gap-1 rounded-xl bg-[var(--color-card)] border border-[var(--color-hairline)]">
+                  <button onClick={() => setViewMode('grid')} class={iconButton(viewMode === 'grid')} title="Grid view" aria-label="Grid view" aria-pressed={viewMode === 'grid'}>
+                    <Grid class="w-4 h-4" />
+                  </button>
+                  <button onClick={() => setViewMode('list')} class={iconButton(viewMode === 'list')} title="List view" aria-label="List view" aria-pressed={viewMode === 'list'}>
+                    <List class="w-4 h-4" />
+                  </button>
+                  <button onClick={refreshStreams} disabled={fetchingStreams} class={iconButton(false)} title="Refresh stream data" aria-label="Refresh stream data">
+                    <RefreshCw class={`w-4 h-4 ${fetchingStreams ? 'animate-spin' : ''}`} />
+                  </button>
+                </div>
+              </div>
+
+              {/* Channels */}
               {loadingChannels ? (
-                <div class="bg-gray-800 rounded-lg p-10 flex justify-center">
-                  <Loader class="animate-spin w-8 h-8 text-blue-400" />
+                <div class="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-3" aria-busy="true">
+                  {Array.from({ length: 6 }, (_, i) => (
+                    <div key={i} class="h-20 rounded-[14px] bg-[var(--color-card)] border border-[var(--color-hairline)] animate-pulse" />
+                  ))}
                 </div>
               ) : sortedAndFilteredChannels.length === 0 ? (
-                <div class="bg-gray-800 rounded-lg p-6 text-center text-gray-400">
+                <div class="py-10 text-center">
                   <img src="/brand/pages/empty-search.svg" alt="" width="320" height="200" class="w-40 h-auto mx-auto mb-3" />
-                  <p>No channels found for {selectedItem.name}</p>
-                  <p class="text-sm mt-2">Try selecting another {TAB_SINGULAR[activeTab] || 'item'} or check your connection.</p>
+                  <p class="font-semibold">No channels found for {selectedItem.name}</p>
+                  <p class="text-sm mt-1 text-[var(--color-muted)]">Try another {singular}, clear the filter, or check your connection.</p>
                 </div>
               ) : fetchingStreams ? (
-                <div class="bg-gray-800/50 rounded-lg p-6 flex justify-center items-center">
-                  <div class="text-center">
-                    <Loader class="animate-spin w-8 h-8 text-blue-400 mx-auto mb-2" />
-                    <p class="text-gray-400">Fetching stream data...</p>
-                  </div>
+                <div class="py-10 flex flex-col items-center text-[var(--color-muted)]">
+                  <Loader class="animate-spin w-7 h-7 text-[var(--color-lilac)] mb-2" />
+                  <p>Fetching stream data…</p>
+                </div>
+              ) : viewMode === 'grid' ? (
+                <div class="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-3">
+                  {paginatedChannels.map((channel, index) => (
+                    <ChannelGridItem
+                      key={channel.id || channel.url || index}
+                      channel={channel}
+                      isFavorite={isChannelFavorite(channel.id)}
+                      onFavoriteToggle={handleToggleFavorite}
+                    />
+                  ))}
                 </div>
               ) : (
-                <div className={viewMode === 'grid' ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3" : "flex flex-col gap-2"}>
-                  {/* Use optimized rendered components with proper keys and favorites props */}
+                <div class="flex flex-col gap-0.5 rounded-2xl border border-[var(--color-hairline)] bg-[var(--color-card)] p-1.5">
                   {paginatedChannels.map((channel, index) => (
-                    viewMode === 'grid' ? (
-                      <ChannelGridItem 
-                        key={channel.id || channel.url || index}
-                        channel={channel}
-                        index={index}
-                        isFavorite={isChannelFavorite(channel.id)}
-                        onFavoriteToggle={handleToggleFavorite}
-                      />
-                    ) : (
-                      <ChannelListItem
-                        key={channel.id || channel.url || index}
-                        channel={channel}
-                        index={index}
-                        isFavorite={isChannelFavorite(channel.id)}
-                        onFavoriteToggle={handleToggleFavorite}
-                      />
-                    )
+                    <ChannelListItem
+                      key={channel.id || channel.url || index}
+                      channel={channel}
+                      isFavorite={isChannelFavorite(channel.id)}
+                      onFavoriteToggle={handleToggleFavorite}
+                    />
                   ))}
                 </div>
               )}
 
-              {/* Pagination footer */}
+              {/* Pagination */}
               {sortedAndFilteredChannels.length > channelsPerPage && (
-                <div class="mt-6 flex justify-between items-center">
-                  <button 
-                    onClick={prevPage} 
-                    disabled={channelsPage <= 1}
-                    class={`px-3 py-1.5 rounded-sm ${channelsPage <= 1 ? 'text-gray-600' : 'bg-gray-700 hover:bg-gray-600'}`}
-                  >
-                    Previous
+                <div class="mt-6 flex items-center justify-between gap-3">
+                  <button onClick={prevPage} disabled={channelsPage <= 1} class="btn btn-secondary disabled:opacity-40 disabled:pointer-events-none">
+                    <ChevronLeft class="w-4 h-4" /> Previous
                   </button>
-                  <span class="text-sm text-gray-400">
-                    Page {channelsPage} of {totalPages}
+                  <span class="text-sm text-[var(--color-muted)] text-center">
+                    {pageStart}–{pageEnd} <span class="text-[var(--color-subtle)]">of {filteredChannels.length}</span>
                   </span>
-                  <button 
-                    onClick={nextPage} 
-                    disabled={channelsPage >= totalPages}
-                    class={`px-3 py-1.5 rounded-sm ${channelsPage >= totalPages ? 'text-gray-600' : 'bg-gray-700 hover:bg-gray-600'}`}
-                  >
-                    Next
+                  <button onClick={nextPage} disabled={channelsPage >= totalPages} class="btn btn-secondary disabled:opacity-40 disabled:pointer-events-none">
+                    Next <ChevronRight class="w-4 h-4" />
                   </button>
                 </div>
               )}
