@@ -25,64 +25,127 @@ const API_ENDPOINTS = {
 // Cache duration constants (in milliseconds)
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
 
+// Parsed responses kept for the whole session, so pages don't re-read
+// multi-megabyte arrays from IndexedDB on every visit.
+const memory = new Map(); // cacheKey -> { data, timestamp }
+// Requests in flight, so simultaneous callers share one download.
+const inflight = new Map(); // cacheKey -> Promise
+
+async function download(url, cacheKey, options) {
+  const response = await fetch(url, {
+    headers: { 'Accept': 'application/json' },
+    signal: options.signal,
+  });
+  if (!response.ok) {
+    throw new Error(`API request failed: ${response.status}`);
+  }
+  const data = await response.json();
+  const timestamp = Date.now();
+  memory.set(cacheKey, { data, timestamp });
+  // Persist without blocking the caller
+  set(cacheKey, data).then(() => set(`${cacheKey}_timestamp`, timestamp));
+  return data;
+}
+
+function downloadOnce(url, cacheKey, options) {
+  let promise = inflight.get(cacheKey);
+  if (!promise) {
+    promise = download(url, cacheKey, options).finally(() => inflight.delete(cacheKey));
+    inflight.set(cacheKey, promise);
+  }
+  return promise;
+}
+
 /**
- * Fetch data from API with caching
+ * Fetch data from API with caching (memory -> IndexedDB -> network).
+ * Expired data is returned immediately and refreshed in the background
+ * (stale-while-revalidate), so returning visitors never wait on the network.
  * @param {string} url - API endpoint URL
  * @param {string} cacheKey - Cache key for data
- * @param {Object} options - Fetch options
+ * @param {Object} options - Fetch options ({ forceRefresh, signal })
  * @returns {Promise<Object>} Fetched data
  */
 async function fetchWithCache(url, cacheKey, options = {}) {
-  try {
-    // Try cache first
-    const cached = await get(cacheKey);
-    const cacheTimestamp = await get(`${cacheKey}_timestamp`);
-    
-    if (cached && cacheTimestamp && (Date.now() - cacheTimestamp < CACHE_DURATION) && !options.forceRefresh) {
-      return cached;
+  if (options.forceRefresh) {
+    try {
+      return await downloadOnce(url, cacheKey, options);
+    } catch (error) {
+      console.error(`Error fetching ${url}:`, error);
+      const cached = memory.get(cacheKey)?.data ?? (await get(cacheKey));
+      if (cached) return cached;
+      throw error;
     }
-    
-    // Simplified cache invalidation - just check if cache duration has expired
-    // or if forceRefresh is requested
-    let shouldUpdate = true;
-    
-    // If we have a valid cache timestamp and it's not expired, respect it
-    if (cacheTimestamp && (Date.now() - cacheTimestamp < CACHE_DURATION) && !options.forceRefresh) {
-      shouldUpdate = false;
-    }
-    
-    if (!shouldUpdate && cached) {
-      return cached;
-    }
-    
-    // Fetch new data
-    const response = await fetch(url, {
-      headers: { 'Accept': 'application/json' },
-      signal: options.signal,
-    });
-    
-    if (!response.ok) {
-      throw new Error(`API request failed: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    
-    // Update cache
-    await set(cacheKey, data);
-    await set(`${cacheKey}_timestamp`, Date.now());
-    
-    return data;
-  } catch (error) {
-    console.error(`Error fetching ${url}:`, error);
-    
-    // Return cached data even if expired
-    const cached = await get(cacheKey);
-    if (cached) {
-      return cached;
-    }
-    
-    throw error;
   }
+
+  let entry = memory.get(cacheKey);
+  if (!entry) {
+    const [data, timestamp] = await Promise.all([get(cacheKey), get(`${cacheKey}_timestamp`)]);
+    if (data) {
+      entry = { data, timestamp: timestamp || 0 };
+      memory.set(cacheKey, entry);
+    }
+  }
+
+  if (entry) {
+    if (Date.now() - entry.timestamp >= CACHE_DURATION && !inflight.has(cacheKey)) {
+      downloadOnce(url, cacheKey, {}).catch(err => console.warn(`Background refresh of ${url} failed:`, err));
+    }
+    return entry.data;
+  }
+
+  return downloadOnce(url, cacheKey, options);
+}
+
+// Streams grouped by channel ID, rebuilt only when streams.json changes
+let streamIndexSource = null;
+let streamIndex = null;
+
+function getStreamIndex(streams) {
+  if (streams !== streamIndexSource) {
+    streamIndex = new Map();
+    if (Array.isArray(streams)) {
+      for (const stream of streams) {
+        if (!stream?.channel) continue;
+        const list = streamIndex.get(stream.channel);
+        if (list) list.push(stream);
+        else streamIndex.set(stream.channel, [stream]);
+      }
+    }
+    streamIndexSource = streams;
+  }
+  return streamIndex;
+}
+
+function withBestStream(channel, index) {
+  const bestStream = index.get(channel.id)?.[0] || null;
+  return {
+    ...channel,
+    url: bestStream ? bestStream.url : null,
+    logo: channel.logo || getLogoUrl(channel.id),
+    resolution: bestStream ? bestStream.resolution : null,
+    status: bestStream ? bestStream.status : null,
+    httpReferrer: bestStream ? bestStream.http_referrer : null,
+    userAgent: bestStream ? bestStream.user_agent : null
+  };
+}
+
+function matchesCountry(channel, code) {
+  if (channel.country && channel.country.toLowerCase() === code) return true;
+  if (Array.isArray(channel.broadcast_area)) {
+    return channel.broadcast_area.some(area => {
+      const a = area.toLowerCase();
+      return a === `c.${code}` || a === code;
+    });
+  }
+  return false;
+}
+
+/**
+ * Raw channels.json entries (no stream/logo merge). Cheap way to count or
+ * index channels without building tens of thousands of new objects.
+ */
+export async function getRawChannels(options = {}) {
+  return fetchWithCache(API_ENDPOINTS.CHANNELS, 'api_channels', options);
 }
 
 // Channel ID -> logo URL, filled from logos.json by loadLogos()
@@ -182,91 +245,30 @@ export async function getStreams(options = {}) {
  */
 export async function getChannels(filters = {}, options = {}) {
   try {
-    // Load channels, streams, and any needed lookup data
     const [channels, streams] = await Promise.all([
       fetchWithCache(API_ENDPOINTS.CHANNELS, 'api_channels', options),
       fetchWithCache(API_ENDPOINTS.STREAMS, 'api_streams', options),
       loadLogos(options)
     ]);
-    
-    // If no channels or streams, return empty array
-    if (!channels || !channels.length) {
+
+    if (!Array.isArray(channels) || !channels.length) {
       return [];
     }
-    
-    // Create an index of streams by channel ID for faster lookup
-    const streamsByChannel = streams ? streams.reduce((acc, stream) => {
-      if (!acc[stream.channel]) {
-        acc[stream.channel] = [];
-      }
-      acc[stream.channel].push(stream);
-      return acc;
-    }, {}) : {};
-    
-    // Apply filters
-    let filteredChannels = [...channels];
-    
-    // Apply category filter
-    if (filters.category) {
-      filteredChannels = filteredChannels.filter(channel => 
-        channel.categories && 
-        Array.isArray(channel.categories) && 
-        channel.categories.some(cat => 
-          cat.toLowerCase() === filters.category.toLowerCase()
+
+    const category = filters.category?.toLowerCase();
+    const country = filters.country?.toLowerCase();
+    const language = filters.language?.toLowerCase();
+
+    const filtered = (category || country || language)
+      ? channels.filter(channel =>
+          (!category || (Array.isArray(channel.categories) && channel.categories.some(c => c.toLowerCase() === category))) &&
+          (!country || matchesCountry(channel, country)) &&
+          (!language || (Array.isArray(channel.languages) && channel.languages.some(l => l.toLowerCase() === language)))
         )
-      );
-    }
-    
-    // Apply country filter - updated for current API structure
-    if (filters.country) {
-      filteredChannels = filteredChannels.filter(channel => {
-        // Direct country match
-        if (channel.country && channel.country.toLowerCase() === filters.country.toLowerCase()) {
-          return true;
-        }
-        
-        // Check broadcast_area for country entries (format: "c.XX")
-        if (channel.broadcast_area && Array.isArray(channel.broadcast_area)) {
-          return channel.broadcast_area.some(area => 
-            area.toLowerCase() === `c.${filters.country.toLowerCase()}` || 
-            area.toLowerCase() === filters.country.toLowerCase()
-          );
-        }
-        
-        return false;
-      });
-      
-      console.log(`Found ${filteredChannels.length} channels for country ${filters.country}`);
-    }
-    
-    // Apply language filter
-    if (filters.language) {
-      filteredChannels = filteredChannels.filter(channel => 
-        channel.languages && 
-        Array.isArray(channel.languages) && 
-        channel.languages.some(lang => 
-          lang.toLowerCase() === filters.language.toLowerCase()
-        )
-      );
-    }
-    
-    // Combine channel data with stream URLs
-    return filteredChannels.map(channel => {
-      const channelStreams = streamsByChannel[channel.id] || [];
-      
-      // Get the first (or most reliable) stream URL for this channel
-      const bestStream = channelStreams.length > 0 ? channelStreams[0] : null;
-      
-      return {
-        ...channel,
-        url: bestStream ? bestStream.url : null,
-        logo: channel.logo || getLogoUrl(channel.id),
-        resolution: bestStream ? bestStream.resolution : null,
-        status: bestStream ? bestStream.status : null,
-        httpReferrer: bestStream ? bestStream.http_referrer : null,
-        userAgent: bestStream ? bestStream.user_agent : null
-      };
-    });
+      : channels;
+
+    const index = getStreamIndex(streams);
+    return filtered.map(channel => withBestStream(channel, index));
   } catch (error) {
     console.error('Error getting channels:', error);
     return [];
@@ -297,18 +299,20 @@ export async function findChannel(nameOrId, options = {}) {
     if (!Array.isArray(channels)) return null;
 
     // Find matching channel
-    const channel = channels.find(ch =>
+    const found = channels.find(ch =>
       ch.id?.toLowerCase() === searchTerm ||
       ch.name?.toLowerCase() === searchTerm ||
       ch.name?.toLowerCase().includes(searchTerm)
     );
+    // Copy so the shared cached array is never modified
+    const channel = found ? { ...found } : null;
 
     if (channel) {
       // Get stream URL for this channel
       try {
         const streams = await fetchWithCache(API_ENDPOINTS.STREAMS, 'api_streams', options);
-        const channelStreams = streams.filter(s => s.channel === channel.id);
-        
+        const channelStreams = getStreamIndex(streams).get(channel.id) || [];
+
         if (channelStreams.length > 0) {
           channel.url = channelStreams[0].url;
         }
@@ -337,9 +341,9 @@ export async function findChannel(nameOrId, options = {}) {
 }
 
 /**
- * Get channel details including EPG data if available
+ * Get channel details (with EPG guide info when options.includeGuide is set)
  * @param {string} channelId - Channel ID to get details for
- * @param {Object} options - Fetch options
+ * @param {Object} options - Fetch options ({ includeGuide, forceRefresh, signal })
  * @returns {Promise<Object>} Channel details with EPG data
  */
 export async function getChannelDetails(channelId, options = {}) {
@@ -348,29 +352,31 @@ export async function getChannelDetails(channelId, options = {}) {
   try {
     // First, find the channel in the channels database
     const channels = await fetchWithCache(API_ENDPOINTS.CHANNELS, 'api_channels', options);
-    const channel = channels.find(ch => ch.id === channelId);
+    const found = Array.isArray(channels) ? channels.find(ch => ch.id === channelId) : null;
+    const channel = found ? { ...found } : null;
     
     if (!channel) return null;
     
     // Find the stream data
     const streams = await fetchWithCache(API_ENDPOINTS.STREAMS, 'api_streams', options);
-    const channelStreams = streams.filter(s => s.channel === channelId);
+    const channelStreams = getStreamIndex(streams).get(channelId) || [];
     
     if (channelStreams.length > 0) {
       channel.streams = channelStreams;
       channel.url = channelStreams[0].url; // Use the first stream as default
     }
     
-    // Try to get EPG data if available
-    try {
-      const guides = await fetchWithCache(API_ENDPOINTS.GUIDES, 'api_guides', options);
-      const channelGuide = guides.find(g => g.channel === channelId);
-      
-      if (channelGuide) {
-        channel.guide = channelGuide;
+    // EPG guides.json is large; only download it when asked for
+    if (options.includeGuide) {
+      try {
+        const guides = await fetchWithCache(API_ENDPOINTS.GUIDES, 'api_guides', options);
+        const channelGuide = guides.find(g => g.channel === channelId);
+        if (channelGuide) {
+          channel.guide = channelGuide;
+        }
+      } catch (e) {
+        console.warn('Failed to fetch EPG data:', e);
       }
-    } catch (e) {
-      console.warn('Failed to fetch EPG data:', e);
     }
     
     return channel;
@@ -388,77 +394,7 @@ export async function getChannelDetails(channelId, options = {}) {
  */
 export async function getChannelsByCountry(countryCode, options = {}) {
   if (!countryCode) return [];
-  
-  try {
-    const [channels, streams] = await Promise.all([
-      fetchWithCache(API_ENDPOINTS.CHANNELS, 'api_channels', options),
-      fetchWithCache(API_ENDPOINTS.STREAMS, 'api_streams', options),
-      loadLogos(options)
-    ]);
-    
-    if (!channels || !Array.isArray(channels) || channels.length === 0) {
-      console.warn('No channels found in API response');
-      return [];
-    }
-
-    // Debug: Log the structure of the first channel to understand data format
-    console.log('Example channel structure:', JSON.stringify(channels[0]));
-    
-    // According to the API documentation, country is a direct property (not an array)
-    // Also check broadcast_area which may contain country codes in format "c.XX"
-    const countryChannels = channels.filter(channel => {
-      // Direct country match
-      if (channel.country && channel.country.toLowerCase() === countryCode.toLowerCase()) {
-        return true;
-      }
-      
-      // Check broadcast_area for country entries (format: "c.XX")
-      if (channel.broadcast_area && Array.isArray(channel.broadcast_area)) {
-        return channel.broadcast_area.some(area => 
-          area.toLowerCase() === `c.${countryCode.toLowerCase()}` || 
-          area.toLowerCase() === countryCode.toLowerCase()
-        );
-      }
-      
-      return false;
-    });
-    
-    console.log(`Found ${countryChannels.length} raw channels for country ${countryCode}`);
-    
-    // Create an index of streams by channel ID for faster lookup
-    const streamsByChannel = {};
-    if (streams && Array.isArray(streams)) {
-      streams.forEach(stream => {
-        if (!stream.channel) return;
-        if (!streamsByChannel[stream.channel]) {
-          streamsByChannel[stream.channel] = [];
-        }
-        streamsByChannel[stream.channel].push(stream);
-      });
-    }
-    
-    // Combine channel data with stream URLs
-    const channelsWithStreams = countryChannels.map(channel => {
-      const channelStreams = streamsByChannel[channel.id] || [];
-      const bestStream = channelStreams.length > 0 ? channelStreams[0] : null;
-      
-      return {
-        ...channel,
-        url: bestStream ? bestStream.url : null,
-        logo: channel.logo || getLogoUrl(channel.id),
-        resolution: bestStream ? bestStream.resolution : null,
-        status: bestStream ? bestStream.status : null,
-        httpReferrer: bestStream ? bestStream.http_referrer : null,
-        userAgent: bestStream ? bestStream.user_agent : null
-      };
-    });
-    
-    console.log(`Returning ${channelsWithStreams.length} channels with streams for country ${countryCode}`);
-    return channelsWithStreams;
-  } catch (err) {
-    console.error(`Error getting channels for country ${countryCode}:`, err);
-    return [];
-  }
+  return getChannels({ country: countryCode }, options);
 }
 
 /**

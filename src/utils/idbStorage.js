@@ -76,29 +76,26 @@ export async function set(key, value, useCompression = false) {
   try {
     let storableValue = value;
 
-    // Only compress if requested and value is large or complex
-    const valueStr = JSON.stringify(value);
-    const isLarge = valueStr.length > 10000;
-
-    if ((useCompression || isLarge) && value !== null && value !== undefined) {
+    // IndexedDB stores objects natively (structured clone), which is much
+    // faster than JSON + LZ compression on multi-megabyte API responses, so
+    // only compress when the caller explicitly asks for it.
+    if (useCompression && value !== null && value !== undefined) {
+      const valueStr = JSON.stringify(value);
       const lzString = await getLZString();
       try {
         storableValue = lzString
           ? 'CMPR:' + lzString.compressToUTF16(valueStr)
-          : valueStr;
+          : value;
       } catch (e) {
         console.warn(`Compression failed for key ${key}:`, e);
-        storableValue = valueStr; // Fall back to uncompressed
+        storableValue = value;
       }
     }
 
     await idbSet(key, storableValue, store);
 
-    // Update cache with reasonable size limit
-    if (typeof valueStr !== 'string' || valueStr.length < 500000) {
-      enforceCacheSizeLimit();
-      cache.set(key, { value, expires: Date.now() + CACHE_TTL });
-    }
+    enforceCacheSizeLimit();
+    cache.set(key, { value, expires: Date.now() + CACHE_TTL });
 
     return true;
   } catch (err) {
@@ -152,13 +149,13 @@ export async function clearAll() {
 }
 
 /**
- * Store a large object with automatic compression
+ * Store a large object (kept for compatibility; IndexedDB stores objects natively)
  * @param {string} key - The key to store
  * @param {any} value - The value to store
  * @returns {Promise<boolean>} - Success status
  */
 export async function setLarge(key, value) {
-  return set(key, value, true);
+  return set(key, value);
 }
 
 /**
@@ -241,9 +238,8 @@ export function cleanCache() {
  * Enforce cache size limit
  */
 function enforceCacheSizeLimit() {
-  while (cache.size > CACHE_SIZE_LIMIT) {
-    const oldestKey = [...cache.keys()][0];
-    cache.delete(oldestKey);
+  while (cache.size >= CACHE_SIZE_LIMIT) {
+    cache.delete(cache.keys().next().value);
   }
 }
 

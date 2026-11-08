@@ -1,7 +1,7 @@
 import { h, createContext } from 'preact';
 import { useState, useContext, useEffect, useRef, useCallback } from 'preact/hooks';
 import { route } from 'preact-router';
-import Hls from 'hls.js';
+import { loadHls } from '../utils/loadHls';
 import { savePipState, loadPipState, clearPipState } from '../utils/pipStateManager';
 
 // Debug flag - set to true to enable verbose logging
@@ -314,7 +314,13 @@ export function PictureInPictureProvider({ children }) {
       
       // Set up streaming
       let initSuccess = false;
-      if (Hls.isSupported()) {
+      let Hls = null;
+      try {
+        Hls = await loadHls();
+      } catch (err) {
+        debugLog('Could not load hls.js: ' + err);
+      }
+      if (Hls && Hls.isSupported()) {
         setPipStatus('loading');
         const hls = new Hls({
           enableWorker: true,
