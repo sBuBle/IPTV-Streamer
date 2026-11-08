@@ -35,7 +35,6 @@ const Row = ({ index, style, ariaAttributes, items, renderItem, selectedItem }) 
     <div
       {...ariaAttributes}
       style={style}
-      class={isSelected ? 'bg-blue-700 text-white' : ''}
       role="option"
       aria-selected={isSelected}
     >
