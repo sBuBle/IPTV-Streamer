@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <linearGradient id="linear-gradient-1" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#f25082"/>
+      <stop offset="1" stop-color="#ed4e31"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="24" y1="0" x2="24" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.22"/>
+      <stop offset="0.55" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <title>Category: weather</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M12 0 L36 0 C42.627 0 48 5.373 48 12 L48 36 C48 42.627 42.627 48 36 48 L12 48 C5.373 48 0 42.627 0 36 L0 12 C0 5.373 5.373 0 12 0 Z" fill="url(#linear-gradient-1)"/>
+    <path d="M12 0 L36 0 C42.627 0 48 5.373 48 12 L48 36 C48 42.627 42.627 48 36 48 L12 48 C5.373 48 0 42.627 0 36 L0 12 C0 5.373 5.373 0 12 0 Z" fill="url(#linear-gradient-2)"/>
+    <path d="M12 0.5 L36 0.5 C42.351 0.5 47.5 5.649 47.5 12 L47.5 36 C47.5 42.351 42.351 47.5 36 47.5 L12 47.5 C5.649 47.5 0.5 42.351 0.5 36 L0.5 12 C0.5 5.649 5.649 0.5 12 0.5 Z" fill="none" stroke="#ffffff" stroke-miterlimit="10" opacity="0.14"/>
+    <path d="M19 30.5 C16.8 30.5 15 28.7 15 26.5 C15 24.3 16.8 22.5 19 22.5 C19.5 19.7 21.9 17.5 25 17.5 C28.3 17.5 31 20.2 31 23.5 C32.7 23.5 34 25 34 26.9 C34 28.8 32.4 30.5 30.5 30.5 Z" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

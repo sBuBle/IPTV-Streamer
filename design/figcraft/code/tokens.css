@@ -1,0 +1,29 @@
+/* Tokens · Mode 1 */
+:root {
+  --color-bg-ink: #12111D;
+  --color-bg-surface: #17161F;
+  --color-bg-card: #1C1B2B;
+  --color-bg-card-hover: #25243A;
+  --color-line-hairline: rgba(255, 255, 255, 0.06);
+  --color-line-strong: rgba(255, 255, 255, 0.10);
+  --color-text-primary: #F4F3FA;
+  --color-text-muted: #A19FB6;
+  --color-text-subtle: #6F6D87;
+  --color-accent-violet: #8B5CF6;
+  --color-accent-lilac: #A78BFA;
+  --color-accent-coral: #F43F5E;
+  --color-status-live: #FB7185;
+  --color-status-ok: #34D399;
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 999px;
+  --font-display: "Inter";
+  --font-body: "Inter";
+}

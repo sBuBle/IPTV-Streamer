@@ -1,0 +1,150 @@
+[
+ {
+  "command": "file.new",
+  "params": {
+   "width": 48,
+   "height": 48,
+   "units": "Pixels",
+   "name": "Category: entertainment"
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 0,
+   "y": 0,
+   "width": 48,
+   "height": 48,
+   "radius": 12
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "angle": -45,
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#a750f2"
+     },
+     {
+      "offset": 1,
+      "color": "#ed31ec"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 0,
+   "y": 0,
+   "width": 48,
+   "height": 48,
+   "radius": 12
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "angle": -90,
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#ffffff",
+      "opacity": 0.22
+     },
+     {
+      "offset": 0.55,
+      "color": "#ffffff",
+      "opacity": 0
+     }
+    ]
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 0.5,
+   "y": 0.5,
+   "width": 47,
+   "height": 47,
+   "radius": 11.5
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#ffffff"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 14
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M 24 15 L 26.6 20.6 L 32.6 21.2 L 28 25.3 L 29.4 31.2 L 24 28.1 L 18.6 31.2 L 20 25.3 L 15.4 21.2 L 21.4 20.6 Z",
+   "closed": false
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#ffffff"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2.0,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 100
+  }
+ }
+]

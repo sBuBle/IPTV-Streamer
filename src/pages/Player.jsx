@@ -945,9 +945,10 @@ export default function Player({ id, preview = false }) {
       {/* Error */}
       {error && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/90 p-4 sm:p-6 z-20 overflow-y-auto">
-          <div className="max-w-lg w-full bg-gray-900 rounded-lg overflow-hidden shadow-2xl my-auto">
-            <div className="bg-red-900/30 p-4 flex items-start gap-3">
-              <AlertTriangle className="w-6 h-6 text-red-400 shrink-0" />
+          <div className="max-w-lg w-full bg-gray-900 rounded-2xl border border-white/10 overflow-hidden shadow-2xl my-auto">
+            <img src="/brand/stream-error.svg" alt="" width="480" height="270" className="w-full max-w-xs mx-auto h-auto pt-4" />
+            <div className="p-4 flex items-start gap-3">
+              <AlertTriangle className="w-6 h-6 text-rose-400 shrink-0" />
               <div className="min-w-0">
                 <h3 className="font-bold text-lg text-white">{error}</h3>
                 {errorDetails && <p className="text-gray-300 text-sm mt-1">{errorDetails}</p>}
