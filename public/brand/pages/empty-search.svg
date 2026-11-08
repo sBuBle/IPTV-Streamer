@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="320" height="200" viewBox="0 0 320 200">
+  <defs>
+    <radialGradient id="radial-gradient-1" cx="0" cy="0" r="150" gradientTransform="matrix(1 0 0 0.633 160 100)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8b5cf6" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#8b5cf6" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="linear-gradient-1" x1="125.412" y1="69.412" x2="210.588" y2="118.588" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8b5cf6"/>
+      <stop offset="1" stop-color="#f43f5e"/>
+    </linearGradient>
+  </defs>
+  <title>Empty: no results</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M10 100 C10 47.533 77.157 5 160 5 C242.843 5 310 47.533 310 100 C310 152.467 242.843 195 160 195 C77.157 195 10 152.467 10 100 Z" fill="url(#radial-gradient-1)"/>
+    <path d="M100 62 L122 62 C126.418 62 130 65.582 130 70 L130 86 C130 90.418 126.418 94 122 94 L100 94 C95.582 94 92 90.418 92 86 L92 70 C92 65.582 95.582 62 100 62 Z" fill="#ffffff" opacity="0.08"/>
+    <path d="M100 104 L122 104 C126.418 104 130 107.582 130 112 L130 128 C130 132.418 126.418 136 122 136 L100 136 C95.582 136 92 132.418 92 128 L92 112 C92 107.582 95.582 104 100 104 Z" fill="#ffffff" opacity="0.08"/>
+    <path d="M146 62 L168 62 C172.418 62 176 65.582 176 70 L176 86 C176 90.418 172.418 94 168 94 L146 94 C141.582 94 138 90.418 138 86 L138 70 C138 65.582 141.582 62 146 62 Z" fill="#ffffff" opacity="0.08"/>
+    <path d="M146 104 L168 104 C172.418 104 176 107.582 176 112 L176 128 C176 132.418 172.418 136 168 136 L146 136 C141.582 136 138 132.418 138 128 L138 112 C138 107.582 141.582 104 146 104 Z" fill="#ffffff" opacity="0.08"/>
+    <path d="M192 62 L214 62 C218.418 62 222 65.582 222 70 L222 86 C222 90.418 218.418 94 214 94 L192 94 C187.582 94 184 90.418 184 86 L184 70 C184 65.582 187.582 62 192 62 Z" fill="#ffffff" opacity="0.08"/>
+    <path d="M192 104 L214 104 C218.418 104 222 107.582 222 112 L222 128 C222 132.418 218.418 136 214 136 L192 136 C187.582 136 184 132.418 184 128 L184 112 C184 107.582 187.582 104 192 104 Z" fill="#ffffff" opacity="0.08"/>
+    <path d="M134 94 C134 75.222 149.222 60 168 60 C186.778 60 202 75.222 202 94 C202 112.778 186.778 128 168 128 C149.222 128 134 112.778 134 94 Z" fill="none" stroke="url(#linear-gradient-1)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+    <path d="M193 119 L218 144" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+  </g>
+</svg>

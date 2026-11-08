@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="320" height="200" viewBox="0 0 320 200">
+  <defs>
+    <radialGradient id="radial-gradient-1" cx="0" cy="0" r="150" gradientTransform="matrix(1 0 0 0.633 160 100)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8b5cf6" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#8b5cf6" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="linear-gradient-1" x1="96.413" y1="63.288" x2="223.587" y2="136.712" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8b5cf6"/>
+      <stop offset="1" stop-color="#f43f5e"/>
+    </linearGradient>
+  </defs>
+  <title>Empty: no history</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M10 100 C10 47.533 77.157 5 160 5 C242.843 5 310 47.533 310 100 C310 152.467 242.843 195 160 195 C77.157 195 10 152.467 10 100 Z" fill="url(#radial-gradient-1)"/>
+    <path d="M108 100 C108 71.281 131.281 48 160 48 C188.719 48 212 71.281 212 100 C212 128.719 188.719 152 160 152 C131.281 152 108 128.719 108 100 Z" fill="none" stroke="url(#linear-gradient-1)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.85"/>
+    <path d="M160 100 L160 70 M160 100 L182 112" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+    <path d="M83.704 73.322 C83.704 71.666 85.047 70.322 86.704 70.322 C88.361 70.322 89.704 71.666 89.704 73.322 C89.704 74.979 88.361 76.322 86.704 76.322 C85.047 76.322 83.704 74.979 83.704 73.322 Z" fill="#a78bfa" opacity="0.2"/>
+    <path d="M99.035 47.808 C99.035 46.151 100.378 44.808 102.035 44.808 C103.692 44.808 105.035 46.151 105.035 47.808 C105.035 49.465 103.692 50.808 102.035 50.808 C100.378 50.808 99.035 49.465 99.035 47.808 Z" fill="#a78bfa" opacity="0.35"/>
+    <path d="M122.807 29.894 C122.807 28.237 124.15 26.894 125.807 26.894 C127.464 26.894 128.807 28.237 128.807 29.894 C128.807 31.551 127.464 32.894 125.807 32.894 C124.15 32.894 122.807 31.551 122.807 29.894 Z" fill="#a78bfa" opacity="0.5"/>
+    <path d="M151.559 22.19 C151.559 20.533 152.902 19.19 154.559 19.19 C156.216 19.19 157.559 20.533 157.559 22.19 C157.559 23.847 156.216 25.19 154.559 25.19 C152.902 25.19 151.559 23.847 151.559 22.19 Z" fill="#a78bfa" opacity="0.65"/>
+    <path d="M181.103 25.818 C181.103 24.161 182.446 22.818 184.103 22.818 C185.76 22.818 187.103 24.161 187.103 25.818 C187.103 27.474 185.76 28.818 184.103 28.818 C182.446 28.818 181.103 27.474 181.103 25.818 Z" fill="#a78bfa" opacity="0.8"/>
+  </g>
+</svg>

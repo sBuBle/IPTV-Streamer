@@ -1,0 +1,303 @@
+[
+ {
+  "command": "file.new",
+  "params": {
+   "width": 320,
+   "height": 200,
+   "units": "Pixels",
+   "name": "Empty: no favorites"
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 10.0,
+   "y": 5.0,
+   "width": 300,
+   "height": 190
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "radial",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#8b5cf6",
+      "opacity": 0.35
+     },
+     {
+      "offset": 1,
+      "color": "#8b5cf6",
+      "opacity": 0
+     }
+    ],
+    "aspect": 63.33333333333333
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M160 147.2 C102.4 108.8 107.19999999999999 60.8 136.0 60.8 C152.8 60.8 160 75.2 160 82.4 C160 75.2 167.2 60.8 184.0 60.8 C212.8 60.8 217.6 108.8 160 147.2 Z",
+   "closed": true
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "angle": -45,
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#8b5cf6"
+     },
+     {
+      "offset": 1,
+      "color": "#f43f5e"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 3.5,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 85
+  }
+ },
+ {
+  "command": "shape.line",
+  "params": {
+   "x1": 89,
+   "y1": 55,
+   "x2": 101,
+   "y2": 55
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#fda4af"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 70
+  }
+ },
+ {
+  "command": "shape.line",
+  "params": {
+   "x1": 95,
+   "y1": 49,
+   "x2": 95,
+   "y2": 61
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#fda4af"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 70
+  }
+ },
+ {
+  "command": "shape.line",
+  "params": {
+   "x1": 224,
+   "y1": 70,
+   "x2": 240,
+   "y2": 70
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#fda4af"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 70
+  }
+ },
+ {
+  "command": "shape.line",
+  "params": {
+   "x1": 232,
+   "y1": 62,
+   "x2": 232,
+   "y2": 78
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#fda4af"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 70
+  }
+ },
+ {
+  "command": "shape.line",
+  "params": {
+   "x1": 215,
+   "y1": 150,
+   "x2": 225,
+   "y2": 150
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#fda4af"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 70
+  }
+ },
+ {
+  "command": "shape.line",
+  "params": {
+   "x1": 220,
+   "y1": 145,
+   "x2": 220,
+   "y2": 155
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#fda4af"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 70
+  }
+ }
+]

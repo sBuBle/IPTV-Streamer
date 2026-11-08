@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="320" height="200" viewBox="0 0 320 200">
+  <defs>
+    <radialGradient id="radial-gradient-1" cx="0" cy="0" r="150" gradientTransform="matrix(1 0 0 0.633 160 100)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8b5cf6" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#8b5cf6" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="linear-gradient-1" x1="84.941" y1="49.665" x2="235.059" y2="136.335" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8b5cf6"/>
+      <stop offset="1" stop-color="#f43f5e"/>
+    </linearGradient>
+  </defs>
+  <title>Empty: no channels</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M10 100 C10 47.533 77.157 5 160 5 C242.843 5 310 47.533 310 100 C310 152.467 242.843 195 160 195 C77.157 195 10 152.467 10 100 Z" fill="url(#radial-gradient-1)"/>
+    <path d="M104 45 L216 45 C223.732 45 230 51.268 230 59 L230 127 C230 134.732 223.732 141 216 141 L104 141 C96.268 141 90 134.732 90 127 L90 59 C90 51.268 96.268 45 104 45 Z" fill="#ffffff" opacity="0.1"/>
+    <path d="M104 45 L216 45 C223.732 45 230 51.268 230 59 L230 127 C230 134.732 223.732 141 216 141 L104 141 C96.268 141 90 134.732 90 127 L90 59 C90 51.268 96.268 45 104 45 Z" fill="none" stroke="url(#linear-gradient-1)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.8"/>
+    <path d="M140 160 L180 160" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+    <path d="M108 93 L120 93" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+    <path d="M132 93 L144 93" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+    <path d="M156 93 L168 93" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+    <path d="M180 93 L192 93" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+    <path d="M204 93 L216 93" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.5"/>
+    <path d="M151 76 L151 92 L165 84 Z" fill="#ffffff" opacity="0.8"/>
+  </g>
+</svg>

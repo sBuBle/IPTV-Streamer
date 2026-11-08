@@ -1,0 +1,262 @@
+[
+ {
+  "command": "file.new",
+  "params": {
+   "width": 320,
+   "height": 200,
+   "units": "Pixels",
+   "name": "Empty: no history"
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 10.0,
+   "y": 5.0,
+   "width": 300,
+   "height": 190
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "radial",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#8b5cf6",
+      "opacity": 0.35
+     },
+     {
+      "offset": 1,
+      "color": "#8b5cf6",
+      "opacity": 0
+     }
+    ],
+    "aspect": 63.33333333333333
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 108,
+   "y": 48,
+   "width": 104,
+   "height": 104
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "angle": -30,
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#8b5cf6"
+     },
+     {
+      "offset": 1,
+      "color": "#f43f5e"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 3.5,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 85
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M160 100 L160 70 M160 100 L182 112"
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#ffffff"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 4,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 90
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 83.70397557869914,
+   "y": 70.32242882059785,
+   "width": 6,
+   "height": 6
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#a78bfa"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 20
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 99.03470361276325,
+   "y": 44.80781270400906,
+   "width": 6,
+   "height": 6
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#a78bfa"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 35
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 122.80705055045193,
+   "y": 26.894064388664987,
+   "width": 6,
+   "height": 6
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#a78bfa"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 50
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 151.5589950479582,
+   "y": 19.19000407973371,
+   "width": 6,
+   "height": 6
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#a78bfa"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 65
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 181.1033255612459,
+   "y": 22.817591728978016,
+   "width": 6,
+   "height": 6
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#a78bfa"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 80
+  }
+ }
+]
