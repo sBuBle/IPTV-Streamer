@@ -1,0 +1,93 @@
+{
+ "cat-news": [
+  "public/brand/icons/cat-news.svg"
+ ],
+ "cat-sports": [
+  "public/brand/icons/cat-sports.svg"
+ ],
+ "cat-movies": [
+  "public/brand/icons/cat-movies.svg"
+ ],
+ "cat-music": [
+  "public/brand/icons/cat-music.svg"
+ ],
+ "cat-kids": [
+  "public/brand/icons/cat-kids.svg"
+ ],
+ "cat-entertainment": [
+  "public/brand/icons/cat-entertainment.svg"
+ ],
+ "cat-documentary": [
+  "public/brand/icons/cat-documentary.svg"
+ ],
+ "cat-general": [
+  "public/brand/icons/cat-general.svg"
+ ],
+ "cat-lifestyle": [
+  "public/brand/icons/cat-lifestyle.svg"
+ ],
+ "cat-religious": [
+  "public/brand/icons/cat-religious.svg"
+ ],
+ "cat-education": [
+  "public/brand/icons/cat-education.svg"
+ ],
+ "cat-business": [
+  "public/brand/icons/cat-business.svg"
+ ],
+ "cat-comedy": [
+  "public/brand/icons/cat-comedy.svg"
+ ],
+ "cat-cooking": [
+  "public/brand/icons/cat-cooking.svg"
+ ],
+ "cat-travel": [
+  "public/brand/icons/cat-travel.svg"
+ ],
+ "cat-weather": [
+  "public/brand/icons/cat-weather.svg"
+ ],
+ "cat-series": [
+  "public/brand/icons/cat-series.svg"
+ ],
+ "cat-culture": [
+  "public/brand/icons/cat-culture.svg"
+ ],
+ "cat-science": [
+  "public/brand/icons/cat-science.svg"
+ ],
+ "cat-animation": [
+  "public/brand/icons/cat-animation.svg"
+ ],
+ "cat-classic": [
+  "public/brand/icons/cat-classic.svg"
+ ],
+ "cat-family": [
+  "public/brand/icons/cat-family.svg"
+ ],
+ "cat-legislative": [
+  "public/brand/icons/cat-legislative.svg"
+ ],
+ "cat-outdoor": [
+  "public/brand/icons/cat-outdoor.svg"
+ ],
+ "cat-relax": [
+  "public/brand/icons/cat-relax.svg"
+ ],
+ "cat-shop": [
+  "public/brand/icons/cat-shop.svg"
+ ],
+ "cat-auto": [
+  "public/brand/icons/cat-auto.svg"
+ ],
+ "channel-fallback": [
+  "public/brand/channel-fallback.svg"
+ ],
+ "stream-error": [
+  "public/brand/stream-error.svg"
+ ],
+ "og-image": [
+  "public/og-image.svg",
+  "public/og-image.png"
+ ]
+}

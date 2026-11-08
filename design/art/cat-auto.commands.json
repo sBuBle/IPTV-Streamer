@@ -1,0 +1,299 @@
+[
+ {
+  "command": "file.new",
+  "params": {
+   "width": 48,
+   "height": 48,
+   "units": "Pixels",
+   "name": "Category: auto"
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 0,
+   "y": 0,
+   "width": 48,
+   "height": 48,
+   "radius": 12
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "angle": -45,
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#f250b0"
+     },
+     {
+      "offset": 1,
+      "color": "#ed3149"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 0,
+   "y": 0,
+   "width": 48,
+   "height": 48,
+   "radius": 12
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "angle": -90,
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#ffffff",
+      "opacity": 0.22
+     },
+     {
+      "offset": 0.55,
+      "color": "#ffffff",
+      "opacity": 0
+     }
+    ]
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 0.5,
+   "y": 0.5,
+   "width": 47,
+   "height": 47,
+   "radius": 11.5
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#ffffff"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 14
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M 15 28.5 L 15 24 L 17.5 18.8 C 17.8 18.1 18.4 17.8 19.1 17.8 L 28.9 17.8 C 29.6 17.8 30.2 18.1 30.5 18.8 L 33 24 L 33 28.5 Z",
+   "closed": false
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#ffffff"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2.0,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 100
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M 15 24 L 33 24",
+   "closed": false
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#ffffff"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2.0,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 100
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M 17.5 28.5 L 17.5 31 L 20.5 31 L 20.5 28.5",
+   "closed": false
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#ffffff"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2.0,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 100
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M 27.5 28.5 L 27.5 31 L 30.5 31 L 30.5 28.5",
+   "closed": false
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#ffffff"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2.0,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 100
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M 18 26.3 A 1 1 0 1 0 20 26.3 A 1 1 0 1 0 18 26.3 Z",
+   "closed": true
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#ffffff"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 100
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M 28 26.3 A 1 1 0 1 0 30 26.3 A 1 1 0 1 0 28 26.3 Z",
+   "closed": true
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#ffffff"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 100
+  }
+ }
+]

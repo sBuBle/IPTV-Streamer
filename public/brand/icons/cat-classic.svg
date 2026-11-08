@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <linearGradient id="linear-gradient-1" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8450f2"/>
+      <stop offset="1" stop-color="#c631ed"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="24" y1="0" x2="24" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.22"/>
+      <stop offset="0.55" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <title>Category: classic</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M12 0 L36 0 C42.627 0 48 5.373 48 12 L48 36 C48 42.627 42.627 48 36 48 L12 48 C5.373 48 0 42.627 0 36 L0 12 C0 5.373 5.373 0 12 0 Z" fill="url(#linear-gradient-1)"/>
+    <path d="M12 0 L36 0 C42.627 0 48 5.373 48 12 L48 36 C48 42.627 42.627 48 36 48 L12 48 C5.373 48 0 42.627 0 36 L0 12 C0 5.373 5.373 0 12 0 Z" fill="url(#linear-gradient-2)"/>
+    <path d="M12 0.5 L36 0.5 C42.351 0.5 47.5 5.649 47.5 12 L47.5 36 C47.5 42.351 42.351 47.5 36 47.5 L12 47.5 C5.649 47.5 0.5 42.351 0.5 36 L0.5 12 C0.5 5.649 5.649 0.5 12 0.5 Z" fill="none" stroke="#ffffff" stroke-miterlimit="10" opacity="0.14"/>
+    <circle cx="24" cy="24" r="9" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="24" cy="19.2" r="1.7" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="28.8" cy="24" r="1.7" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="24" cy="28.8" r="1.7" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="19.2" cy="24" r="1.7" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="24" cy="24" r="0.9" fill="#ffffff"/>
+  </g>
+</svg>

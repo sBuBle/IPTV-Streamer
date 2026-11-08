@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="96" height="96" viewBox="0 0 96 96">
+  <defs>
+    <linearGradient id="linear-gradient-1" x1="0" y1="0" x2="96" y2="96" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8b5cf6" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#f43f5e" stop-opacity="0.1"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="43.078" y1="19.133" x2="52.922" y2="28.978" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#a78bfa"/>
+      <stop offset="1" stop-color="#fb7185"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-3" x1="40.425" y1="10.295" x2="55.575" y2="25.445" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#a78bfa"/>
+      <stop offset="1" stop-color="#fb7185"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-4" x1="45.5" y1="29.5" x2="50.5" y2="34.5" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#a78bfa"/>
+      <stop offset="1" stop-color="#fb7185"/>
+    </linearGradient>
+  </defs>
+  <title>Channel logo fallback</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M20 0 L76 0 C87.046 0 96 8.954 96 20 L96 76 C96 87.046 87.046 96 76 96 L20 96 C8.954 96 0 87.046 0 76 L0 20 C0 8.954 8.954 0 20 0 Z" fill="#1c1b2b"/>
+    <path d="M20 0 L76 0 C87.046 0 96 8.954 96 20 L96 76 C96 87.046 87.046 96 76 96 L20 96 C8.954 96 0 87.046 0 76 L0 20 C0 8.954 8.954 0 20 0 Z" fill="url(#linear-gradient-1)"/>
+    <path d="M20 0.5 L76 0.5 C86.77 0.5 95.5 9.23 95.5 20 L95.5 76 C95.5 86.77 86.77 95.5 76 95.5 L20 95.5 C9.23 95.5 0.5 86.77 0.5 76 L0.5 20 C0.5 9.23 9.23 0.5 20 0.5 Z" fill="none" stroke="#ffffff" stroke-miterlimit="10" opacity="0.1"/>
+    <path d="M26 40 L70 40 C72.2 40 74 41.8 74 44 L74 68 C74 70.2 72.2 72 70 72 L26 72 C23.8 72 22 70.2 22 68 L22 44 C22 41.8 23.8 40 26 40 Z" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+    <line x1="40" y1="79" x2="56" y2="79" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"/>
+    <polygon points="44.5,50.5 44.5,61.5 54,56" fill="#ffffff" opacity="0.7"/>
+    <path d="M42.21 25.11 C45.558 22.297 50.442 22.297 53.79 25.11" fill="none" stroke="url(#linear-gradient-2)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M37.72 19.74 C43.667 14.754 52.333 14.754 58.28 19.74" fill="none" stroke="url(#linear-gradient-3)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+    <circle cx="48" cy="32" r="2.5" fill="url(#linear-gradient-4)"/>
+  </g>
+</svg>

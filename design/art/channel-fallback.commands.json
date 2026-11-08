@@ -1,0 +1,321 @@
+[
+ {
+  "command": "file.new",
+  "params": {
+   "width": 96,
+   "height": 96,
+   "units": "Pixels",
+   "name": "Channel logo fallback"
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 0,
+   "y": 0,
+   "width": 96,
+   "height": 96,
+   "radius": 20
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#1c1b2b"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 0,
+   "y": 0,
+   "width": 96,
+   "height": 96,
+   "radius": 20
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "angle": -45,
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#8b5cf6",
+      "opacity": 0.22
+     },
+     {
+      "offset": 1,
+      "color": "#f43f5e",
+      "opacity": 0.1
+     }
+    ]
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 0.5,
+   "y": 0.5,
+   "width": 95,
+   "height": 95,
+   "radius": 19.5
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#ffffff"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 10
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M26 40 L70 40 C72.2 40 74 41.8 74 44 L74 68 C74 70.2 72.2 72 70 72 L26 72 C23.8 72 22 70.2 22 68 L22 44 C22 41.8 23.8 40 26 40 Z",
+   "closed": false
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#ffffff"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 3,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 70
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M40 79 L56 79",
+   "closed": false
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#ffffff"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 3,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 45
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M44.5 50.5 L44.5 61.5 L54 56 Z",
+   "closed": true
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#ffffff"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 70
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M42.21 25.11 A9 9 0 0 1 53.79 25.11",
+   "closed": false
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "angle": -45,
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#a78bfa"
+     },
+     {
+      "offset": 1,
+      "color": "#fb7185"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 3,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 100
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M37.72 19.74 A16 16 0 0 1 58.28 19.74",
+   "closed": false
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "angle": -45,
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#a78bfa"
+     },
+     {
+      "offset": 1,
+      "color": "#fb7185"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 3,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 70
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 45.5,
+   "y": 29.5,
+   "width": 5,
+   "height": 5
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "angle": -45,
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#a78bfa"
+     },
+     {
+      "offset": 1,
+      "color": "#fb7185"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ }
+]
