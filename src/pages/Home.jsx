@@ -178,10 +178,10 @@ export default function Home() {
         </div>
       </Section>
 
-      <Section title="Your playlists" href="/settings">
+      <Section title="Your playlists" href="/playlists">
         {playlists.length === 0 ? (
           <Empty art="/brand/pages/empty-channels.svg" title="No playlists added yet">
-            <a href="/settings" className="btn btn-secondary mt-3"><ListPlus size={18} /> Add playlist</a>
+            <a href="/playlists" className="btn btn-secondary mt-3"><ListPlus size={18} /> Add playlist</a>
           </Empty>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
