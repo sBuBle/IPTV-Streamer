@@ -5,7 +5,7 @@
 // Constants
 const PIP_STATE_KEY = 'iptv_pip_state';
 const PIP_EXPIRY_TIME = 30 * 60 * 1000; // 30 minutes
-const DEBUG_PIP = true;
+const DEBUG_PIP = false;
 
 const debugLog = (...args) => {
   if (DEBUG_PIP) {

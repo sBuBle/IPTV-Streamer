@@ -8,7 +8,7 @@ export default function About() {
   return (
     <div>
       {/* Hero section with app info */}
-      <div className="relative bg-gradient-to-br from-blue-900 to-gray-800 rounded-xl p-8 mb-8 overflow-hidden">
+      <div className="relative bg-linear-to-br from-blue-900 to-gray-800 rounded-xl p-8 mb-8 overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 left-10">
             <Tv className="w-40 h-40 text-white" />
@@ -24,15 +24,15 @@ export default function About() {
             A modern, lightweight web application for accessing and managing publicly available IPTV channels
           </p>
           <div className="flex flex-wrap gap-4 mt-6">
-            <div className="bg-blue-800/40 px-4 py-2 rounded-full flex items-center gap-2 backdrop-blur-sm">
+            <div className="bg-blue-800/40 px-4 py-2 rounded-full flex items-center gap-2 backdrop-blur-xs">
               <Code className="w-4 h-4" />
               <span>Open Source</span>
             </div>
-            <div className="bg-green-800/40 px-4 py-2 rounded-full flex items-center gap-2 backdrop-blur-sm">
+            <div className="bg-green-800/40 px-4 py-2 rounded-full flex items-center gap-2 backdrop-blur-xs">
               <Monitor className="w-4 h-4" />
               <span>Cross-platform</span>
             </div>
-            <div className="bg-purple-800/40 px-4 py-2 rounded-full flex items-center gap-2 backdrop-blur-sm">
+            <div className="bg-purple-800/40 px-4 py-2 rounded-full flex items-center gap-2 backdrop-blur-xs">
               <Database className="w-4 h-4" />
               <span>Privacy-focused</span>
             </div>
@@ -335,7 +335,7 @@ export default function About() {
         {/* Legal tab - Improved version */}
         {activeTab === 'legal' && (
           <div>
-            <div className="bg-gradient-to-r from-gray-800 to-gray-900 p-6 rounded-lg mb-8">
+            <div className="bg-linear-to-r from-gray-800 to-gray-900 p-6 rounded-lg mb-8">
               <div className="flex flex-col md:flex-row gap-6 items-center">
                 <div className="bg-blue-900/30 p-4 rounded-full">
                   <Scale className="w-10 h-10 text-blue-300" />

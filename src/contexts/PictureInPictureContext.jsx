@@ -5,7 +5,7 @@ import Hls from 'hls.js';
 import { savePipState, loadPipState, clearPipState } from '../utils/pipStateManager';
 
 // Debug flag - set to true to enable verbose logging
-const DEBUG_PIP = true;
+const DEBUG_PIP = false;
 
 const debugLog = (...args) => {
   if (DEBUG_PIP) {
@@ -59,8 +59,13 @@ export function PictureInPictureProvider({ children }) {
   useEffect(() => {
     const restorePipState = async () => {
       // Don't attempt to restore if PiP is already active
-      if (pipVideo || document.pictureInPictureElement) {
+      if (pipVideoRef.current || document.pictureInPictureElement) {
         debugLog('PiP already active, not restoring state');
+        return;
+      }
+      // The full player is open: it plays the channel itself
+      if (window.location.pathname.startsWith('/watch/')) {
+        clearPipState();
         return;
       }
       
@@ -272,7 +277,7 @@ export function PictureInPictureProvider({ children }) {
       setPipStatus('initializing');
       
       // Cleanup any existing PiP
-      if (document.pictureInPictureElement || pipVideo) {
+      if (document.pictureInPictureElement || pipVideoRef.current) {
         debugLog('Existing PiP found, cleaning up');
         await exitPipInternal();
       }

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'preact/hooks';
 import { get } from '../utils/idbStorage';
 import { Tv2, Clock, Heart, List, Globe, Film, Music, Trophy } from 'lucide-preact';
 import { getPlaylists } from '../utils/playlist';
-import { getChannelColor, getChannelInitials } from '../utils/logoService';
+import ChannelLogo from '../components/ChannelLogo';
 import * as apiClient from '../utils/apiClient';
 import { Link } from 'preact-router';
 import { History, Settings as SettingsIcon } from 'lucide-preact';
@@ -92,31 +92,14 @@ export default function Home() {
         href={`/watch/${encodeURIComponent(item.id)}`}
         className="bg-gray-800 p-4 rounded-lg flex items-center gap-3 hover:bg-gray-700 transition-colors"
       >
-        {logoUrl ? (
-          <img 
-            src={logoUrl}
-            alt={item.name || 'Channel logo'}
-            className="w-12 h-12 rounded-md flex-shrink-0 object-cover bg-gray-900"
-            loading="lazy"
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.style.display = 'none';
-              e.target.parentNode.innerHTML = 
-                `<div class="w-12 h-12 rounded-md flex-shrink-0 flex items-center justify-center" style="background-color: ${getChannelColor(item.name)}">
-                  <div class="text-white text-sm font-bold">${getChannelInitials(item.name)}</div>
-                </div>`;
-            }}
-          />
-        ) : (
-          <div 
-            className="w-12 h-12 rounded-md flex-shrink-0 flex items-center justify-center"
-            style={{ backgroundColor: getChannelColor(item.name) }}
-          >
-            <div className="text-white text-sm font-bold">
-              {getChannelInitials(item.name)}
-            </div>
-          </div>
-        )}
+        <ChannelLogo
+          src={logoUrl}
+          name={item.name}
+          alt={item.name || 'Channel logo'}
+          imgClass="w-12 h-12 rounded-md shrink-0 object-cover bg-gray-900"
+          fallbackClass="w-12 h-12 rounded-md shrink-0 flex items-center justify-center"
+          textClass="text-sm"
+        />
         <div className="flex-1 min-w-0">
           <h3 className="font-medium truncate">
             {item.name || 'Unnamed Channel'}
@@ -328,7 +311,7 @@ export default function Home() {
                     Added {new Date(playlist.addedAt).toLocaleDateString()}
                   </span>
                   <a 
-                    href={`/playlist/${playlist.id}`}
+                    href={`/playlist/${encodeURIComponent(playlist.id)}`}
                     className="text-sm text-blue-400 hover:underline"
                   >
                     View channels

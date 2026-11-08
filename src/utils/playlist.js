@@ -1,6 +1,7 @@
 import { get, set } from './idbStorage';
-import { parseM3U8, extractChannels as extractChannelsBasic, fetchPlaylist as fetchAndParsePlaylist } from './simpleParser';
-import { getChannelColor, getChannelInitials, formatLogoUrl } from './logoService';
+import { fetchPlaylist as fetchAndParsePlaylist } from './simpleParser';
+import { formatLogoUrl } from './logoService';
+import { getLogoUrl } from './apiClient';
 
 /**
  * Fetch a playlist from URL
@@ -204,23 +205,8 @@ export function getLogoFromStream(stream) {
   
   // Try API client's logo resolution with various identifiers
   if (stream.channelId || stream.tvgId || stream.name) {
-    // Using dynamic import to avoid circular dependencies
-    const apiClient = require('./apiClient');
-    
-    // Try with channelId first (most specific)
-    if (stream.channelId) {
-      return apiClient.getLogoUrl(stream.channelId);
-    }
-    
-    // Try with tvgId next
-    if (stream.tvgId) {
-      return apiClient.getLogoUrl(stream.tvgId);
-    }
-    
-    // Finally try with name
-    if (stream.name) {
-      return apiClient.getLogoUrl(stream.name);
-    }
+    // iptv-org logo index is keyed by channel ID (same as tvg-id in their playlists)
+    return getLogoUrl(stream.channelId) || getLogoUrl(stream.tvgId) || getLogoUrl(stream.name);
   }
   
   return null;
@@ -427,7 +413,7 @@ export async function getComprehensiveChannelLogo(channel) {
   
   // Try to get logo from api
   try {
-    logo = await getLogoFromStream(channel.name);
+    logo = getLogoFromStream({ channelId: channel.channelId, tvgId: channel.tvgId, name: channel.name });
     if (logo) return formatLogoUrl(logo);
   } catch (err) {
     console.warn(`Failed to get logo for ${channel.name}:`, err);

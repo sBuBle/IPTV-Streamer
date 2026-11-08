@@ -4,17 +4,22 @@ import { memo } from 'preact/compat';
 import { route } from 'preact-router';
 import { Globe, Search, Loader, AlertCircle, PlayCircle, Download, Check, Tv2, BookOpen, RefreshCw, Plus, Filter, Grid, List, Wifi, WifiOff, ArrowDown, ArrowUp, SortDesc } from 'lucide-preact';
 import { getPlaylists, savePlaylist, fetchPlaylist, formatLogoUrl } from '../utils/playlist';
-import { getChannelColor, getChannelInitials } from '../utils/logoService';
+import ChannelLogo from '../components/ChannelLogo';
 import { getCountries, getCategories, getLanguages, getChannelsByCountry, getStreams, getChannels } from '../utils/apiClient';
 import * as apiClient from '../utils/apiClient';
 import { debounce, throttle, memoize } from '../utils/performance';
 import { EnhancedVirtualList } from '../components/EnhancedVirtualList';
+import { useNavState } from '../utils/historyManager';
 import { getFavorites, toggleFavorite } from '../utils/favorites'; // Import favorites utilities
 import 'flag-icons/css/flag-icons.min.css';
 
+const TAB_SINGULAR = { countries: 'country', categories: 'category', languages: 'language' };
+
 // Memoized simple components for better performance
 const CountryListItem = memo(({ item, selectedItem, streamInfo, loadingStreamCounts, onClick }) => {
-  const isSelected = selectedItem && selectedItem.code === item.code;
+  // Countries and languages have a `code`, categories only an `id`
+  const itemKey = item.code || item.id;
+  const isSelected = !!selectedItem && !!itemKey && (selectedItem.code || selectedItem.id) === itemKey;
   const countryCode = item.code || '';
   
   return (
@@ -34,7 +39,7 @@ const CountryListItem = memo(({ item, selectedItem, streamInfo, loadingStreamCou
       aria-label={`Select ${item.name}`}
     >
       <div class="flex items-center gap-3 w-full">
-        <div class="w-8 h-6 flex-shrink-0 overflow-hidden rounded shadow-sm bg-gray-900">
+        <div class="w-8 h-6 shrink-0 overflow-hidden rounded-sm shadow-xs bg-gray-900">
           {countryCode && (
             <span 
               class={`fi fi-${countryCode.toLowerCase()}`}
@@ -58,7 +63,7 @@ const CountryListItem = memo(({ item, selectedItem, streamInfo, loadingStreamCou
           </div>
         )}
         {!streamInfo && loadingStreamCounts && (
-          <div class="w-8 h-5 flex-shrink-0">
+          <div class="w-8 h-5 shrink-0">
             <Loader class="w-3 h-3 animate-spin" />
           </div>
         )}
@@ -83,32 +88,29 @@ const ChannelGridItem = memo(({ channel, index, isFavorite, onFavoriteToggle }) 
       class={`bg-gray-700 p-3 rounded-lg transition-colors flex flex-col ${hasStream ? 'hover:bg-gray-600' : 'opacity-60'}`}
     >
       <div class="flex items-center gap-3 mb-2">
-        <div class="w-12 h-12 rounded-md flex-shrink-0 relative overflow-hidden">
-          <img
+        <div class="w-12 h-12 rounded-md shrink-0 relative overflow-hidden">
+          <ChannelLogo
             src={logoSrc}
+            name={channel.name}
             alt={channel.name || 'Channel logo'}
-            class="w-12 h-12 rounded-md object-contain bg-gray-900"
-            loading="lazy"
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.style.display = 'none';
-              e.target.parentNode.innerHTML = `<div class="w-12 h-12 bg-gray-800 rounded-md flex items-center justify-center" style="background-color: ${getChannelColor(channel.name)}"><div class="text-white text-sm font-bold">${getChannelInitials(channel.name)}</div></div>`;
-            }}
+            imgClass="w-12 h-12 rounded-md object-contain bg-gray-900"
+            fallbackClass="w-12 h-12 rounded-md flex items-center justify-center"
+            textClass="text-sm"
           />
         </div>
         <div class="flex-1 min-w-0">
           <h5 class="font-medium text-sm truncate flex items-center gap-1">
             {channel.name || 'Unnamed Channel'}
             {hasStream ? (
-              <Wifi class="w-3 h-3 text-green-500 flex-shrink-0" />
+              <Wifi class="w-3 h-3 text-green-500 shrink-0" />
             ) : (
-              <WifiOff class="w-3 h-3 text-red-500 flex-shrink-0" />
+              <WifiOff class="w-3 h-3 text-red-500 shrink-0" />
             )}
           </h5>
           <p class="text-xs text-gray-400 truncate">
             {channel.categories?.[0] || 'General'}
             {channel.resolution && (
-              <span class="ml-1 bg-gray-800 px-1 py-0.5 rounded text-xs">
+              <span class="ml-1 bg-gray-800 px-1 py-0.5 rounded-sm text-xs">
                 {channel.resolution}
               </span>
             )}
@@ -116,7 +118,7 @@ const ChannelGridItem = memo(({ channel, index, isFavorite, onFavoriteToggle }) 
         </div>
       </div>
       <div class="mt-auto pt-2 flex justify-between items-center">
-        <span class="text-xs bg-gray-800 px-2 py-0.5 rounded">
+        <span class="text-xs bg-gray-800 px-2 py-0.5 rounded-sm">
           {channel.languages?.[0] || 'Unknown'}
         </span>
         <div class="flex items-center gap-1">
@@ -172,17 +174,14 @@ const ChannelListItem = memo(({ channel, index, isFavorite, onFavoriteToggle }) 
       class={`flex items-center gap-3 bg-gray-700 p-3 rounded-lg ${hasStream ? 'hover:bg-gray-600 transition-colors' : 'opacity-60 cursor-default'}`}
       onClick={e => !hasStream && e.preventDefault()}
     >
-      <div class="w-10 h-10 rounded-md flex-shrink-0 relative overflow-hidden">
-        <img
+      <div class="w-10 h-10 rounded-md shrink-0 relative overflow-hidden">
+        <ChannelLogo
           src={logoSrc}
+          name={channel.name}
           alt={channel.name || 'Channel logo'}
-          class="w-10 h-10 rounded-md object-contain bg-gray-900"
-          loading="lazy"
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.style.display = 'none';
-            e.target.parentNode.innerHTML = `<div class="w-10 h-10 bg-gray-800 rounded-md flex items-center justify-center" style="background-color: ${getChannelColor(channel.name)}"><div class="text-white text-xs font-bold">${getChannelInitials(channel.name)}</div></div>`;
-          }}
+          imgClass="w-10 h-10 rounded-md object-contain bg-gray-900"
+          fallbackClass="w-10 h-10 rounded-md flex items-center justify-center"
+          textClass="text-xs"
         />
       </div>
       <div class="flex-1 min-w-0">
@@ -197,12 +196,12 @@ const ChannelListItem = memo(({ channel, index, isFavorite, onFavoriteToggle }) 
             <span class="text-xs text-gray-400">{channel.categories[0]}</span>
           )}
           {channel.languages?.[0] && (
-            <span class="text-xs bg-gray-800 px-1.5 py-0.5 rounded text-gray-300">
+            <span class="text-xs bg-gray-800 px-1.5 py-0.5 rounded-sm text-gray-300">
               {channel.languages[0]}
             </span>
           )}
           {channel.resolution && (
-            <span class="text-xs bg-blue-900/50 border border-blue-800 px-1.5 py-0.5 rounded text-gray-100">
+            <span class="text-xs bg-blue-900/50 border border-blue-800 px-1.5 py-0.5 rounded-sm text-gray-100">
               {channel.resolution}
             </span>
           )}
@@ -212,7 +211,7 @@ const ChannelListItem = memo(({ channel, index, isFavorite, onFavoriteToggle }) 
         {/* Add favorite button */}
         <button
           onClick={handleFavoriteClick}
-          class="p-1.5 rounded flex-shrink-0"
+          class="p-1.5 rounded-sm shrink-0"
           title={isFavorite ? "Remove from favorites" : "Add to favorites"}
         >
           <svg 
@@ -227,9 +226,9 @@ const ChannelListItem = memo(({ channel, index, isFavorite, onFavoriteToggle }) 
         </button>
         
         {hasStream ? (
-          <PlayCircle class="w-5 h-5 flex-shrink-0 text-blue-400" />
+          <PlayCircle class="w-5 h-5 shrink-0 text-blue-400" />
         ) : (
-          <WifiOff class="w-4 h-4 flex-shrink-0 text-red-500" />
+          <WifiOff class="w-4 h-4 shrink-0 text-red-500" />
         )}
       </div>
     </a>
@@ -237,13 +236,14 @@ const ChannelListItem = memo(({ channel, index, isFavorite, onFavoriteToggle }) 
 });
 
 export default function CountryBrowser() {
-  const [activeTab, setActiveTab] = useState('countries');
+  // Remembered per history entry, so Back from the player returns to the same list
+  const [activeTab, setActiveTab] = useNavState('activeTab', 'countries');
   const [countries, setCountries] = useState([]);
   const [categories, setCategories] = useState([]);
   const [languages, setLanguages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedItem, setSelectedItem] = useNavState('selectedItem', null);
   const [importing, setImporting] = useState(false);
   const [importSuccess, setImportSuccess] = useState(false);
   const [previewChannels, setPreviewChannels] = useState([]);
@@ -251,7 +251,7 @@ export default function CountryBrowser() {
   
   // Channel display state
   const [channels, setChannels] = useState([]);
-  const [channelsPage, setChannelsPage] = useState(1);
+  const [channelsPage, setChannelsPage] = useNavState('channelsPage', 1);
   const [channelsPerPage, setChannelsPerPage] = useState(24);
   const [loadingChannels, setLoadingChannels] = useState(false);
   const [viewMode, setViewMode] = useState('grid');
@@ -268,6 +268,8 @@ export default function CountryBrowser() {
   
   // Optimization: Use a ref to track if stream counts are already being loaded
   const [streamCountsLoading, setStreamCountsLoading] = useState(false);
+  // Load counts automatically only once, so a failed download doesn't retry in a loop
+  const streamCountsAttemptedRef = useRef(false);
   
   // Optimization: Cache the batch size for stream count loading
   const STREAM_COUNT_BATCH_SIZE = 10;
@@ -279,10 +281,12 @@ export default function CountryBrowser() {
   const listContainerRef = useRef(null);
   
   // Create debounced versions of search and filter inputs
-  const [searchQuery, setSearchQueryRaw] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
-  const [channelFilter, setChannelFilterRaw] = useState('');
-  const [debouncedChannelFilter, setDebouncedChannelFilter] = useState('');
+  const [searchQuery, setSearchQueryRaw] = useNavState('searchQuery', '');
+  const [debouncedSearch, setDebouncedSearch] = useState(searchQuery);
+  const [channelFilter, setChannelFilterRaw] = useNavState('channelFilter', '');
+  const [debouncedChannelFilter, setDebouncedChannelFilter] = useState(channelFilter);
+  // What was on screen when the user left this page (e.g. to open the player)
+  const [restoreState] = useState(() => ({ item: selectedItem, page: channelsPage, filter: channelFilter }));
   const debouncedApiCallRef = useRef(null);
   
   // Fix debounced setter functions - store debounced functions as refs
@@ -357,7 +361,7 @@ export default function CountryBrowser() {
         setLoading(true);
         
         switch (activeTab) {
-          case 'countries':
+          case 'countries': {
             // Try loading from cache first
             let cachedCountries;
             try {
@@ -390,8 +394,9 @@ export default function CountryBrowser() {
               }
             }
             break;
+          }
             
-          case 'categories':
+          case 'categories': {
             // Same caching logic for categories
             let cachedCategories;
             try {
@@ -422,8 +427,9 @@ export default function CountryBrowser() {
               }
             }
             break;
+          }
             
-          case 'languages':
+          case 'languages': {
             // Same caching logic for languages
             let cachedLanguages;
             try {
@@ -454,6 +460,7 @@ export default function CountryBrowser() {
               }
             }
             break;
+          }
         }
       } catch (err) {
         setError(`Failed to load ${activeTab}`);
@@ -501,15 +508,39 @@ export default function CountryBrowser() {
           return;
         }
         
-        // Rest of the original batch loading logic
-        // ...existing code...
-        
-        // Cache the results when done
-        try {
-          localStorage.setItem(streamCountsCacheKey, JSON.stringify(countriesWithStreamCounts));
-          localStorage.setItem(`${streamCountsCacheKey}-timestamp`, Date.now().toString());
-        } catch (cacheError) {
-          console.warn('Error caching stream counts:', cacheError);
+        // Count channels and playable streams per country in one pass
+        const [allChannels, allStreams] = await Promise.all([getChannels(), getStreams()]);
+        const channelCountry = new Map();
+        const channelCounts = {};
+        for (const ch of allChannels || []) {
+          if (!ch?.country) continue;
+          const code = ch.country.toUpperCase();
+          channelCountry.set(ch.id, code);
+          channelCounts[code] = (channelCounts[code] || 0) + 1;
+        }
+        const streamCounts = {};
+        for (const stream of allStreams || []) {
+          const code = stream?.channel && channelCountry.get(stream.channel);
+          if (code) streamCounts[code] = (streamCounts[code] || 0) + 1;
+        }
+        const results = countriesList.map(country => {
+          const code = (country.code || '').toUpperCase();
+          return {
+            code: country.code,
+            streamCount: streamCounts[code] || 0,
+            channelCount: channelCounts[code] || 0
+          };
+        });
+        setCountriesWithStreamCounts(results);
+
+        // Cache the results (only when we actually got data)
+        if (allChannels?.length) {
+          try {
+            localStorage.setItem(streamCountsCacheKey, JSON.stringify(results));
+            localStorage.setItem(`${streamCountsCacheKey}-timestamp`, Date.now().toString());
+          } catch (cacheError) {
+            console.warn('Error caching stream counts:', cacheError);
+          }
         }
       } catch (err) {
         console.error('Error loading country stream counts:', err);
@@ -582,9 +613,12 @@ export default function CountryBrowser() {
   useEffect(() => {
     if (activeTab === 'countries' && countries.length > 0 && 
         countriesWithStreamCounts.length === 0 && 
-        !streamCountsLoading) {
+        !streamCountsLoading && !streamCountsAttemptedRef.current) {
       // Small delay before loading to avoid UI freezes on tab change
-      const timerId = setTimeout(() => loadCountryStreamCounts(countries), 300);
+      const timerId = setTimeout(() => {
+        streamCountsAttemptedRef.current = true;
+        loadCountryStreamCounts(countries);
+      }, 300);
       return () => clearTimeout(timerId);
     }
   }, [activeTab, countries, countriesWithStreamCounts.length, loadCountryStreamCounts, streamCountsLoading]);
@@ -681,6 +715,19 @@ export default function CountryBrowser() {
     }
   }, [activeTab]);
   
+  // Coming back (browser Back / player Back): reload the channels of the
+  // country/category/language that was open, then go back to the same page.
+  useEffect(() => {
+    if (!restoreState.item) return;
+    handleItemClick(restoreState.item).then(() => {
+      if (restoreState.page > 1) setChannelsPage(restoreState.page);
+      if (restoreState.filter) {
+        setChannelFilterRaw(restoreState.filter);
+        setDebouncedChannelFilter(restoreState.filter);
+      }
+    });
+  }, []);
+
   // Optimized import handler
   const handleImport = useCallback(async () => {
     if (!selectedItem || importing) return;
@@ -881,7 +928,7 @@ export default function CountryBrowser() {
             ? (a.name || '').localeCompare(b.name || '')
             : (b.name || '').localeCompare(a.name || '');
             
-        case 'streams':
+        case 'streams': {
           // For stream sorting, prioritize channels with URLs
           const aHasStream = !!a.url;
           const bHasStream = !!b.url;
@@ -906,7 +953,8 @@ export default function CountryBrowser() {
           return channelSortOrder === 'asc'
             ? (a.name || '').localeCompare(b.name || '')
             : (b.name || '').localeCompare(a.name || '');
-            
+        }
+
         default:
           return 0;
       }
@@ -1161,7 +1209,7 @@ export default function CountryBrowser() {
         
         {/* Search and sorting controls */}
         <div class="flex flex-col md:flex-row gap-3 mb-4">
-          <div class="relative flex-grow">
+          <div class="relative grow">
             <input
               type="text"
               id="search-input"
@@ -1211,7 +1259,7 @@ export default function CountryBrowser() {
       {/* Error message */}
       {error && (
         <div class="bg-red-900/30 border border-red-900 text-red-200 p-4 rounded-lg mb-6 flex items-start gap-2">
-          <AlertCircle class="w-5 h-5 mt-0.5 flex-shrink-0" />
+          <AlertCircle class="w-5 h-5 mt-0.5 shrink-0" />
           <div>
             <p class="font-medium">Connection Error</p>
             <p class="whitespace-pre-line">{error}</p>
@@ -1262,7 +1310,7 @@ export default function CountryBrowser() {
                   selectedItem={selectedItem}
                   aria-label={`List of ${activeTab}`}
                   tabIndex={keyboardNavigation ? 0 : undefined}
-                  class="focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg"
+                  class="focus:outline-hidden focus:ring-2 focus:ring-blue-500 rounded-lg"
                   onItemsRendered={({visibleStartIndex}) => {
                     // Restore keyboard navigation functionality
                     if (keyboardNavigation && visibleStartIndex >= 0) {
@@ -1281,9 +1329,9 @@ export default function CountryBrowser() {
           {!selectedItem ? (
             <div class="flex flex-col items-center justify-center h-full text-center">
               {getTabIcon(activeTab)}
-              <h3 class="text-xl font-semibold text-gray-400 mt-4">Select a {activeTab.slice(0, -1)}</h3>
+              <h3 class="text-xl font-semibold text-gray-400 mt-4">Select a {TAB_SINGULAR[activeTab] || 'item'}</h3>
               <p class="text-gray-500 mt-2">
-                Choose a {activeTab.slice(0, -1)} from the list to view channels
+                Choose a {TAB_SINGULAR[activeTab] || 'item'} from the list to view channels
               </p>
             </div>
           ) : (
@@ -1292,7 +1340,7 @@ export default function CountryBrowser() {
               {activeTab === 'countries' && selectedItem && (
                 <div class="mb-6">
                   <div class="flex items-center gap-4">
-                    <div class="w-16 h-12 overflow-hidden rounded shadow-lg bg-gray-900 flex items-center justify-center">
+                    <div class="w-16 h-12 overflow-hidden rounded-sm shadow-lg bg-gray-900 flex items-center justify-center">
                       {selectedItem.code ? (
                         <span 
                           class={`fi fi-${selectedItem.code.toLowerCase()}`}
@@ -1307,7 +1355,7 @@ export default function CountryBrowser() {
                       <h3 class="text-2xl font-bold flex items-center gap-2">
                         {selectedItem.name} 
                         {selectedItem.code && (
-                          <span class="bg-gray-700 text-sm px-2 py-1 rounded">
+                          <span class="bg-gray-700 text-sm px-2 py-1 rounded-sm">
                             {selectedItem.code.toUpperCase()}
                           </span>
                         )}
@@ -1315,7 +1363,7 @@ export default function CountryBrowser() {
                       <div class="flex items-center gap-2 text-sm text-gray-400 mt-1">
                         <span>{filteredChannels.length} channels available</span>
                         {streamsFetched && (
-                          <span class="flex items-center gap-1 px-2 py-0.5 bg-gray-700 rounded">
+                          <span class="flex items-center gap-1 px-2 py-0.5 bg-gray-700 rounded-sm">
                             {streamMetrics.streamAvailabilityPercentage}% with streams
                             {streamMetrics.channelsWithStreams.length > 0 ? (
                               <Wifi class="w-3 h-3 text-green-500" />
@@ -1334,7 +1382,7 @@ export default function CountryBrowser() {
                   <h3 class="text-2xl font-bold flex items-center gap-2">
                     {selectedItem.name}
                     {activeTab === 'languages' && selectedItem.code && (
-                      <span class="bg-gray-700 text-sm px-2 py-1 rounded">
+                      <span class="bg-gray-700 text-sm px-2 py-1 rounded-sm">
                         {selectedItem.code.toUpperCase()}
                       </span>
                     )}
@@ -1342,7 +1390,7 @@ export default function CountryBrowser() {
                   <div class="flex items-center gap-2 text-sm text-gray-400 mt-1">
                     <span>{filteredChannels.length} channels available</span>
                     {streamsFetched && (
-                      <span class="flex items-center gap-1 px-2 py-0.5 bg-gray-700 rounded">
+                      <span class="flex items-center gap-1 px-2 py-0.5 bg-gray-700 rounded-sm">
                         {streamMetrics.streamAvailabilityPercentage}% with streams
                         {streamMetrics.channelsWithStreams.length > 0 ? (
                           <Wifi class="w-3 h-3 text-green-500" />
@@ -1389,7 +1437,7 @@ export default function CountryBrowser() {
                     </button>
                     <button
                       onClick={() => toggleChannelSort('name')}
-                      class={`p-1.5 rounded flex items-center gap-1 text-xs ${channelSortBy === 'name' ? 'bg-blue-600' : 'bg-gray-700'}`}
+                      class={`p-1.5 rounded-sm flex items-center gap-1 text-xs ${channelSortBy === 'name' ? 'bg-blue-600' : 'bg-gray-700'}`}
                       title="Sort alphabetically"
                     >
                       <SortDesc class="w-3 h-3" />
@@ -1403,14 +1451,14 @@ export default function CountryBrowser() {
                     onClick={refreshStreams} 
                     disabled={fetchingStreams}
                     title="Refresh stream data" 
-                    class={`p-1.5 rounded ${fetchingStreams ? 'bg-blue-800' : 'bg-blue-600 hover:bg-blue-700'}`}
+                    class={`p-1.5 rounded-sm ${fetchingStreams ? 'bg-blue-800' : 'bg-blue-600 hover:bg-blue-700'}`}
                   >
                     <RefreshCw class={`w-4 h-4 ${fetchingStreams ? 'animate-spin' : ''}`} />
                   </button>
                   
                   <button 
                     onClick={() => setViewMode('grid')}
-                    class={`p-1.5 rounded ${viewMode === 'grid' ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'}`}
+                    class={`p-1.5 rounded-sm ${viewMode === 'grid' ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'}`}
                     title="Grid view"
                   >
                     <Grid class="w-4 h-4" />
@@ -1418,7 +1466,7 @@ export default function CountryBrowser() {
                   
                   <button 
                     onClick={() => setViewMode('list')}
-                    class={`p-1.5 rounded ${viewMode === 'list' ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'}`}
+                    class={`p-1.5 rounded-sm ${viewMode === 'list' ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'}`}
                     title="List view"
                   >
                     <List class="w-4 h-4" />
@@ -1430,14 +1478,14 @@ export default function CountryBrowser() {
                   <button 
                     onClick={prevPage} 
                     disabled={channelsPage <= 1}
-                    class={`p-1.5 rounded ${channelsPage <= 1 ? 'text-gray-600' : 'bg-gray-700 hover:bg-gray-600'}`}
+                    class={`p-1.5 rounded-sm ${channelsPage <= 1 ? 'text-gray-600' : 'bg-gray-700 hover:bg-gray-600'}`}
                   >
                     &#8592;
                   </button>
                   <button 
                     onClick={nextPage} 
                     disabled={channelsPage >= totalPages}
-                    class={`p-1.5 rounded ${channelsPage >= totalPages ? 'text-gray-600' : 'bg-gray-700 hover:bg-gray-600'}`}
+                    class={`p-1.5 rounded-sm ${channelsPage >= totalPages ? 'text-gray-600' : 'bg-gray-700 hover:bg-gray-600'}`}
                   >
                     &#8594;
                   </button>
@@ -1446,7 +1494,7 @@ export default function CountryBrowser() {
                   <button
                     onClick={handleImport}
                     disabled={importing}
-                    class="px-3 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm"
+                    class="px-3 py-1.5 bg-blue-600 text-white rounded-sm hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm"
                   >
                     {importing ? <RefreshCw class="w-4 h-4 animate-spin" /> : <Plus class="w-4 h-4" />}
                     {importSuccess ? 'Added!' : 'Import Playlist'}
@@ -1463,7 +1511,7 @@ export default function CountryBrowser() {
                 <div class="bg-gray-800 rounded-lg p-6 text-center text-gray-400">
                   <AlertCircle class="w-12 h-12 mx-auto mb-2 text-yellow-500 opacity-70" />
                   <p>No channels found for {selectedItem.name}</p>
-                  <p class="text-sm mt-2">Try selecting another {activeTab.slice(0, -1)} or check your connection.</p>
+                  <p class="text-sm mt-2">Try selecting another {TAB_SINGULAR[activeTab] || 'item'} or check your connection.</p>
                 </div>
               ) : fetchingStreams ? (
                 <div class="bg-gray-800/50 rounded-lg p-6 flex justify-center items-center">
@@ -1503,7 +1551,7 @@ export default function CountryBrowser() {
                   <button 
                     onClick={prevPage} 
                     disabled={channelsPage <= 1}
-                    class={`px-3 py-1.5 rounded ${channelsPage <= 1 ? 'text-gray-600' : 'bg-gray-700 hover:bg-gray-600'}`}
+                    class={`px-3 py-1.5 rounded-sm ${channelsPage <= 1 ? 'text-gray-600' : 'bg-gray-700 hover:bg-gray-600'}`}
                   >
                     Previous
                   </button>
@@ -1513,7 +1561,7 @@ export default function CountryBrowser() {
                   <button 
                     onClick={nextPage} 
                     disabled={channelsPage >= totalPages}
-                    class={`px-3 py-1.5 rounded ${channelsPage >= totalPages ? 'text-gray-600' : 'bg-gray-700 hover:bg-gray-600'}`}
+                    class={`px-3 py-1.5 rounded-sm ${channelsPage >= totalPages ? 'text-gray-600' : 'bg-gray-700 hover:bg-gray-600'}`}
                   >
                     Next
                   </button>

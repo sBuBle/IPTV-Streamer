@@ -1,16 +1,16 @@
 import { h } from 'preact';
 import { useState, useEffect, useRef } from 'preact/hooks';
-import { get, set, keys } from 'idb-keyval'; // Add keys import
+// Same IndexedDB store the rest of the app (Settings, playlist utils) writes to
+import { get, set, remove } from '../utils/idbStorage';
 import { 
-  ArrowLeft, Loader, Search, RefreshCw, List, Grid as GridIcon, 
-  AlertCircle, PlusCircle, Settings as SettingsIcon,
-  Globe, PlayCircle, Heart, BarChart2, Download, // Add new icons for features
-  Star, Share2, ArrowDownUp, Filter, X, Clock, Info // Additional icons
+  ArrowLeft, Loader, Search, RefreshCw, List, Grid as GridIcon,
+  AlertCircle, PlusCircle, PlayCircle, Heart, Download,
+  ArrowDownUp, Filter, X, Clock, Info
 } from 'lucide-preact';
 import { route } from 'preact-router';
-import { getChannelColor, getChannelInitials, formatLogoUrl } from '../utils/logoService';
-import { fetchPlaylist, refreshPlaylist, getLogoFromStream, savePlaylist } from '../utils/playlist';
-import * as apiClient from '../utils/apiClient';
+import { useNavState } from '../utils/historyManager';
+import ChannelLogo from '../components/ChannelLogo';
+import { refreshPlaylist, getComprehensiveChannelLogo } from '../utils/playlist';
 
 export default function PlaylistView(props) {
   // Get id from props instead of wouter's useRoute
@@ -20,8 +20,9 @@ export default function PlaylistView(props) {
   const [channels, setChannels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isGridView, setIsGridView] = useState(true);
+  // Filters are remembered per history entry so Back from the player keeps them
+  const [searchQuery, setSearchQuery] = useNavState('searchQuery', '');
+  const [isGridView, setIsGridView] = useNavState('isGridView', true);
   const [error, setError] = useState(null);
   const [debugInfo, setDebugInfo] = useState(null);
   const [noPlaylistsFound, setNoPlaylistsFound] = useState(false);
@@ -33,10 +34,10 @@ export default function PlaylistView(props) {
   
   // New state variables for additional features
   const [favorites, setFavorites] = useState([]);
-  const [activeCategory, setActiveCategory] = useState('all');
+  const [activeCategory, setActiveCategory] = useNavState('activeCategory', 'all');
   const [categories, setCategories] = useState([]);
-  const [sortOption, setSortOption] = useState('name');
-  const [sortDirection, setSortDirection] = useState('asc');
+  const [sortOption, setSortOption] = useNavState('sortOption', 'name');
+  const [sortDirection, setSortDirection] = useNavState('sortDirection', 'asc');
   const [previewChannel, setPreviewChannel] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
   const [playlistStats, setPlaylistStats] = useState(null);
@@ -72,13 +73,56 @@ export default function PlaylistView(props) {
   };
 
   // Reposition the logPlaylistData function BEFORE it's used
+  // Snapshot of what's in storage for this ID; also looks for a looser match
   const logPlaylistData = async (id) => {
-    // ...existing code...
+    try {
+      const playlists = (await get('playlists')) || [];
+      const allChannels = (await get('channels')) || {};
+      let decoded = id || '';
+      try { decoded = decodeURIComponent(decoded); } catch { /* keep raw id */ }
+      const wanted = decoded.toLowerCase();
+      const alternateMatch = playlists.find(p =>
+        (p.id && p.id.toLowerCase() === wanted) ||
+        (p.name && p.name.toLowerCase() === wanted) ||
+        (p.url && p.url === decoded)
+      ) || null;
+      const data = {
+        requestedId: id,
+        playlistCount: playlists.length,
+        playlistIds: playlists.map(p => p.id),
+        channelKeys: Object.keys(allChannels),
+        alternateMatch
+      };
+      logMessage('Playlist storage snapshot', 'info', data);
+      return data;
+    } catch (err) {
+      logMessage(`Could not read playlist data: ${err.message}`, 'error');
+      return null;
+    }
   };
 
   // Add a function to diagnose storage issues
   const diagnoseStorage = async () => {
-    // ...existing code...
+    try {
+      const playlists = (await get('playlists')) || [];
+      const allChannels = (await get('channels')) || {};
+      const info = {
+        indexedDBAvailable: typeof indexedDB !== 'undefined',
+        playlistCount: playlists.length,
+        channelSets: Object.keys(allChannels).length,
+        totalChannels: Object.values(allChannels).reduce((n, list) => n + (Array.isArray(list) ? list.length : 0), 0)
+      };
+      if (navigator.storage?.estimate) {
+        const { usage, quota } = await navigator.storage.estimate();
+        info.usageMB = Math.round((usage || 0) / 1048576);
+        info.quotaMB = Math.round((quota || 0) / 1048576);
+      }
+      setStorageInfo(info);
+      return info;
+    } catch (err) {
+      logMessage(`Storage diagnosis failed: ${err.message}`, 'error');
+      return null;
+    }
   };
 
   useEffect(() => {
@@ -132,7 +176,20 @@ export default function PlaylistView(props) {
 
   // Updated helper function to find and navigate to an available playlist
   const findAndNavigateToPlaylist = async () => {
-    // ...existing code...
+    try {
+      const playlists = (await get('playlists')) || [];
+      if (playlists.length === 0) {
+        setNoPlaylistsFound(true);
+        setLoading(false);
+        return;
+      }
+      setRedirecting(true);
+      route(`/playlist/${encodeURIComponent(playlists[0].id)}`, true);
+    } catch (err) {
+      logMessage(`Could not look up playlists: ${err.message}`, 'error');
+      setError('Could not read your saved playlists.');
+      setLoading(false);
+    }
   };
 
   // Extract unique categories from channels
@@ -275,28 +332,7 @@ export default function PlaylistView(props) {
       
       if (playlistChannels.length > 0) {
         logMessage('Channels loaded successfully', 'success');
-        
-        // Enhance channels with logos if needed
-        const { getComprehensiveChannelLogo } = await import('../utils/playlist');
-        
-        const enhancedChannels = await Promise.all(
-          playlistChannels.map(async channel => {
-            if (!channel.logo || channel.logo.startsWith('error:')) {
-              channel.logo = await getComprehensiveChannelLogo(channel);
-            }
-            return channel;
-          })
-        );
-        
-        setChannels(enhancedChannels);
-        
-        // Extract categories from channels
-        const extractedCategories = extractCategories(enhancedChannels);
-        setCategories(extractedCategories);
-        logMessage(`Extracted ${extractedCategories.length} categories`, 'info');
-        
-        // Calculate playlist statistics
-        calculatePlaylistStats(enhancedChannels);
+        applyChannels(await enhanceChannelsWithLogo(playlistChannels));
         
         setLoading(false); // Set loading to false here
       } else {
@@ -305,7 +341,6 @@ export default function PlaylistView(props) {
         
         try {
           // Auto-refresh the playlist to get channels
-          const { refreshPlaylist } = await import('../utils/playlist');
           const refreshResult = await refreshPlaylist(currentPlaylist.id);
           
           logMessage(`Refresh completed with result:`, 'info', {
@@ -321,27 +356,7 @@ export default function PlaylistView(props) {
           if (autoRefreshedChannels.length > 0) {
             logMessage(`Auto-refresh successful: loaded ${autoRefreshedChannels.length} channels`, 'success');
             
-            // Enhance channels with logos if needed
-            const { getComprehensiveChannelLogo } = await import('../utils/playlist');
-            
-            const enhancedChannels = await Promise.all(
-              autoRefreshedChannels.map(async channel => {
-                if (!channel.logo || channel.logo.startsWith('error:')) {
-                  channel.logo = await getComprehensiveChannelLogo(channel);
-                }
-                return channel;
-              })
-            );
-            
-            setChannels(enhancedChannels);
-            
-            // Extract categories from channels
-            const extractedCategories = extractCategories(enhancedChannels);
-            setCategories(extractedCategories);
-            logMessage(`Extracted ${extractedCategories.length} categories`, 'info');
-            
-            // Calculate playlist statistics
-            calculatePlaylistStats(enhancedChannels);
+            applyChannels(await enhanceChannelsWithLogo(autoRefreshedChannels));
           } else {
             logMessage('No channels returned directly, checking storage with timeout...', 'warning');
             
@@ -362,15 +377,7 @@ export default function PlaylistView(props) {
             if (lastResortChannels.length > 0) {
               logMessage(`Found ${lastResortChannels.length} channels in storage after refresh`, 'success');
               
-              setChannels(lastResortChannels);
-              
-              // Extract categories from channels
-              const extractedCategories = extractCategories(lastResortChannels);
-              setCategories(extractedCategories);
-              logMessage(`Extracted ${extractedCategories.length} categories`, 'info');
-              
-              // Calculate playlist statistics
-              calculatePlaylistStats(lastResortChannels);
+              applyChannels(lastResortChannels);
             } else {
               logMessage('Auto-refresh completed but no channels found', 'warning');
               setError('No channels found in this playlist. Try refreshing manually or check the playlist URL.');
@@ -393,18 +400,62 @@ export default function PlaylistView(props) {
   };
 
   // Test if IndexedDB is working
-  const testIndexedDB = () => {
-    // ...existing code...
+  const testIndexedDB = async () => {
+    if (typeof indexedDB === 'undefined') {
+      throw new Error('IndexedDB is not available in this browser');
+    }
+    const probe = Date.now();
+    const ok = await set('__idb_probe', probe);
+    const readBack = await get('__idb_probe', true);
+    await remove('__idb_probe');
+    if (!ok || readBack !== probe) {
+      throw new Error('IndexedDB read/write check failed');
+    }
   };
 
   // Helper function to add logos to channels
-  const enhanceChannelsWithLogo = async (channels) => {
-    // ...existing code...
+  const enhanceChannelsWithLogo = (list) => Promise.all(
+    list.map(async channel => {
+      if (!channel.logo || channel.logo.startsWith('error:')) {
+        return { ...channel, logo: await getComprehensiveChannelLogo(channel) };
+      }
+      return channel;
+    })
+  );
+
+  // Put a freshly loaded channel list on screen
+  const applyChannels = (list) => {
+    setChannels(list);
+    const extracted = extractCategories(list);
+    setCategories(extracted);
+    if (activeCategory !== 'all' && !extracted.includes(activeCategory)) {
+      setActiveCategory('all');
+    }
+    calculatePlaylistStats(list);
+    logMessage(`Extracted ${extracted.length} categories`, 'info');
   };
 
   // Update the handleRefreshPlaylist function to properly maintain the view state
   const handleRefreshPlaylist = async () => {
-    // ...existing code...
+    if (!playlist || refreshing) return;
+    setRefreshing(true);
+    setError(null);
+    logMessage(`Refreshing playlist ${playlist.id}`);
+    try {
+      const result = await refreshPlaylist(playlist.id);
+      const refreshed = await enhanceChannelsWithLogo(result.channels || []);
+      applyChannels(refreshed);
+      setPlaylist(prev => ({ ...prev, lastRefreshed: result.lastRefreshed, channelCount: result.channelCount }));
+      if (refreshed.length === 0) {
+        setError('The playlist was downloaded but has no channels. Check the playlist URL.');
+      }
+      logMessage(`Refresh complete: ${refreshed.length} channels`, 'success');
+    } catch (err) {
+      logMessage(`Refresh failed: ${err.message}`, 'error');
+      setError(`Could not refresh the playlist: ${err.message}`);
+    } finally {
+      setRefreshing(false);
+    }
   };
 
   // Toggle favorite status of a channel
@@ -532,10 +583,6 @@ export default function PlaylistView(props) {
     }
   };
 
-  // Update the addSamplePlaylist function to ensure unique channel IDs
-  const addSamplePlaylist = async () => {
-    // ...existing code...
-  };
   
   // Start channel preview
   const handleShowPreview = (channel, event) => {
@@ -595,12 +642,13 @@ export default function PlaylistView(props) {
         case 'group':
           comparison = (a.group || 'Uncategorized').localeCompare(b.group || 'Uncategorized');
           break;
-        case 'recent':
+        case 'recent': {
           // Find timestamps from recently played
           const aTimestamp = recentlyPlayed.find(r => r.id === a.id)?.playedAt || '0';
           const bTimestamp = recentlyPlayed.find(r => r.id === b.id)?.playedAt || '0';
           comparison = bTimestamp.localeCompare(aTimestamp); // Default to newest first
           break;
+        }
         default:
           comparison = a.name.localeCompare(b.name);
       }
@@ -639,40 +687,11 @@ export default function PlaylistView(props) {
     }
   };
 
-  // Debug function to reset storage (for troubleshooting)
-  const resetStorage = async () => {
-    // ...existing code...
-  };
 
-  // Extract the logo error handler into a reusable function
-  const handleLogoError = (e, channelName) => {
-    // ...existing code...
-  };
 
   // Apply our filters and sorting
   const filteredChannels = getFilteredAndSortedChannels();
   const groupedChannels = groupChannels(filteredChannels);
-
-  // If we're redirecting, show a loading indicator
-  if (redirecting) {
-    return (
-      <div className="flex items-center justify-center py-16">
-        <Loader className="w-8 h-8 animate-spin text-blue-500" />
-        <span className="ml-2">Redirecting to playlist...</span>
-      </div>
-    );
-  }
-
-  // Render no playlists found state
-  if (noPlaylistsFound) {
-    // ...existing code...
-  }
-
-  // Add debug panel toggle button
-  const toggleDebugPanel = () => {
-    setShowDebugPanel(prev => !prev);
-    logMessage('Debug panel toggled');
-  };
 
   // Fix for the "Cannot read properties of null" error
   useEffect(() => {
@@ -692,8 +711,50 @@ export default function PlaylistView(props) {
     };
   }, []);
 
+  // If we're redirecting, show a loading indicator
+  if (redirecting) {
+    return (
+      <div className="flex items-center justify-center py-16">
+        <Loader className="w-8 h-8 animate-spin text-blue-500" />
+        <span className="ml-2">Redirecting to playlist...</span>
+      </div>
+    );
+  }
+
+  // Render no playlists found state
+  if (noPlaylistsFound) {
+    return (
+      <div className="flex flex-col items-center justify-center text-center py-16 px-4">
+        <AlertCircle className="w-12 h-12 text-yellow-500 mb-4" />
+        <h2 className="text-xl font-bold mb-2">No playlists yet</h2>
+        <p className="text-gray-400 mb-6 max-w-md">
+          Add an M3U playlist in Settings, or import channels from Browse by Country.
+        </p>
+        <div className="flex flex-wrap gap-3 justify-center">
+          <button
+            onClick={goToAddPlaylist}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+          >
+            <PlusCircle className="w-4 h-4" />
+            Add a playlist
+          </button>
+          <a href="/countries" className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600">
+            Browse by country
+          </a>
+        </div>
+      </div>
+    );
+  }
+
+  // Add debug panel toggle button
+  const toggleDebugPanel = () => {
+    setShowDebugPanel(prev => !prev);
+    logMessage('Debug panel toggled');
+  };
+
+
   return (
-    <div className="pb-16 max-w-screen-2xl mx-auto overflow-hidden">
+    <div className="pb-16 max-w-(--breakpoint-2xl) mx-auto overflow-hidden">
       {/* Header - Improved desktop layout with overflow handling */}
       <div className="mb-4 sm:mb-6">
         <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 sm:gap-3">
@@ -702,7 +763,7 @@ export default function PlaylistView(props) {
               href="/settings" 
               className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-1 sm:mb-2 text-sm sm:text-base"
             >
-              <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
+              <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
               <span className="truncate">Back to playlists</span>
             </a>
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold truncate max-w-full">
@@ -710,7 +771,7 @@ export default function PlaylistView(props) {
             </h2>
           </div>
           
-          <div className="flex items-center gap-1 sm:gap-2 mt-2 sm:mt-0 flex-shrink-0">
+          <div className="flex items-center gap-1 sm:gap-2 mt-2 sm:mt-0 shrink-0">
             <button
               onClick={() => setShowPlaylistInfo(!showPlaylistInfo)}
               className="p-1.5 sm:p-2 text-gray-300 hover:text-white bg-gray-700 rounded-lg"
@@ -747,7 +808,29 @@ export default function PlaylistView(props) {
         {/* Playlist Information Panel - Improved with overflow handling */}
         {showPlaylistInfo && playlistStats && (
           <div className="mt-3 sm:mt-4 p-3 sm:p-4 bg-gray-800 rounded-lg overflow-hidden">
-            {/* ...existing content... */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-sm">
+              <div>
+                <div className="text-gray-400 text-xs">Channels</div>
+                <div className="font-semibold">{playlistStats.totalChannels}</div>
+              </div>
+              <div>
+                <div className="text-gray-400 text-xs">Groups</div>
+                <div className="font-semibold">{playlistStats.categoriesCount}</div>
+              </div>
+              <div>
+                <div className="text-gray-400 text-xs">Countries</div>
+                <div className="font-semibold">{playlistStats.countriesCount}</div>
+              </div>
+              <div>
+                <div className="text-gray-400 text-xs">Last refreshed</div>
+                <div className="font-semibold truncate">
+                  {playlist?.lastRefreshed ? new Date(playlist.lastRefreshed).toLocaleString() : 'Never'}
+                </div>
+              </div>
+            </div>
+            <div className="mt-3 text-xs text-gray-400">
+              HD: {playlistStats.qualityBreakdown.hd} · SD: {playlistStats.qualityBreakdown.sd} · Unknown quality: {playlistStats.qualityBreakdown.unknown}
+            </div>
           </div>
         )}
       </div>
@@ -774,9 +857,9 @@ export default function PlaylistView(props) {
             {categories.length > 12 && (
               <button
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
-                className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-700 text-gray-300 hover:bg-gray-600 rounded-lg flex items-center gap-1 whitespace-nowrap text-xs sm:text-sm mb-1 md:mb-0 flex-shrink-0"
+                className="px-2 sm:px-3 py-1 sm:py-1.5 bg-gray-700 text-gray-300 hover:bg-gray-600 rounded-lg flex items-center gap-1 whitespace-nowrap text-xs sm:text-sm mb-1 md:mb-0 shrink-0"
               >
-                <Filter className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+                <Filter className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
                 <span>More</span>
               </button>
             )}
@@ -802,7 +885,7 @@ export default function PlaylistView(props) {
             {categories.slice(1).map((category) => (
               <label 
                 key={category}
-                className="flex items-center p-1.5 sm:p-2 rounded hover:bg-gray-700 cursor-pointer text-xs sm:text-sm"
+                className="flex items-center p-1.5 sm:p-2 rounded-sm hover:bg-gray-700 cursor-pointer text-xs sm:text-sm"
                 title={category}
               >
                 <input 
@@ -810,7 +893,7 @@ export default function PlaylistView(props) {
                   name="category" 
                   checked={activeCategory === category}
                   onChange={() => setActiveCategory(category)}
-                  className="mr-1.5 sm:mr-2 flex-shrink-0"
+                  className="mr-1.5 sm:mr-2 shrink-0"
                 />
                 <span className="truncate">{category}</span>
               </label>
@@ -840,7 +923,7 @@ export default function PlaylistView(props) {
           )}
         </div>
         
-        <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
           <button
             onClick={() => setIsGridView(!isGridView)}
             className="p-1.5 sm:p-2 text-gray-300 hover:text-white bg-gray-700 rounded-lg"
@@ -888,7 +971,7 @@ export default function PlaylistView(props) {
       {recentlyPlayed.length > 0 && !loading && !error && (
         <div className="mb-4 sm:mb-6 overflow-hidden">
           <h3 className="text-sm sm:text-lg font-medium mb-2 sm:mb-3 flex items-center gap-1.5 sm:gap-2">
-            <Clock className="w-3.5 h-3.5 sm:w-5 sm:h-5 flex-shrink-0" />
+            <Clock className="w-3.5 h-3.5 sm:w-5 sm:h-5 shrink-0" />
             <span className="truncate">Recently Played</span>
           </h3>
           
@@ -897,27 +980,17 @@ export default function PlaylistView(props) {
               <div
                 key={`recent-${channel.id}`}
                 onClick={() => navigateToChannel(channel)}
-                className="flex-shrink-0 w-24 sm:w-32 bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-700 transition-colors cursor-pointer"
+                className="shrink-0 w-24 sm:w-32 bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-700 transition-colors cursor-pointer"
               >
                 <div className="w-full h-14 sm:h-20 bg-gray-900 relative">
-                  {channel.logo ? (
-                    <img 
-                      src={channel.logo}
-                      alt={channel.name} 
-                      className="w-full h-full object-contain p-1.5 sm:p-2"
-                      onError={(e) => handleLogoError(e, channel.name)}
-                      loading="lazy"
-                    />
-                  ) : (
-                    <div 
-                      className="w-full h-full flex items-center justify-center"
-                      style={{ backgroundColor: getChannelColor(channel.name) }}
-                    >
-                      <div className="text-white text-sm sm:text-lg font-bold">
-                        {getChannelInitials(channel.name)}
-                      </div>
-                    </div>
-                  )}
+                  <ChannelLogo
+                    src={channel.logo}
+                    name={channel.name}
+                    alt={channel.name}
+                    imgClass="w-full h-full object-contain p-1.5 sm:p-2"
+                    fallbackClass="w-full h-full flex items-center justify-center"
+                    textClass="text-sm sm:text-lg"
+                  />
                   
                   <button
                     onClick={(e) => toggleFavorite(channel, e)}
@@ -975,25 +1048,15 @@ export default function PlaylistView(props) {
                       className="bg-gray-800 p-2 sm:p-4 rounded-lg hover:bg-gray-700 transition-colors cursor-pointer relative overflow-hidden"
                     >
                       <div className="flex items-center gap-2 sm:gap-3 mb-1.5 sm:mb-2">
-                        <div className="relative flex-shrink-0">
-                          {channel.logo ? (
-                            <img 
-                              src={channel.logo}
-                              alt={channel.name} 
-                              className="w-8 h-8 sm:w-10 sm:h-10 rounded flex-shrink-0 object-cover bg-gray-900"
-                              onError={(e) => handleLogoError(e, channel.name)}
-                              loading="lazy"
-                            />
-                          ) : (
-                            <div 
-                              className="w-8 h-8 sm:w-10 sm:h-10 rounded flex-shrink-0 flex items-center justify-center"
-                              style={{ backgroundColor: getChannelColor(channel.name) }}
-                            >
-                              <div className="text-white text-xs sm:text-sm font-bold">
-                                {getChannelInitials(channel.name)}
-                              </div>
-                            </div>
-                          )}
+                        <div className="relative shrink-0">
+                          <ChannelLogo
+                            src={channel.logo}
+                            name={channel.name}
+                            alt={channel.name}
+                            imgClass="w-8 h-8 sm:w-10 sm:h-10 rounded-sm shrink-0 object-cover bg-gray-900"
+                            fallbackClass="w-8 h-8 sm:w-10 sm:h-10 rounded-sm shrink-0 flex items-center justify-center"
+                            textClass="text-xs sm:text-sm"
+                          />
                         </div>
                         
                         <div className="flex-1 min-w-0 overflow-hidden">
@@ -1006,7 +1069,7 @@ export default function PlaylistView(props) {
                           
                           {/* Show quality info if available */}
                           {channel.quality && (
-                            <span className="text-xs px-1 py-0.5 bg-gray-700 rounded-sm text-gray-300 inline-block mt-0.5 truncate max-w-full">
+                            <span className="text-xs px-1 py-0.5 bg-gray-700 rounded-xs text-gray-300 inline-block mt-0.5 truncate max-w-full">
                               {channel.quality}
                             </span>
                           )}
@@ -1044,7 +1107,7 @@ export default function PlaylistView(props) {
                       <div className="absolute top-1 sm:top-2 right-1 sm:right-2 flex gap-1">
                         <button
                           onClick={(e) => toggleFavorite(channel, e)}
-                          className="p-1 sm:p-1.5 rounded-full bg-gray-700 hover:bg-gray-600 text-gray-300 flex-shrink-0"
+                          className="p-1 sm:p-1.5 rounded-full bg-gray-700 hover:bg-gray-600 text-gray-300 shrink-0"
                           title={isFavorite(channel.id) ? "Remove from favorites" : "Add to favorites"}
                         >
                           <Heart className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${isFavorite(channel.id) ? 'text-red-500 fill-current' : ''}`} />
@@ -1052,7 +1115,7 @@ export default function PlaylistView(props) {
                         
                         <button
                           onClick={(e) => handleShowPreview(channel, e)}
-                          className="p-1 sm:p-1.5 rounded-full bg-gray-700 hover:bg-gray-600 text-gray-300 flex-shrink-0"
+                          className="p-1 sm:p-1.5 rounded-full bg-gray-700 hover:bg-gray-600 text-gray-300 shrink-0"
                           title="Preview channel"
                         >
                           <PlayCircle className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
@@ -1077,25 +1140,14 @@ export default function PlaylistView(props) {
                       onClick={() => navigateToChannel(channel)}
                       className="flex items-center py-2 px-2 sm:p-3 hover:bg-gray-700 transition-colors border-b border-gray-700 last:border-0 cursor-pointer overflow-hidden"
                     >
-                      {channel.logo ? (
-                        <img 
-                          src={channel.logo}
-                          alt={channel.name} 
-                          data-channel={channel.id}
-                          className="w-8 h-8 sm:w-10 sm:h-10 rounded flex-shrink-0 object-cover bg-gray-900 mr-2 sm:mr-3"
-                          onError={(e) => handleLogoError(e, channel.name)}
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div 
-                          className="w-8 h-8 sm:w-10 sm:h-10 rounded flex-shrink-0 flex items-center justify-center mr-2 sm:mr-3"
-                          style={{ backgroundColor: getChannelColor(channel.name) }}
-                        >
-                          <div className="text-white text-xs sm:text-sm font-bold">
-                            {getChannelInitials(channel.name)}
-                          </div>
-                        </div>
-                      )}
+                      <ChannelLogo
+                        src={channel.logo}
+                        name={channel.name}
+                        alt={channel.name}
+                        imgClass="w-8 h-8 sm:w-10 sm:h-10 rounded-sm shrink-0 object-cover bg-gray-900 mr-2 sm:mr-3"
+                        fallbackClass="w-8 h-8 sm:w-10 sm:h-10 rounded-sm shrink-0 flex items-center justify-center mr-2 sm:mr-3"
+                        textClass="text-xs sm:text-sm" data-channel={channel.id}
+                      />
                       <div className="flex-1 min-w-0 overflow-hidden mr-2">
                         <span className="font-medium text-xs sm:text-sm block truncate" title={channel.tvgName || channel.name}>
                           {channel.tvgName || channel.name}
@@ -1130,7 +1182,7 @@ export default function PlaylistView(props) {
                       </div>
                       
                       {/* Better spacing for list view actions on desktop */}
-                      <div className="flex gap-1 sm:gap-2 flex-shrink-0">
+                      <div className="flex gap-1 sm:gap-2 shrink-0">
                         <button
                           onClick={(e) => toggleFavorite(channel, e)}
                           className="p-1.5 sm:p-2 text-gray-400 hover:text-white"
@@ -1164,7 +1216,7 @@ export default function PlaylistView(props) {
               <h3 className="font-medium text-sm sm:text-base truncate pr-2">{previewChannel.name}</h3>
               <button 
                 onClick={closePreview}
-                className="p-1 rounded hover:bg-gray-700 flex-shrink-0"
+                className="p-1 rounded-sm hover:bg-gray-700 shrink-0"
                 aria-label="Close preview"
               >
                 <X className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -1186,7 +1238,7 @@ export default function PlaylistView(props) {
             <div className="p-2 sm:p-4 flex flex-wrap gap-2 sm:gap-3">
               <button
                 onClick={() => navigateToChannel(previewChannel)}
-                className="px-3 py-1.5 sm:py-2 bg-blue-600 text-white rounded hover:bg-blue-700 flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm"
+                className="px-3 py-1.5 sm:py-2 bg-blue-600 text-white rounded-sm hover:bg-blue-700 flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm"
               >
                 <PlayCircle className="w-3.5 h-3.5 sm:w-5 sm:h-5" />
                 Watch Full Screen
@@ -1194,7 +1246,7 @@ export default function PlaylistView(props) {
               
               <button
                 onClick={(e) => toggleFavorite(previewChannel, e)}
-                className={`px-3 py-1.5 sm:py-2 ${isFavorite(previewChannel.id) ? 'bg-red-600' : 'bg-gray-700'} text-white rounded hover:${isFavorite(previewChannel.id) ? 'bg-red-700' : 'bg-gray-600'} flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm`}
+                className={`px-3 py-1.5 sm:py-2 ${isFavorite(previewChannel.id) ? 'bg-red-600' : 'bg-gray-700'} text-white rounded-sm hover:${isFavorite(previewChannel.id) ? 'bg-red-700' : 'bg-gray-600'} flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm`}
               >
                 <Heart className={`w-3.5 h-3.5 sm:w-5 sm:h-5 ${isFavorite(previewChannel.id) ? 'fill-current' : ''}`} />
                 {isFavorite(previewChannel.id) ? 'Remove from Favorites' : 'Add to Favorites'}
@@ -1213,7 +1265,7 @@ export default function PlaylistView(props) {
       
       <button 
         onClick={toggleDebugPanel} 
-        className="fixed bottom-2 right-2 bg-gray-800 p-1 rounded text-xs text-gray-400 hover:bg-gray-700 z-40"
+        className="fixed bottom-2 right-2 bg-gray-800 p-1 rounded-sm text-xs text-gray-400 hover:bg-gray-700 z-40"
       >
         Debug
       </button>

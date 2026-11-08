@@ -1,6 +1,7 @@
 import { h } from "preact";
 import { useState, useEffect, useRef, useCallback } from "preact/hooks";
 import { route } from "preact-router"; // Remove wouter import
+import { useNavState } from "../utils/historyManager";
 import {
   Loader,
   Search,
@@ -11,7 +12,7 @@ import {
   Tag,
 } from "lucide-preact";
 import { getCategories, getAllChannels } from "../utils/playlist";
-import { getChannelColor, getChannelInitials } from "../utils/logoService";
+import ChannelLogo from "../components/ChannelLogo";
 import { get, set, has } from '../utils/idbStorage';
 import * as apiClient from "../utils/apiClient";
 
@@ -26,14 +27,16 @@ export default function CategoryView(props) {
   const [category, setCategory] = useState(null);
   const [channels, setChannels] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isGridView, setIsGridView] = useState(true);
+  // Filters are remembered per history entry so Back from the player keeps them
+  const [searchQuery, setSearchQuery] = useNavState("searchQuery", "");
+  const [isGridView, setIsGridView] = useNavState("isGridView", true);
   const [groups, setGroups] = useState([]);
-  const [filterGroup, setFilterGroup] = useState("");
-  const [sortBy, setSortBy] = useState("name");
+  const [filterGroup, setFilterGroup] = useNavState("filterGroup", "");
+  const [sortBy, setSortBy] = useNavState("sortBy", "name");
   const [error, setError] = useState(null);
   const [loadAttempted, setLoadAttempted] = useState(false);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useNavState("page", 1);
+  const shownCategoryRef = useRef(categoryId);
   const [channelsPerPage] = useState(40);
   const [retryCount, setRetryCount] = useState(0);
   const MAX_RETRIES = 3;
@@ -59,9 +62,14 @@ export default function CategoryView(props) {
       setLoadAttempted(false);
       setError(null);
       setRetryCount(0);
-      setPage(1);
-      setSearchQuery("");
-      setFilterGroup("");
+      // Only reset the filters when switching to another category, not when
+      // coming back to this one (they are restored from history)
+      if (shownCategoryRef.current !== categoryId) {
+        shownCategoryRef.current = categoryId;
+        setPage(1);
+        setSearchQuery("");
+        setFilterGroup("");
+      }
       loadCategory();
     }
   }, [categoryId]);
@@ -125,20 +133,14 @@ export default function CategoryView(props) {
       let uniqueGroups = [];
 
       try {
-        const apiPromise = new Promise(async (resolve, reject) => {
-          try {
-            const channels = await apiClient.getChannels({
-              category: categoryId.toLowerCase(),
-              signal
-            });
-            resolve(channels);
-          } catch (err) {
-            reject(err);
-          }
-        });
+        const apiPromise = apiClient.getChannels(
+          { category: categoryId.toLowerCase() },
+          { signal }
+        );
 
         const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("API call timed out")), 5000)
+          // The first download of the channel list can be slow; it is cached afterwards
+          setTimeout(() => reject(new Error("API call timed out")), 30000)
         );
 
         categoryChannels = await Promise.race([
@@ -475,7 +477,7 @@ export default function CategoryView(props) {
           <div class="mt-4 flex gap-3">
             <a
               href="/countries"
-              class="inline-block px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500"
+              class="inline-block px-4 py-2 bg-gray-600 text-white rounded-sm hover:bg-gray-500"
             >
               Browse all channels
             </a>
@@ -486,7 +488,7 @@ export default function CategoryView(props) {
                 setError(null);
                 setTimeout(loadCategory, 100);
               }}
-              class="inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              class="inline-block px-4 py-2 bg-blue-600 text-white rounded-sm hover:bg-blue-700"
             >
               Try Again
             </button>
@@ -505,7 +507,7 @@ export default function CategoryView(props) {
           </div>
           <a
             href="/countries"
-            class="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            class="mt-4 inline-block px-4 py-2 bg-blue-600 text-white rounded-sm hover:bg-blue-700"
           >
             Browse all channels
           </a>
@@ -525,10 +527,14 @@ export default function CategoryView(props) {
                       )}`}
                       class="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition-colors"
                     >
-                      {/* ...existing channel card content... */}
                       <div class="flex items-center gap-3 mb-3">
-                        {/* Logo/initials display */}
-                        {/* ...existing logo code... */}
+                        <ChannelLogo
+                          src={channel.logo}
+                          name={channel.name}
+                          imgClass="w-12 h-12 rounded-md shrink-0 object-cover bg-gray-900"
+                          fallbackClass="w-12 h-12 rounded-md shrink-0 flex items-center justify-center"
+                          textClass="text-sm"
+                        />
                         <div class="flex-1 min-w-0">
                           <h3 class="font-medium truncate">
                             {channel.name || "Unnamed Channel"}
@@ -588,37 +594,14 @@ export default function CategoryView(props) {
                       )}`}
                       class="flex items-center p-4 hover:bg-gray-700 transition-colors border-b border-gray-700 last:border-0"
                     >
-                      {channel.logo ? (
-                        <img
-                          src={channel.logo}
-                          alt={channel.name || "Channel logo"}
-                          class="w-12 h-12 rounded-md mr-3 object-cover bg-gray-900"
-                          loading="lazy"
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.style.display = "none";
-                            e.target.parentNode.innerHTML = `
-                              <div class="w-12 h-12 rounded-md mr-3 flex-shrink-0 flex items-center justify-center"
-                                   style="background-color: ${getChannelColor(channel.name)}">
-                                <div class="text-white text-sm font-bold">
-                                  ${getChannelInitials(channel.name)}
-                                </div>
-                              </div>
-                            `;
-                          }}
-                        />
-                      ) : (
-                        <div
-                          class="w-12 h-12 rounded-md mr-3 flex-shrink-0 flex items-center justify-center"
-                          style={{
-                            backgroundColor: getChannelColor(channel.name)
-                          }}
-                        >
-                          <div class="text-white text-sm font-bold">
-                            {getChannelInitials(channel.name)}
-                          </div>
-                        </div>
-                      )}
+                      <ChannelLogo
+                        src={channel.logo}
+                        name={channel.name}
+                        alt={channel.name || "Channel logo"}
+                        imgClass="w-12 h-12 rounded-md mr-3 object-cover bg-gray-900"
+                        fallbackClass="w-12 h-12 rounded-md mr-3 shrink-0 flex items-center justify-center"
+                        textClass="text-sm"
+                      />
                       
                       <div class="flex-1 min-w-0">
                         <h3 class="font-medium truncate">
