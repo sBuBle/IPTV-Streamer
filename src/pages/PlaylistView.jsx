@@ -794,7 +794,7 @@ export default function PlaylistView(props) {
   return (
     <div className="pb-16 max-w-(--breakpoint-2xl) mx-auto overflow-hidden">
       {/* Header - Improved desktop layout with overflow handling */}
-      <div className="mb-4 sm:mb-6">
+      <div className="page-banner banner-playlist mb-4 sm:mb-6">
         <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2 sm:gap-3">
           <div className="max-w-full overflow-hidden">
             <a 

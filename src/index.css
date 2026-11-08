@@ -173,3 +173,32 @@ h1, h2, h3 {
   background-size: cover;
   background-position: center right;
 }
+
+/* Page banners: artwork drawn in VectorCraft (design/pages/generate_pages.py) */
+.page-banner {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid oklch(1 0 0 / 0.08);
+  padding: 1.75rem 1.5rem;
+  min-height: 8.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: var(--color-gray-900);
+  background-image:
+    linear-gradient(90deg, oklch(0.14 0.03 285 / 0.85) 0%, oklch(0.14 0.03 285 / 0.45) 55%, oklch(0.14 0.03 285 / 0) 85%),
+    var(--banner-art, none);
+  background-size: cover;
+  background-position: right center;
+}
+@media (min-width: 768px) {
+  .page-banner { padding: 2rem 2.25rem; }
+}
+.banner-favorites { --banner-art: url('/brand/pages/banner-favorites.svg'); }
+.banner-history { --banner-art: url('/brand/pages/banner-history.svg'); }
+.banner-countries { --banner-art: url('/brand/pages/banner-countries.svg'); }
+.banner-settings { --banner-art: url('/brand/pages/banner-settings.svg'); }
+.banner-about { --banner-art: url('/brand/pages/banner-about.svg'); }
+.banner-playlist { --banner-art: url('/brand/pages/banner-playlist.svg'); }
+.banner-category { --banner-art: url('/brand/pages/banner-category.svg'); }

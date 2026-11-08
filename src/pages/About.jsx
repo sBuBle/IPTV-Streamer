@@ -8,16 +8,7 @@ export default function About() {
   return (
     <div>
       {/* Hero section with app info */}
-      <div className="relative bg-linear-to-br from-blue-900 to-gray-800 rounded-xl p-8 mb-8 overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10">
-            <Tv className="w-40 h-40 text-white" />
-          </div>
-          <div className="absolute bottom-10 right-10 transform rotate-12">
-            <Globe className="w-32 h-32 text-white" />
-          </div>
-        </div>
-
+      <div className="page-banner banner-about relative p-8 mb-8">
         <div className="relative z-10">
           <h1 className="text-4xl font-bold mb-3">IPTV Streamer</h1>
           <p className="text-xl text-gray-300 max-w-2xl">

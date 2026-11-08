@@ -230,7 +230,7 @@ export default function Home() {
           </div>
         ) : recentlyWatched.length === 0 ? (
           <div className="bg-gray-800 p-6 rounded-lg text-center text-gray-400">
-            <Clock className="w-8 h-8 mx-auto mb-2 opacity-50" />
+            <img src="/brand/pages/empty-history.svg" alt="" width="320" height="200" className="w-36 h-auto mx-auto mb-1" />
             <p>No recently watched channels</p>
             <a href="/countries" className="text-blue-400 hover:underline text-sm">
               Browse channels to get started
@@ -265,7 +265,7 @@ export default function Home() {
           </div>
         ) : favorites.length === 0 ? (
           <div className="bg-gray-800 p-6 rounded-lg text-center text-gray-400">
-            <Heart className="w-8 h-8 mx-auto mb-2 opacity-50" />
+            <img src="/brand/pages/empty-favorites.svg" alt="" width="320" height="200" className="w-36 h-auto mx-auto mb-1" />
             <p>No favorite channels yet</p>
             <p className="text-sm mt-1">
               Add favorites by clicking the heart icon while watching a channel
@@ -296,7 +296,7 @@ export default function Home() {
         
         {playlists.length === 0 ? (
           <div className="bg-gray-800 p-6 rounded-lg text-center text-gray-400">
-            <List className="w-8 h-8 mx-auto mb-2 opacity-50" />
+            <img src="/brand/pages/empty-channels.svg" alt="" width="320" height="200" className="w-36 h-auto mx-auto mb-1" />
             <p>No playlists added yet</p>
             <a href="/settings" className="text-blue-400 hover:underline text-sm">
               Add your first playlist

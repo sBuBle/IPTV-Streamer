@@ -360,9 +360,9 @@ export default function CategoryView(props) {
   return (
     <div>
       {/* Header section */}
-      <div class="mb-6">
+      <div class="page-banner banner-category mb-6">
         <h2 class="text-3xl font-bold mb-2 flex items-center gap-3">
-          <Tag class="text-blue-500" />
+          <Tag class="text-blue-300" />
           {category?.name ||
             (categoryId
               ? categoryId.charAt(0).toUpperCase() + categoryId.slice(1)
@@ -497,7 +497,7 @@ export default function CategoryView(props) {
       ) : sortedChannels.length === 0 ? (
         <div class="bg-gray-800 p-6 rounded-lg">
           <div class="flex items-center gap-4">
-            <AlertCircle class="w-8 h-8 text-yellow-500" />
+            <img src="/brand/pages/empty-channels.svg" alt="" width="320" height="200" class="w-28 h-auto shrink-0" />
             <div>
               <h3 class="font-medium mb-1">No channels found</h3>
               <p class="text-sm text-gray-400">

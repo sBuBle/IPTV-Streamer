@@ -126,9 +126,9 @@ export default function Favorites() {
 
   return (
     <div>
-      <div class="mb-8">
+      <div class="page-banner banner-favorites mb-8">
         <h2 class="text-3xl font-bold flex items-center gap-3 mb-2">
-          <Heart class="text-red-500" />
+          <Heart class="text-rose-400" />
           <span>My Favorites</span>
         </h2>
         <p class="text-gray-400">
@@ -228,7 +228,7 @@ export default function Favorites() {
         </div>
       ) : favorites.length === 0 ? (
         <div class="text-center py-12 bg-gray-800 rounded-lg">
-          <Heart class="w-16 h-16 mx-auto mb-4 text-gray-600" />
+          <img src="/brand/pages/empty-favorites.svg" alt="" width="320" height="200" class="w-48 h-auto mx-auto mb-2" />
           <h3 class="text-xl font-medium mb-2">No favorites yet</h3>
           <p class="text-gray-400 mb-6">
             Add favorites by clicking the heart icon while watching channels.
