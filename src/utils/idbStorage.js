@@ -17,7 +17,15 @@ const getLZString = () => {
 
 // Cache frequently accessed items in memory
 const cache = new Map();
-const CACHE_TTL = 120000; // 2 minutes
+// All writes in this tab go through set(), which updates the cache, so values
+// can be kept for a while. Another tab may have changed them, so the cache is
+// dropped whenever this tab comes back into view.
+const CACHE_TTL = 30 * 60 * 1000; // 30 minutes
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') cache.clear();
+  });
+}
 const CACHE_SIZE_LIMIT = 50; // Maximum items in cache
 
 /**

@@ -10,6 +10,7 @@ import { PipAwareAppLayout } from './components/PipAwareAppLayout';
 import { initHistoryListener, handleRouteChange as trackRouteChange } from './utils/historyManager';
 
 import { lazyPage } from './components/lazyPage';
+import { loadHls } from './utils/loadHls';
 
 // Pages are split into their own chunks and loaded on demand
 const Home = lazyPage(() => import('./pages/Home'));
@@ -22,6 +23,50 @@ const CountryBrowser = lazyPage(() => import('./pages/CountryBrowser'));
 const PlaylistView = lazyPage(() => import('./pages/PlaylistView'));
 const CategoryView = lazyPage(() => import('./pages/CategoryView'));
 const About = lazyPage(() => import('./pages/About'));
+
+// Which page chunk a link leads to, so it can be fetched before the click
+function pageForPath(path) {
+  if (path === '/') return Home;
+  if (path.startsWith('/watch/')) return Player;
+  if (path.startsWith('/countries')) return CountryBrowser;
+  if (path.startsWith('/playlist/')) return PlaylistView;
+  if (path.startsWith('/category/')) return CategoryView;
+  if (path.startsWith('/favorites')) return Favorites;
+  if (path.startsWith('/history')) return WatchHistory;
+  if (path.startsWith('/playlists')) return Playlists;
+  if (path.startsWith('/settings')) return SettingsPage;
+  if (path.startsWith('/about')) return About;
+  return null;
+}
+
+// Hovering, focusing or touching any in-app link starts downloading its page
+// (and hls.js for channel links), so the click usually finds them ready.
+let warmedHls = false;
+function warmLink(event) {
+  const link = event.target?.closest?.('a[href^="/"]');
+  if (!link) return;
+  const path = link.getAttribute('href').split('?')[0];
+  pageForPath(path)?.preload().catch(() => {});
+  if (!warmedHls && path.startsWith('/watch/')) {
+    warmedHls = true;
+    loadHls().catch(() => { warmedHls = false; });
+  }
+}
+
+function startLinkWarming() {
+  if (typeof document === 'undefined' || startLinkWarming.done) return;
+  startLinkWarming.done = true;
+  document.addEventListener('pointerover', warmLink, { passive: true });
+  document.addEventListener('touchstart', warmLink, { passive: true });
+  document.addEventListener('focusin', warmLink);
+  // Once the first page is up and the browser is idle, fetch the small pages
+  // people open most, so switching tabs doesn't wait on the network. The
+  // player is left to hover/touch: it brings hls.js (~180 kB gzip) with it.
+  const idle = window.requestIdleCallback || ((fn) => setTimeout(fn, 2000));
+  idle(() => {
+    for (const page of [Home, CountryBrowser, Favorites, WatchHistory]) page.preload().catch(() => {});
+  }, { timeout: 5000 });
+}
 
 const MAIN_LINKS = [
   { href: '/', label: 'Home', icon: HomeIcon, page: Home },
@@ -160,6 +205,7 @@ function AppShell() {
   // player's Back button and by list pages to restore their state)
   if (typeof window !== 'undefined') {
     initHistoryListener();
+    startLinkWarming();
   }
   
   // Load playlists for the sidebar (again after each navigation, so playlists

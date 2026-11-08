@@ -375,6 +375,22 @@ export async function getStreams(options = {}) {
  * @param {Object} options - Fetch options
  * @returns {Promise<Array>} Filtered list of channels
  */
+// Recent getChannels() results. Opening a country, category or language
+// again (Back from the player, switching tabs, the player's "Up next") reuses
+// the list instead of filtering and rebuilding ~30k channels. Entries are
+// dropped when any of the data they were built from is refreshed.
+const channelResults = new Map(); // key -> { sources, result }
+const MAX_CHANNEL_RESULTS = 12;
+
+function rememberChannels(key, sources, result) {
+  channelResults.delete(key);
+  channelResults.set(key, { sources, result });
+  if (channelResults.size > MAX_CHANNEL_RESULTS) {
+    channelResults.delete(channelResults.keys().next().value);
+  }
+  return result;
+}
+
 export async function getChannels(filters = {}, options = {}) {
   try {
     const [channels, streams] = await Promise.all([
@@ -398,6 +414,13 @@ export async function getChannels(filters = {}, options = {}) {
       getLanguageNames(options),
     ]);
 
+    const key = `${category || ''}|${country || ''}|${language || ''}`;
+    const sources = [channels, streams, logoMap, languageIndex, languageNames];
+    const cached = channelResults.get(key);
+    if (cached && cached.sources.every((source, i) => source === sources[i])) {
+      return cached.result;
+    }
+
     const filtered = (category || country || language)
       ? channels.filter(channel =>
           (!category || (Array.isArray(channel.categories) && channel.categories.some(c => c.toLowerCase() === category))) &&
@@ -407,13 +430,13 @@ export async function getChannels(filters = {}, options = {}) {
       : channels;
 
     const index = getStreamIndex(streams);
-    return filtered.map(channel => {
+    return rememberChannels(key, sources, filtered.map(channel => {
       const result = withBestStream(channel, index);
       const codes = channelLanguages(channel, languageIndex);
       result.languages = codes;
       result.languageNames = codes.map(code => languageNames.get(code) || code.toUpperCase());
       return result;
-    });
+    }));
   } catch (error) {
     console.error('Error getting channels:', error);
     return [];

@@ -171,7 +171,7 @@ export default function Home() {
               href={`/category/${cat.id}`}
               className="flex items-center gap-3 p-3 rounded-[14px] border border-[var(--color-hairline)] bg-[var(--color-card)] hover:bg-[var(--color-card-hover)] hover:border-violet-500/40 transition"
             >
-              <img src={cat.icon} alt="" width="40" height="40" className="w-10 h-10 shrink-0" />
+              <img src={cat.icon} alt="" width="40" height="40" loading="lazy" decoding="async" className="w-10 h-10 shrink-0" />
               <span className="text-sm font-semibold truncate">{cat.name}</span>
             </a>
           ))}
