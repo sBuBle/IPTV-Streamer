@@ -1165,7 +1165,7 @@ export default function Player({ id, preview = false }) {
                   <img
                     src={channel.logo}
                     alt=""
-                    className="w-10 h-10 shrink-0 rounded-sm object-contain bg-gray-900"
+                    className="w-10 h-10 shrink-0 rounded-lg object-contain bg-white/5 p-1"
                     onError={() => setLogoFailed(true)}
                   />
                 ) : (
