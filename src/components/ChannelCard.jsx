@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import { Play, Heart } from 'lucide-preact';
+import { memo } from 'preact/compat';
 import ChannelLogo from './ChannelLogo';
 
 /**
@@ -7,7 +8,7 @@ import ChannelLogo from './ChannelLogo';
  * 56px logo tile, name, LIVE badge with "Category · CC", heart; on hover the
  * card lifts, gets a violet edge and a play overlay on the logo.
  */
-export default function ChannelCard({ href, name, logo, group, country, live = true, favorite = false, meta }) {
+function ChannelCard({ href, name, logo, group, country, live = true, favorite = false, meta }) {
   const subtitle = [group || 'Uncategorized', country].filter(Boolean).join(' · ');
   return (
     <a
@@ -44,3 +45,6 @@ export default function ChannelCard({ href, name, logo, group, country, live = t
     </a>
   );
 }
+
+// Props are plain values, so a card only re-renders when its channel changes
+export default memo(ChannelCard);

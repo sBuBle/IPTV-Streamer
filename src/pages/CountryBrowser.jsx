@@ -48,7 +48,7 @@ const ItemMark = ({ item, kind, size = 'row' }) => {
   if (kind === 'categories') {
     const px = size === 'row' ? 'w-7 h-7' : 'w-10 h-10';
     return (
-      <img src={`/brand/icons/cat-${item.id}.svg`} alt="" class={`${px} shrink-0`}
+      <img src={`/brand/icons/cat-${item.id}.svg`} alt="" loading="lazy" decoding="async" class={`${px} shrink-0`}
         onError={(e) => { e.currentTarget.src = '/brand/channel-fallback.svg'; }} />
     );
   }
