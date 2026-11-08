@@ -3,6 +3,14 @@ import { useEffect, useRef, useState } from 'preact/hooks';
 import { Captions, CaptionsOff, Check, Sparkles, Languages, AlertTriangle, ChevronDown } from 'lucide-preact';
 import { TARGET_LANGUAGES } from '../utils/captionTranslate';
 
+function languageLabel(code) {
+  try {
+    return new Intl.DisplayNames(['en'], { type: 'language' }).of(code) || code;
+  } catch {
+    return code;
+  }
+}
+
 function formatMB(bytes) {
   return bytes ? `${Math.round(bytes / 1e6)} MB` : '';
 }
@@ -130,7 +138,7 @@ function MenuItem({ active, onClick, icon, children, hint }) {
 // Track picker for the control bar
 export function CaptionMenu({ captions, onClose }) {
   const ref = useRef(null);
-  const { tracks, selected, select, autoStatus, autoSupported, isAuto, target, setTarget } = captions;
+  const { tracks, selected, select, autoStatus, autoSupported, isAuto, target, setTarget, spoken, setSpoken } = captions;
 
   // Close on outside click / Escape
   useEffect(() => {
@@ -157,7 +165,8 @@ export function CaptionMenu({ captions, onClose }) {
     else if (!autoStatus.modelReady) {
       autoHint = `Downloading model ${Math.round((autoStatus.progress || 0) * 100)}%${autoStatus.total ? ` of ${formatMB(autoStatus.total)}` : ''}`;
     } else {
-      autoHint = `Running on ${autoStatus.device === 'webgpu' ? 'GPU' : 'CPU'} · a few seconds behind`;
+      const heard = autoStatus.detected ? `Hearing ${languageLabel(autoStatus.detected)}` : 'Listening';
+      autoHint = `${heard} · ${autoStatus.device === 'webgpu' ? 'GPU' : 'CPU'}`;
     }
   }
 
@@ -213,6 +222,25 @@ export function CaptionMenu({ captions, onClose }) {
           >
             Auto captions
           </MenuItem>
+          {isAuto && (
+            <label className="flex items-center gap-2 px-3 py-1.5">
+              <span className="text-xs text-gray-400 shrink-0">Spoken</span>
+              <span className="relative grow min-w-0">
+                <select
+                  value={spoken}
+                  onChange={(e) => setSpoken(e.currentTarget.value)}
+                  aria-label="Spoken language"
+                  className="w-full appearance-none h-7 pl-2 pr-6 rounded-md bg-white/5 hover:bg-white/10 ring-1 ring-white/10 focus:ring-[var(--color-lilac)] outline-none text-xs text-white cursor-pointer truncate"
+                >
+                  <option value="">Detect automatically</option>
+                  {TARGET_LANGUAGES.map(([code, name]) => (
+                    <option key={code} value={code}>{name}</option>
+                  ))}
+                </select>
+                <ChevronDown className="w-3.5 h-3.5 text-gray-400 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              </span>
+            </label>
+          )}
           {isAuto && autoStatus?.error && (
             <p className="px-3 py-1.5 text-xs text-rose-300">{autoStatus.error}</p>
           )}

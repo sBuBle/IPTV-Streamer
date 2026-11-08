@@ -143,6 +143,8 @@ export function onTranslationProgress(fn) {
 // translate()
 // -----------------------------------------------------------------------------
 const cache = new Map();
+const loggedNative = new Set();
+const workerFailed = new Map(); // target -> Error (don't refetch on every line)
 const CACHE_LIMIT = 400;
 
 /**
@@ -166,6 +168,10 @@ export async function translateCaption(text, { source, target }) {
       result = await (await nativeTranslator(src, target)).translate(text);
     } catch (err) {
       nativeError = err;
+      if (!loggedNative.has(`${src}>${target}`)) {
+        loggedNative.add(`${src}>${target}`);
+        console.warn(`Built-in translator can't do ${src}>${target}:`, err);
+      }
       // No direct model for this pair: go through English
       if (src !== 'en' && target !== 'en' && !nativeUnusable.has(`${src}>en`) && !nativeUnusable.has(`en>${target}`)) {
         try {
@@ -184,11 +190,14 @@ export async function translateCaption(text, { source, target }) {
     if (src !== 'en') {
       throw new Error(`Translating from ${languageLabel(source)} needs Chrome or Edge`);
     }
+    if (workerFailed.has(target)) throw workerFailed.get(target);
     try {
       result = await translateInWorker(text, target);
     } catch (err) {
       console.warn('Caption translation failed:', err);
-      throw new Error(`${targetName(target)} translation isn't available in this browser`);
+      const friendly = new Error(`${targetName(target)} translation isn't available in this browser`);
+      workerFailed.set(target, friendly);
+      throw friendly;
     }
   }
 

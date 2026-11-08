@@ -7,11 +7,13 @@
 const TRANSFORMERS_URL = 'https://cdn.jsdelivr.net/npm/@huggingface/transformers@4.3.2/dist/transformers.min.js';
 
 let pipeline = null;
+let Tensor = null;
 async function loadLibrary() {
   if (pipeline) return;
   const mod = await import(/* @vite-ignore */ TRANSFORMERS_URL);
   mod.env.allowLocalModels = false;
   pipeline = mod.pipeline;
+  Tensor = mod.Tensor;
 }
 
 const SAMPLE_RATE = 16000;
@@ -49,9 +51,74 @@ const HALLUCINATIONS = [
 
 let asr = null;
 let device = null;
-let options = { task: 'transcribe' };
+let options = { task: 'transcribe', language: '' }; // language '' = detect
 let buffer = new Float32Array(0);
 let busy = false;
+
+// ---------------------------------------------------------------------------
+// Spoken language detection. transformers.js has none (it assumes English),
+// so do what Whisper does: run the first decoder step and pick the most
+// likely language token. Votes over a few chunks; checked again now and then
+// because channels switch language (ads, news in another language).
+// ---------------------------------------------------------------------------
+let votes = [];          // last detections
+let detected = '';       // current best guess
+let voicedChunks = 0;
+
+async function detectLanguage(chunk) {
+  const config = asr.model.generation_config;
+  const langToId = config?.lang_to_id;
+  if (!langToId || !Tensor) return '';
+  const inputs = await asr.processor(chunk);
+  const sot = config.decoder_start_token_id;
+  const decoder_input_ids = new Tensor('int64', BigInt64Array.from([BigInt(sot)]), [1, 1]);
+  const out = await asr.model({ ...inputs, decoder_input_ids });
+  const logits = out.logits;
+  const vocab = logits.dims.at(-1);
+  const data = logits.data;
+  const offset = data.length - vocab; // last position
+  let best = '';
+  let bestScore = -Infinity;
+  for (const [token, id] of Object.entries(langToId)) {
+    const score = Number(data[offset + id]);
+    if (score > bestScore) {
+      bestScore = score;
+      best = token.replace(/^<\|/, '').replace(/\|>$/, '');
+    }
+  }
+  return best;
+}
+
+async function spokenLanguage(chunk) {
+  if (options.language) return options.language;
+  voicedChunks += 1;
+  // First three voiced chunks, then every tenth
+  if (votes.length < 3 || voicedChunks % 10 === 0) {
+    try {
+      const lang = await detectLanguage(chunk);
+      if (lang) {
+        votes = [...votes, lang].slice(-3);
+        const counts = {};
+        votes.forEach(v => { counts[v] = (counts[v] || 0) + 1; });
+        const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0][0];
+        if (top !== detected) {
+          detected = top;
+          self.postMessage({ type: 'language', language: detected });
+        }
+      }
+    } catch (err) {
+      console.warn('Auto captions: language detection failed', err);
+      votes = ['en', 'en', 'en']; // don't try on every chunk
+    }
+  }
+  return detected || null;
+}
+
+function resetDetection() {
+  votes = [];
+  detected = '';
+  voicedChunks = 0;
+}
 
 async function pickDevice() {
   try {
@@ -170,10 +237,10 @@ async function pump() {
   busy = true;
   const started = performance.now();
   try {
-    const result = await asr(chunk, {
-      task: options.task,
-      language: options.task === 'translate' ? null : options.language || null,
-    });
+    const language = await spokenLanguage(chunk);
+    // Whisper can't "translate" English into English: just transcribe it
+    const task = options.task === 'translate' && language === 'en' ? 'transcribe' : options.task;
+    const result = await asr(chunk, { task, language });
     self.postMessage({
       type: 'text',
       text: clean(result?.text),
@@ -192,10 +259,23 @@ async function pump() {
 // English -> other language translation (used when the browser has no
 // built-in Translator). One small Opus-MT model per target language.
 // ---------------------------------------------------------------------------
-const translators = new Map(); // target -> Promise<pipeline>
+const translators = new Map(); // model id -> Promise<pipeline> (failures stay cached)
+
+// English -> X models published for transformers.js. Languages without their
+// own model go through the multilingual one, which needs a >>xxx<< prefix.
+const MT_MODELS = {
+  de: 'Xenova/opus-mt-en-de', fr: 'Xenova/opus-mt-en-fr', es: 'Xenova/opus-mt-en-es',
+  it: 'Xenova/opus-mt-en-it', ru: 'Xenova/opus-mt-en-ru', uk: 'Xenova/opus-mt-en-uk',
+  nl: 'Xenova/opus-mt-en-nl', ar: 'Xenova/opus-mt-en-ar', hi: 'Xenova/opus-mt-en-hi',
+  zh: 'Xenova/opus-mt-en-zh', ja: 'Xenova/opus-mt-en-jap',
+};
+const MUL_CODES = { he: 'heb', pl: 'pol', tr: 'tur', ko: 'kor', pt: 'por' };
+const MUL_MODEL = 'Xenova/opus-mt-en-mul';
 
 function getTranslator(target) {
-  if (!translators.has(target)) {
+  const model = MT_MODELS[target] || (MUL_CODES[target] ? MUL_MODEL : null);
+  if (!model) return Promise.reject(new Error(`no model for ${target}`));
+  if (!translators.has(model)) {
     const files = new Map();
     const progress_callback = (info) => {
       if (info.status === 'progress' && info.total) {
@@ -207,20 +287,18 @@ function getTranslator(target) {
       }
     };
     const promise = loadLibrary()
-      .then(() => pipeline('translation', `Xenova/opus-mt-en-${target}`, { device: 'wasm', dtype: 'q8', progress_callback }))
-      .catch(err => {
-        translators.delete(target);
-        throw err;
-      });
-    translators.set(target, promise);
+      .then(() => pipeline('translation', model, { device: 'wasm', dtype: 'q8', progress_callback }));
+    promise.catch(() => {});
+    translators.set(model, promise);
   }
-  return translators.get(target);
+  return translators.get(model);
 }
 
 async function translate({ id, text, target }) {
   try {
     const mt = await getTranslator(target);
-    const out = await mt(text);
+    const input = !MT_MODELS[target] && MUL_CODES[target] ? `>>${MUL_CODES[target]}<< ${text}` : text;
+    const out = await mt(input);
     self.postMessage({ type: 'translated', id, text: (out?.[0]?.translation_text || '').trim() });
   } catch (err) {
     self.postMessage({ type: 'translate-error', id, message: err?.message || String(err) });
@@ -242,11 +320,13 @@ self.onmessage = async (event) => {
       self.postMessage({ type: 'error', fatal: true, message: err?.message || String(err) });
     }
   } else if (msg.type === 'options') {
+    if (msg.options.language !== undefined && msg.options.language !== options.language) resetDetection();
     options = { ...options, ...msg.options };
   } else if (msg.type === 'audio') {
     append(resample(msg.samples, msg.sampleRate));
     pump();
   } else if (msg.type === 'reset') {
     buffer = new Float32Array(0);
+    resetDetection();
   }
 };
