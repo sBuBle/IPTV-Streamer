@@ -17,6 +17,7 @@ import { goBack } from '../utils/historyManager';
 import * as apiClient from '../utils/apiClient';
 import { parseWatchKey, resolveWatchKey, watchPath, watchPathForStream } from '../utils/watchLinks';
 import { BUFFER_PRESETS, getSettings, useSettings } from '../utils/settings';
+import { findChannelId, findChannelLogo } from '../utils/channelLogos';
 
 const LOAD_TIMEOUT_MS = 25000;
 const CONTROLS_HIDE_MS = 3000;
@@ -185,6 +186,15 @@ async function resolveChannelInfo(streamUrl, apiChannel, { recordHistory }) {
     ) || null,
     channelId: pick(apiChannel?.id, favorite?.channelId, fromPlaylist?.tvgId, historyChannel?.channelId) || null,
   };
+
+  // Watched from a stream URL: find the iptv-org channel to get its logo
+  if (!channel.logo || !channel.channelId) {
+    const channelId = channel.channelId || await findChannelId({ url: streamUrl }).catch(() => null);
+    if (channelId) {
+      channel.channelId = channelId;
+      if (!channel.logo) channel.logo = await findChannelLogo({ channelId }).catch(() => null);
+    }
+  }
 
   if (recordHistory) {
     const updatedHistory = [

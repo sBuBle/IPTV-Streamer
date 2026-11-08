@@ -4,8 +4,8 @@ import { get, set } from '../utils/idbStorage'; // Use consistent storage utilit
 import { getFavorites, removeFavorite } from '../utils/favorites'; // Import favorites utilities
 import { Heart, Search, Trash2, PlayCircle, Grid, List as ListIcon, AlertCircle } from 'lucide-preact';
 import ChannelLogo from '../components/ChannelLogo';
-import * as apiClient from '../utils/apiClient';
 import { watchPath } from '../utils/watchLinks';
+import { useChannelLogos } from '../utils/channelLogos';
 
 export default function Favorites() {
   const [favorites, setFavorites] = useState([]);
@@ -100,10 +100,7 @@ export default function Favorites() {
   }
 
   // Try to get channel logo
-  const getChannelLogoUrl = (channel) => {
-    if (channel.logo) return channel.logo;
-    return apiClient.getLogoUrl(channel.channelId || channel.name);
-  };
+  const getChannelLogoUrl = useChannelLogos(favorites);
 
   // Filter favorites based on search query and group filter
   const filteredFavorites = favorites.filter(item => {
