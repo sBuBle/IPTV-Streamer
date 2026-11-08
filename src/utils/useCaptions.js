@@ -3,18 +3,41 @@
 // captions. Cues are drawn by the player itself, never by the browser.
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import { startAutoCaptions, setAutoCaptionTask, autoCaptionsSupported } from './autoCaptions';
+import { translateCaption, prepareTranslation, onTranslationProgress, baseLanguage } from './captionTranslate';
 
 const PREF_KEY = 'player-captions';
+const TARGET_KEY = 'player-captions-target'; // '' = show captions as they are
 const AUTO_LINE_MS = 9000; // how long an auto caption stays up without a new one
 
 function readPref() {
   try {
     const pref = JSON.parse(localStorage.getItem(PREF_KEY));
+    // "auto-en" was the old "Translate to English" item
+    if (pref?.mode === 'auto-en') return { mode: 'auto' };
     if (pref && typeof pref.mode === 'string') return pref;
   } catch {
     // ignore
   }
   return { mode: 'off' };
+}
+
+function readTarget() {
+  try {
+    const value = localStorage.getItem(TARGET_KEY);
+    if (value != null) return value;
+    // Users of the old "Translate to English" item keep getting English
+    return JSON.parse(localStorage.getItem(PREF_KEY))?.mode === 'auto-en' ? 'en' : '';
+  } catch {
+    return '';
+  }
+}
+
+function writeTarget(value) {
+  try {
+    localStorage.setItem(TARGET_KEY, value);
+  } catch {
+    // ignore
+  }
 }
 
 function writePref(pref) {
@@ -68,7 +91,10 @@ function trackLabel(label, lang, fallback) {
  */
 export function useCaptions(videoRef, hlsRef, streamKey, ready) {
   const [tracks, setTracks] = useState([]);
-  const [selected, setSelected] = useState('off'); // 'off' | track key | 'auto' | 'auto-en'
+  const [selected, setSelected] = useState('off'); // 'off' | track key | 'auto'
+  const [target, setTargetState] = useState(readTarget); // translate into this language ('' = no)
+  const [shownLines, setShownLines] = useState([]);
+  const [translateStatus, setTranslateStatus] = useState(null); // { progress } | { error }
   const [lines, setLines] = useState([]);
   const [trackTick, setTrackTick] = useState(0); // bumps when text tracks change
   const [autoStatus, setAutoStatus] = useState(null); // { modelReady, device, progress, listening, error }
@@ -135,7 +161,7 @@ export function useCaptions(videoRef, hlsRef, streamKey, ready) {
   useEffect(() => {
     setTracks([]);
     setLines([]);
-    setSelected(prev => (prev === 'auto' || prev === 'auto-en' ? prev : 'off'));
+    setSelected(prev => (prev === 'auto' ? prev : 'off'));
   }, [streamKey]);
 
   useEffect(() => {
@@ -211,7 +237,7 @@ export function useCaptions(videoRef, hlsRef, streamKey, ready) {
   // Draw the active track's cues
   useEffect(() => {
     if (!activeTrack) {
-      if (selectedRef.current !== 'auto' && selectedRef.current !== 'auto-en') setLines([]);
+      if (selectedRef.current !== 'auto') setLines([]);
       return undefined;
     }
     const onCueChange = () => {
@@ -238,8 +264,10 @@ export function useCaptions(videoRef, hlsRef, streamKey, ready) {
   // ---------------------------------------------------------------------------
   // Auto captions
   // ---------------------------------------------------------------------------
-  const isAuto = selected === 'auto' || selected === 'auto-en';
-  const task = selected === 'auto-en' ? 'translate' : 'transcribe';
+  const isAuto = selected === 'auto';
+  // Whisper itself translates speech into English; other targets go
+  // through English and then the caption translator.
+  const task = target ? 'translate' : 'transcribe';
   const taskRef = useRef(task);
   taskRef.current = task;
 
@@ -298,7 +326,7 @@ export function useCaptions(videoRef, hlsRef, streamKey, ready) {
     setLines([]);
     if (key === 'off') {
       prefRef.current = { mode: 'off' };
-    } else if (key === 'auto' || key === 'auto-en') {
+    } else if (key === 'auto') {
       prefRef.current = { mode: key };
     } else {
       const entry = tracksRef.current.find(t => t.key === key);
@@ -318,10 +346,53 @@ export function useCaptions(videoRef, hlsRef, streamKey, ready) {
     if (list.length) {
       const match = list.find(t => pref.lang && t.lang === pref.lang) || list[0];
       select(match.key);
-    } else if (pref.mode === 'auto' || pref.mode === 'auto-en') {
-      select(pref.mode);
+    } else if (pref.mode === 'auto') {
+      select('auto');
     }
   }, [select]);
+
+  // ---------------------------------------------------------------------------
+  // Translation
+  // ---------------------------------------------------------------------------
+  const activeEntry = tracks.find(t => t.key === selected);
+  const sourceLang = isAuto ? (task === 'translate' ? 'en' : '') : (activeEntry?.lang || '');
+
+  const setTarget = useCallback((value) => {
+    setTargetState(value);
+    writeTarget(value);
+    setTranslateStatus(null);
+    // Runs inside the menu click, so the browser may download the model
+    const entry = tracksRef.current.find(t => t.key === selectedRef.current);
+    prepareTranslation(value, [entry?.lang, 'en']);
+  }, []);
+
+  useEffect(() => onTranslationProgress(({ target: t, loaded, total }) => {
+    if (t !== target) return;
+    setTranslateStatus(total && loaded >= total ? null : { progress: total ? loaded / total : 0 });
+  }), [target]);
+
+  useEffect(() => {
+    const needsTranslation = target && lines.length && baseLanguage(sourceLang) !== target;
+    if (!needsTranslation) {
+      setShownLines(lines);
+      return undefined;
+    }
+    let cancelled = false;
+    // A subtitle cue's lines are one sentence; auto captions are separate ones
+    const parts = isAuto ? lines : [lines.join(' ')];
+    Promise.all(parts.map(text => translateCaption(text, { source: sourceLang, target })))
+      .then(result => {
+        if (cancelled) return;
+        setTranslateStatus(null);
+        setShownLines(result.filter(Boolean));
+      })
+      .catch(err => {
+        if (cancelled) return;
+        setTranslateStatus({ error: err?.message || String(err) });
+        setShownLines(lines); // better the original than nothing
+      });
+    return () => { cancelled = true; };
+  }, [lines, target, sourceLang, isAuto]);
 
   // Auto captions are not restarted silently on a fresh page load (they
   // download a model and need a click to read audio), but they carry over
@@ -331,7 +402,10 @@ export function useCaptions(videoRef, hlsRef, streamKey, ready) {
     selected,
     select,
     toggle,
-    lines,
+    lines: shownLines,
+    target,
+    setTarget,
+    translateStatus,
     autoStatus,
     autoSupported: autoCaptionsSupported(),
     isAuto,

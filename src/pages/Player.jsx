@@ -20,6 +20,7 @@ import { parseWatchKey, resolveWatchKey, watchPath, watchPathForStream } from '.
 import { BUFFER_PRESETS, getSettings, useSettings } from '../utils/settings';
 import { findChannelId, findChannelLogo } from '../utils/channelLogos';
 import { useCaptions } from '../utils/useCaptions';
+import { targetName } from '../utils/captionTranslate';
 
 const LOAD_TIMEOUT_MS = 25000;
 const CONTROLS_HIDE_MS = 3000;
@@ -1369,7 +1370,10 @@ export default function Player({ id, preview = false }) {
       {/* Subtitles / captions */}
       {streamLoaded && !error && !needsInteraction && (
         <CaptionOverlay
+          videoRef={videoRef}
           lines={captions.lines}
+          translateStatus={captions.translateStatus}
+          targetLabel={captions.target ? targetName(captions.target) : ''}
           isAuto={captions.isAuto}
           autoStatus={captions.autoStatus}
           raised={controlsVisible}
