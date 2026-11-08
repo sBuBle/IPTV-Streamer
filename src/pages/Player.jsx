@@ -16,26 +16,26 @@ import { usePictureInPicture } from '../contexts/PictureInPictureContext';
 import { goBack } from '../utils/historyManager';
 import * as apiClient from '../utils/apiClient';
 import { parseWatchKey, resolveWatchKey, watchPath, watchPathForStream } from '../utils/watchLinks';
+import { BUFFER_PRESETS, getSettings, useSettings } from '../utils/settings';
 
 const LOAD_TIMEOUT_MS = 25000;
 const CONTROLS_HIDE_MS = 3000;
 
-const HLS_CONFIG = {
+// Base hls.js config; low-latency mode and buffer sizes come from Settings
+const hlsConfig = (settings = getSettings()) => ({
   enableWorker: true,
-  lowLatencyMode: true,
+  lowLatencyMode: settings.lowLatency !== false,
   startLevel: -1,
   capLevelToPlayerSize: true,
   liveDurationInfinity: true,
-  backBufferLength: 30,
-  maxBufferLength: 30,
-  maxMaxBufferLength: 60,
+  ...(BUFFER_PRESETS[settings.bufferSize] || BUFFER_PRESETS.balanced),
   manifestLoadingTimeOut: 10000,
   manifestLoadingMaxRetry: 2,
   levelLoadingTimeOut: 10000,
   levelLoadingMaxRetry: 3,
   fragLoadingTimeOut: 20000,
   fragLoadingMaxRetry: 5,
-};
+});
 
 // Clean names like `-1 tvg-id="x" group-title="y",Channel Name`
 function cleanChannelTitle(title) {
@@ -190,7 +190,7 @@ async function resolveChannelInfo(streamUrl, apiChannel, { recordHistory }) {
     const updatedHistory = [
       { timestamp: Date.now(), channel },
       ...historyList.filter(item => item?.channel?.id !== streamUrl)
-    ].slice(0, 100);
+    ].slice(0, Math.max(1, Number(getSettings().historyLimit) || 100));
     await set('watchHistory', updatedHistory).catch(err => console.warn('Could not update watch history:', err));
   }
 
@@ -319,6 +319,7 @@ export default function Player({ id, preview = false }) {
   const [showDebug, setShowDebug] = useState(false);
   const [upNext, setUpNext] = useState(null); // { code, name, items }
   const [upNextShown, setUpNextShown] = useState(UP_NEXT_PAGE);
+  const { showUpNext } = useSettings();
   const [shared, setShared] = useState(false);
 
   const { enterPiP, exitPiP, isPipActive, pipStatus, pipChannel } = usePictureInPicture();
@@ -416,7 +417,7 @@ export default function Player({ id, preview = false }) {
     const startPlayback = () => {
       if (cancelled) return;
       video.volume = volumeRef.current;
-      video.muted = preview;
+      video.muted = preview || getSettings().startMuted === true;
       setPlayerState(prev => ({ ...prev, isMuted: video.muted }));
 
       video.play().catch(err => {
@@ -457,7 +458,7 @@ export default function Player({ id, preview = false }) {
     };
 
     const attachHls = (url) => {
-      const hls = new Hls(HLS_CONFIG);
+      const hls = new Hls(hlsConfig());
       hlsRef.current = hls;
 
       hls.on(Hls.Events.MANIFEST_PARSED, (_event, data) => {
@@ -586,7 +587,7 @@ export default function Player({ id, preview = false }) {
       setStreamUrl(url);
 
       // Channel name/logo and watch history don't block playback
-      resolveChannelInfo(url, apiChannel, { recordHistory: !preview })
+      resolveChannelInfo(url, apiChannel, { recordHistory: !preview && getSettings().recordHistory !== false })
         .then(info => {
           if (cancelled) return;
           setChannel(info.channel);
@@ -979,13 +980,13 @@ export default function Player({ id, preview = false }) {
 
   // Fill "Up next" once the stream is playing, so it never competes with it
   useEffect(() => {
-    if (preview || !channel || !streamLoaded) return undefined;
+    if (preview || !showUpNext || !channel || !streamLoaded) return undefined;
     let cancelled = false;
     findUpNext(channel, streamUrl)
       .then(result => { if (!cancelled) { setUpNext(result); setUpNextShown(UP_NEXT_PAGE); } })
       .catch(() => {});
     return () => { cancelled = true; };
-  }, [preview, channel, streamLoaded, streamUrl]);
+  }, [preview, showUpNext, channel, streamLoaded, streamUrl]);
 
   const shareChannel = useCallback(async () => {
     const url = window.location.href;
@@ -1362,7 +1363,7 @@ export default function Player({ id, preview = false }) {
         </nav>
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_360px] gap-6 items-start">
+      <div className={`grid grid-cols-1 ${showUpNext ? 'xl:grid-cols-[minmax(0,1fr)_360px]' : 'max-w-5xl'} gap-6 items-start`}>
         <div className="flex flex-col gap-4 min-w-0">
           {videoBox}
 
@@ -1397,8 +1398,8 @@ export default function Player({ id, preview = false }) {
           </div>
         </div>
 
-        {/* Up next: the other channels of the same country */}
-        <aside className="flex flex-col gap-3 min-w-0 xl:h-[calc(100dvh-7.5rem)]">
+        {/* Up next: the other channels of the same country (can be hidden in Settings) */}
+        {showUpNext && <aside className="flex flex-col gap-3 min-w-0 xl:h-[calc(100dvh-7.5rem)]">
           <div className="flex items-center gap-2 min-w-0">
             <h2 className="text-base font-semibold text-[var(--color-text)] shrink-0">Up next</h2>
             {upNext && (
@@ -1446,7 +1447,7 @@ export default function Player({ id, preview = false }) {
                 : upNext ? `No other live channels from ${upNext.name}.` : 'This stream isn\u2019t linked to a country.'}
             </div>
           )}
-        </aside>
+        </aside>}
       </div>
     </div>
   );

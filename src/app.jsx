@@ -2,7 +2,8 @@ import { h } from 'preact';
 import { Router } from 'preact-router';
 import { useState, useEffect } from 'preact/hooks';
 import { MoreHorizontal, Settings as SettingsIcon, Home as HomeIcon, Heart, History, Globe, List, Info, PanelLeftClose, PanelLeftOpen } from 'lucide-preact';
-import { getPlaylists } from './utils/playlist';
+import { getPlaylists, refreshStalePlaylists } from './utils/playlist';
+import { getSettings } from './utils/settings';
 import { PictureInPictureProvider } from './contexts/PictureInPictureContext';
 import { PictureInPictureOverlay } from './components/PictureInPictureOverlay';
 import { PipAwareAppLayout } from './components/PipAwareAppLayout';
@@ -161,6 +162,15 @@ function AppShell() {
 
   useEffect(() => {
     loadPlaylists();
+    // Settings > Playlists > "Refresh automatically": update old playlists in the background
+    const days = Number(getSettings().autoRefreshDays) || 0;
+    if (days > 0) {
+      const timer = setTimeout(() => {
+        refreshStalePlaylists(days).then(count => { if (count > 0) loadPlaylists(); }).catch(() => {});
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+    return undefined;
   }, []);
 
   // Escape closes the mobile menu

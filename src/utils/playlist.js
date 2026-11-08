@@ -674,3 +674,41 @@ function processChannelsFromManifest(manifest, playlistId) {
 
 // Export the processChannelsFromManifest function for use in local file handling
 export { processChannelsFromManifest };
+/**
+ * Rename a saved playlist
+ * @param {string} playlistId
+ * @param {string} name
+ */
+export async function renamePlaylist(playlistId, name) {
+  const trimmed = (name || '').trim();
+  if (!trimmed) throw new Error('Name cannot be empty');
+  const playlists = (await get('playlists')) || [];
+  await set('playlists', playlists.map(p => (p.id === playlistId ? { ...p, name: trimmed } : p)));
+}
+
+/**
+ * Refresh the URL playlists that haven't been refreshed for maxAgeDays.
+ * Local (file) playlists can't be fetched again and are skipped.
+ * @param {number} maxAgeDays
+ * @returns {Promise<number>} How many playlists were refreshed
+ */
+export async function refreshStalePlaylists(maxAgeDays) {
+  if (!maxAgeDays || maxAgeDays <= 0) return 0;
+  const playlists = (await get('playlists')) || [];
+  const cutoff = Date.now() - maxAgeDays * 24 * 60 * 60 * 1000;
+  const stale = playlists.filter(p => {
+    if (p.isLocal || !/^https?:/i.test(p.url || '')) return false;
+    const last = Date.parse(p.lastRefreshed || p.addedAt || 0);
+    return !Number.isFinite(last) || last < cutoff;
+  });
+  let refreshed = 0;
+  for (const playlist of stale) {
+    try {
+      await refreshPlaylist(playlist.id);
+      refreshed++;
+    } catch (err) {
+      console.warn(`Auto-refresh failed for ${playlist.name}:`, err);
+    }
+  }
+  return refreshed;
+}
