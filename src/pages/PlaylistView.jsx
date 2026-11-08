@@ -11,6 +11,7 @@ import { route } from 'preact-router';
 import { useNavState } from '../utils/historyManager';
 import ChannelLogo from '../components/ChannelLogo';
 import { refreshPlaylist, getComprehensiveChannelLogo } from '../utils/playlist';
+import { watchPath } from '../utils/watchLinks';
 
 const RENDER_PAGE_SIZE = 120;
 
@@ -680,10 +681,10 @@ export default function PlaylistView(props) {
       // Track channel play
       trackChannelPlay(channel);
       
-      // Use consistent approach for navigation - prefer URL, fall back to ID
-      const navTarget = channel.url || channel.id;
-      logMessage(`Navigating to channel: ${channel.name}, URL: ${navTarget.substring(0, 50)}...`);
-      route(`/watch/${encodeURIComponent(navTarget)}`);
+      // Short readable link (/watch/<name>-<key>); the player resolves the stream
+      const target = watchPath(channel);
+      logMessage(`Navigating to channel: ${channel.name}, path: ${target}`);
+      route(target);
     } catch (err) {
       logMessage('Navigation error:', 'error', { err, channel });
       // Fallback if something goes wrong with URL encoding

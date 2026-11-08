@@ -6,21 +6,23 @@ import { Globe, Search, Loader, AlertCircle, PlayCircle, Download, Check, Tv2, B
 import { getPlaylists, savePlaylist, fetchPlaylist, formatLogoUrl } from '../utils/playlist';
 import ChannelLogo from '../components/ChannelLogo';
 import CountryFlag from '../components/CountryFlag';
-import { getCountries, getCategories, getLanguages, getChannelsByCountry, getStreams, getChannels, getRawChannels } from '../utils/apiClient';
+import { getCountries, getCategories, getLanguagesWithChannels, getChannelsByCountry, getStreams, getChannels, getRawChannels } from '../utils/apiClient';
 import * as apiClient from '../utils/apiClient';
 import { debounce, throttle, memoize } from '../utils/performance';
 import { EnhancedVirtualList } from '../components/EnhancedVirtualList';
 import { useNavState } from '../utils/historyManager';
 import { getFavorites, toggleFavorite } from '../utils/favorites'; // Import favorites utilities
+import { watchPath } from '../utils/watchLinks';
 
 const TAB_SINGULAR = { countries: 'country', categories: 'category', languages: 'language' };
 
 // Memoized simple components for better performance
-const CountryListItem = memo(({ item, selectedItem, streamInfo, loadingStreamCounts, onClick }) => {
+const CountryListItem = memo(({ item, kind, selectedItem, streamInfo, loadingStreamCounts, onClick }) => {
   // Countries and languages have a `code`, categories only an `id`
   const itemKey = item.code || item.id;
   const isSelected = !!selectedItem && !!itemKey && (selectedItem.code || selectedItem.id) === itemKey;
-  const countryCode = item.code || '';
+  const countryCode = kind === 'countries' ? (item.code || '') : '';
+  const isLanguage = kind === 'languages';
   
   return (
     <button
@@ -45,6 +47,10 @@ const CountryListItem = memo(({ item, selectedItem, streamInfo, loadingStreamCou
           <div class="w-7 h-5 shrink-0 overflow-hidden rounded-[4px] bg-gray-900 ring-1 ring-white/10">
             <CountryFlag code={countryCode} />
           </div>
+        ) : isLanguage ? (
+          <div class="w-7 h-7 shrink-0 rounded-md bg-white/5 flex items-center justify-center text-[var(--color-muted)]">
+            <BookOpen class="w-4 h-4" />
+          </div>
         ) : (
           <img src={`/brand/icons/cat-${item.id}.svg`} alt="" width="28" height="28" class="w-7 h-7 shrink-0"
             onError={(e) => { e.currentTarget.src = '/brand/channel-fallback.svg'; }} />
@@ -63,7 +69,13 @@ const CountryListItem = memo(({ item, selectedItem, streamInfo, loadingStreamCou
             )}
           </div>
         )}
-        {!streamInfo && loadingStreamCounts && (
+        {isLanguage && item.channelCount > 0 && (
+          <div class="flex items-center gap-1 text-[11px] font-medium px-2 h-6 rounded-full bg-white/8 text-[var(--color-muted)]">
+            <Wifi class="w-3 h-3 text-emerald-400" />
+            <span>{item.channelCount}</span>
+          </div>
+        )}
+        {!streamInfo && loadingStreamCounts && kind === 'countries' && (
           <div class="w-8 h-5 shrink-0">
             <Loader class="w-3 h-3 animate-spin" />
           </div>
@@ -143,7 +155,7 @@ const ChannelGridItem = memo(({ channel, index, isFavorite, onFavoriteToggle }) 
           
           {hasStream ? (
             <a
-              href={`/watch/${encodeURIComponent(channel.id || channel.url || index)}`}
+              href={watchPath(channel, { preferId: true })}
               class="p-1.5 bg-blue-600 rounded-full hover:bg-blue-700"
             >
               <PlayCircle class="w-4 h-4" />
@@ -172,7 +184,7 @@ const ChannelListItem = memo(({ channel, index, isFavorite, onFavoriteToggle }) 
   
   return (
     <a
-      href={hasStream ? `/watch/${encodeURIComponent(channel.id || channel.url || index)}` : '#'}
+      href={hasStream ? watchPath(channel, { preferId: true }) : '#'}
       class={`flex items-center gap-3 bg-gray-700 p-3 rounded-lg ${hasStream ? 'hover:bg-gray-600 transition-colors' : 'opacity-60 cursor-default'}`}
       onClick={e => !hasStream && e.preventDefault()}
     >
@@ -435,8 +447,8 @@ export default function CountryBrowser() {
             // Same caching logic for languages
             let cachedLanguages;
             try {
-              const cachedData = localStorage.getItem('cached-languages');
-              const cacheTimestamp = localStorage.getItem('cached-languages-timestamp');
+              const cachedData = localStorage.getItem('cached-languages-v2');
+              const cacheTimestamp = localStorage.getItem('cached-languages-v2-timestamp');
               
               if (cachedData && cacheTimestamp) {
                 const now = Date.now();
@@ -451,12 +463,12 @@ export default function CountryBrowser() {
             if (cachedLanguages && cachedLanguages.length > 0) {
               setLanguages(cachedLanguages);
             } else {
-              const languagesList = await getLanguages();
+              const languagesList = await getLanguagesWithChannels();
               setLanguages(languagesList);
               
               try {
-                localStorage.setItem('cached-languages', JSON.stringify(languagesList));
-                localStorage.setItem('cached-languages-timestamp', Date.now().toString());
+                localStorage.setItem('cached-languages-v2', JSON.stringify(languagesList));
+                localStorage.setItem('cached-languages-v2-timestamp', Date.now().toString());
               } catch (cacheError) {
                 console.warn('Error caching languages data:', cacheError);
               }
@@ -1016,19 +1028,22 @@ export default function CountryBrowser() {
 
   // Render functions for VirtualList
   const renderCountryItem = useCallback((item, index) => {
-    const streamInfo = countriesWithStreamCounts.find(c => c.code === item.code);
+    const streamInfo = activeTab === 'countries'
+      ? countriesWithStreamCounts.find(c => c.code === item.code)
+      : null;
     
     return (
       <CountryListItem
         key={`${item.code || item.id || ''}${index}`}
         item={item}
+        kind={activeTab}
         selectedItem={selectedItem}
         streamInfo={streamInfo}
         loadingStreamCounts={loadingStreamCounts}
         onClick={handleItemClick}
       />
     );
-  }, [countriesWithStreamCounts, handleItemClick, loadingStreamCounts, selectedItem]);
+  }, [activeTab, countriesWithStreamCounts, handleItemClick, loadingStreamCounts, selectedItem]);
 
   // Adjust virtual list height based on container size
   useEffect(() => {

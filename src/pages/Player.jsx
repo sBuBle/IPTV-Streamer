@@ -12,6 +12,7 @@ import { getChannelColor, getChannelInitials } from '../utils/logoService';
 import { usePictureInPicture } from '../contexts/PictureInPictureContext';
 import { goBack } from '../utils/historyManager';
 import * as apiClient from '../utils/apiClient';
+import { parseWatchKey, resolveWatchKey, watchPath, watchPathForStream } from '../utils/watchLinks';
 
 const LOAD_TIMEOUT_MS = 25000;
 const CONTROLS_HIDE_MS = 3000;
@@ -499,8 +500,21 @@ export default function Player({ id, preview = false }) {
       let url = id;
       let apiChannel = null;
 
+      // Short links (/watch/bbc-one-1a2b3c4d) carry a key for the stream URL
+      const watchKey = parseWatchKey(id);
+      if (watchKey) {
+        const resolved = await resolveWatchKey(watchKey, [
+          async () => (await getAllChannels()).map(ch => ch?.url),
+          async () => ((await get('favorites')) || []).flatMap(fav => [fav?.url, fav?.id]),
+          async () => ((await get('watchHistory')) || []).map(item => item?.channel?.id),
+          async () => ((await apiClient.getStreams()) || []).map(stream => stream?.url),
+        ]);
+        if (cancelled) return;
+        if (resolved) url = resolved;
+      }
+
       // iptv-org channel IDs (e.g. "CNN.us") need to be resolved to a stream URL
-      if (!isHttpUrl(id)) {
+      if (!isHttpUrl(url)) {
         try {
           apiChannel = (await apiClient.getChannelDetails(id)) || (await apiClient.findChannel(id));
         } catch (err) {
@@ -522,6 +536,14 @@ export default function Player({ id, preview = false }) {
           if (cancelled) return;
           setChannel(info.channel);
           setIsFavorite(info.isFavorite);
+          // Old links carry the whole stream URL: show the short one instead
+          if (!preview && isHttpUrl(id) && typeof window !== 'undefined') {
+            try {
+              window.history.replaceState(window.history.state, '', watchPath({ url, name: info.channel.name }));
+            } catch {
+              // Keep the long URL if the browser refuses
+            }
+          }
         })
         .catch(err => console.warn('Could not load channel info:', err));
 
@@ -754,10 +776,10 @@ export default function Player({ id, preview = false }) {
     setReloadToken(token => token + 1);
   }, []);
 
-  const openSimilar = useCallback((event, url) => {
+  const openSimilar = useCallback((event, url, name) => {
     event.preventDefault();
     // Replace the failed channel so Back still returns to the list
-    route(`/watch/${encodeURIComponent(url)}`, true);
+    route(watchPathForStream(url, name), true);
   }, []);
 
   // Seek bar (mouse and touch)
@@ -987,8 +1009,8 @@ export default function Player({ id, preview = false }) {
                   {similarStreams.map(stream => (
                     <a
                       key={stream.url}
-                      href={`/watch/${encodeURIComponent(stream.url)}`}
-                      onClick={(e) => openSimilar(e, stream.url)}
+                      href={watchPathForStream(stream.url, stream.name)}
+                      onClick={(e) => openSimilar(e, stream.url, stream.name)}
                       className="p-2 bg-gray-800 hover:bg-gray-700 rounded-sm flex items-center gap-2 transition-colors"
                     >
                       <PlayCircle className="w-4 h-4 text-blue-400 shrink-0" />

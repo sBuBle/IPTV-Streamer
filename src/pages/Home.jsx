@@ -6,6 +6,7 @@ import { getPlaylists } from '../utils/playlist';
 import ChannelCard from '../components/ChannelCard';
 import { CATEGORY_CHIPS } from '../components/categories';
 import * as apiClient from '../utils/apiClient';
+import { watchPath } from '../utils/watchLinks';
 
 export default function Home() {
   const [playlists, setPlaylists] = useState([]);
@@ -74,7 +75,7 @@ export default function Home() {
     return (
       <ChannelCard
         key={channel.id}
-        href={`/watch/${encodeURIComponent(channel.id)}`}
+        href={watchPath(channel)}
         name={channel.name}
         logo={channel.logo || (channel.name && apiClient.getLogoUrl(channel.name))}
         group={channel.group}
@@ -122,7 +123,7 @@ export default function Home() {
             Free, public channels from 190+ countries: news, sport, movies and more.
           </p>
           <div className="flex flex-wrap gap-3">
-            <a href={recentlyWatched[0] ? `/watch/${encodeURIComponent(recentlyWatched[0].channel.id)}` : '/countries'} className="btn btn-primary">
+            <a href={recentlyWatched[0] ? watchPath(recentlyWatched[0].channel) : '/countries'} className="btn btn-primary">
               <Play size={18} className="fill-white" />
               {recentlyWatched[0] ? 'Continue watching' : 'Start watching'}
             </a>

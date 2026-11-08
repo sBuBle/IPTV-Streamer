@@ -5,6 +5,7 @@ import { getFavorites, removeFavorite } from '../utils/favorites'; // Import fav
 import { Heart, Search, Trash2, PlayCircle, Grid, List as ListIcon, AlertCircle } from 'lucide-preact';
 import ChannelLogo from '../components/ChannelLogo';
 import * as apiClient from '../utils/apiClient';
+import { watchPath } from '../utils/watchLinks';
 
 export default function Favorites() {
   const [favorites, setFavorites] = useState([]);
@@ -259,7 +260,7 @@ export default function Favorites() {
                 return (
                   <div key={channel.id} class="relative group">
                     <a
-                      href={`/watch/${encodeURIComponent(channel.id)}`}
+                      href={watchPath(channel)}
                       class="block bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-700 transition-colors"
                     >
                       <div class="p-4">
@@ -331,7 +332,7 @@ export default function Favorites() {
                   return (
                     <div key={channel.id} class="relative group">
                       <a
-                        href={`/watch/${encodeURIComponent(channel.id)}`}
+                        href={watchPath(channel)}
                         class="flex items-center p-4 hover:bg-gray-700 transition-colors"
                       >
                         <ChannelLogo
