@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint src"
   },
   "dependencies": {
     "@cospired/i18n-iso-languages": "^4.2.0",
@@ -24,8 +25,12 @@
     "react-window": "^2.5.3"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@preact/preset-vite": "^2.10.6",
     "@tailwindcss/vite": "^4.3.5",
+    "eslint": "^10.14.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.14.0",
     "tailwindcss": "^4.3.5",
     "vite": "^8.3.6"
   }

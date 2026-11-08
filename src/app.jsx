@@ -54,17 +54,18 @@ function AppShell() {
     initHistoryListener();
   }
   
-  // Load playlists for the sidebar
-  useEffect(() => {
-    async function loadPlaylists() {
-      try {
-        const savedPlaylists = await getPlaylists();
-        setPlaylists(savedPlaylists);
-      } catch (err) {
-        console.error('Failed to load playlists for sidebar:', err);
-      }
+  // Load playlists for the sidebar (again after each navigation, so playlists
+  // added or removed in Settings show up without a page reload)
+  const loadPlaylists = async () => {
+    try {
+      const savedPlaylists = await getPlaylists();
+      setPlaylists(savedPlaylists || []);
+    } catch (err) {
+      console.error('Failed to load playlists for sidebar:', err);
     }
-    
+  };
+
+  useEffect(() => {
     loadPlaylists();
   }, []);
   
@@ -73,6 +74,7 @@ function AppShell() {
     trackRouteChange();
     setSidebarOpen(false);
     setCurrentUrl(event.url);
+    loadPlaylists();
   };
 
   // Sidebar links: preact-router handles the navigation, just close the drawer
@@ -152,7 +154,7 @@ function AppShell() {
                       {playlists.map(playlist => (
                         <li key={playlist.id}>
                           <a 
-                            href={`/playlist/${playlist.id}`}
+                            href={`/playlist/${encodeURIComponent(playlist.id)}`}
                             class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-700 transition-colors"
                             onClick={closeSidebar}
                           >

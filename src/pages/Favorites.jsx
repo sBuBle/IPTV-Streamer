@@ -3,7 +3,7 @@ import { useState, useEffect } from 'preact/hooks';
 import { get, set } from '../utils/idbStorage'; // Use consistent storage utilities
 import { getFavorites, removeFavorite } from '../utils/favorites'; // Import favorites utilities
 import { Heart, Search, Trash2, PlayCircle, Grid, List as ListIcon, AlertCircle } from 'lucide-preact';
-import { getChannelColor, getChannelInitials, getChannelLogo } from '../utils/logoService';
+import ChannelLogo from '../components/ChannelLogo';
 import * as apiClient from '../utils/apiClient';
 
 export default function Favorites() {
@@ -264,36 +264,14 @@ export default function Favorites() {
                     >
                       <div class="p-4">
                         <div class="flex items-center gap-3 mb-3">
-                          {logoUrl ? (
-                            <img 
-                              src={logoUrl}
-                              alt={channel.name} 
-                              class="w-12 h-12 rounded-sm shrink-0 object-cover bg-gray-900"
-                              onError={(e) => {
-                                e.target.onerror = null;
-                                e.target.style.display = 'none';
-                                e.target.parentNode.innerHTML = `
-                                  <div 
-                                    class="w-12 h-12 rounded-sm shrink-0 flex items-center justify-center"
-                                    style="background-color: ${getChannelColor(channel.name)}"
-                                  >
-                                    <div class="text-white text-sm font-bold">
-                                      ${getChannelInitials(channel.name)}
-                                    </div>
-                                  </div>
-                                `;
-                              }}
-                            />
-                          ) : (
-                            <div 
-                              class="w-12 h-12 rounded-sm shrink-0 flex items-center justify-center"
-                              style={{ backgroundColor: getChannelColor(channel.name) }}
-                            >
-                              <div class="text-white text-sm font-bold">
-                                {getChannelInitials(channel.name)}
-                              </div>
-                            </div>
-                          )}
+                          <ChannelLogo
+                            src={logoUrl}
+                            name={channel.name}
+                            alt={channel.name}
+                            imgClass="w-12 h-12 rounded-sm shrink-0 object-cover bg-gray-900"
+                            fallbackClass="w-12 h-12 rounded-sm shrink-0 flex items-center justify-center"
+                            textClass="text-sm"
+                          />
                           <div class="flex-1 min-w-0">
                             <h3 class="font-medium truncate">{channel.name}</h3>
                             <p class="text-xs text-gray-400 truncate">{channel.group || 'Uncategorized'}</p>
@@ -356,37 +334,14 @@ export default function Favorites() {
                         href={`/watch/${encodeURIComponent(channel.id)}`}
                         class="flex items-center p-4 hover:bg-gray-700 transition-colors"
                       >
-                        {logoUrl ? (
-                          <img 
-                            src={logoUrl}
-                            alt={channel.name} 
-                            class="w-12 h-12 rounded-md shrink-0 object-cover bg-gray-900 mr-3"
-                            data-channel={channel.id}
-                            onError={(e) => {
-                              e.target.onerror = null;
-                              e.target.style.display = 'none';
-                              e.target.parentNode.innerHTML = `
-                                <div 
-                                  class="w-12 h-12 rounded-md shrink-0 flex items-center justify-center mr-3"
-                                  style="background-color: ${getChannelColor(channel.name)}"
-                                >
-                                  <div class="text-white text-lg font-bold">
-                                    ${getChannelInitials(channel.name)}
-                                  </div>
-                                </div>
-                              `;
-                            }}
-                          />
-                        ) : (
-                          <div 
-                            class="w-12 h-12 rounded-md shrink-0 flex items-center justify-center mr-3"
-                            style={{ backgroundColor: getChannelColor(channel.name) }}
-                          >
-                            <div class="text-white text-lg font-bold">
-                              {getChannelInitials(channel.name)}
-                            </div>
-                          </div>
-                        )}
+                        <ChannelLogo
+                          src={logoUrl}
+                          name={channel.name}
+                          alt={channel.name}
+                          imgClass="w-12 h-12 rounded-md shrink-0 object-cover bg-gray-900 mr-3"
+                          fallbackClass="w-12 h-12 rounded-md shrink-0 flex items-center justify-center mr-3"
+                          textClass="text-lg" data-channel={channel.id}
+                        />
                         
                         <div class="flex-1">
                           <h3 class="font-medium">{channel.name}</h3>

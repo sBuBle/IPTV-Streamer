@@ -4,7 +4,7 @@ import { route } from 'preact-router';
 import { get, set } from '../utils/idbStorage'; 
 import { toggleFavorite as toggleFavoriteUtil } from '../utils/favorites'; // Add favorites utility import
 import { History, Search, Trash2, PlayCircle, Calendar, Clock, Heart, AlertCircle, Filter, Grid, List as ListIcon } from 'lucide-preact';
-import { getChannelColor, getChannelInitials } from '../utils/logoService';
+import ChannelLogo from '../components/ChannelLogo';
 import * as apiClient from '../utils/apiClient';
 
 export default function WatchHistory() {
@@ -264,36 +264,14 @@ export default function WatchHistory() {
                         class="bg-gray-700 p-3 rounded-lg hover:bg-gray-600 transition-colors group"
                       >
                         <div class="flex gap-3">
-                          {logoUrl ? (
-                            <img 
-                              src={logoUrl}
-                              alt={item.channel.name} 
-                              class="w-10 h-10 rounded-sm shrink-0 object-cover bg-gray-900"
-                              onError={(e) => {
-                                e.target.onerror = null;
-                                e.target.style.display = 'none';
-                                e.target.parentNode.innerHTML = `
-                                  <div 
-                                    class="w-10 h-10 rounded-sm shrink-0 flex items-center justify-center"
-                                    style="background-color: ${getChannelColor(item.channel.name)}"
-                                  >
-                                    <div class="text-white text-sm font-bold">
-                                      ${getChannelInitials(item.channel.name)}
-                                    </div>
-                                  </div>
-                                `;
-                              }}
-                            />
-                          ) : (
-                            <div 
-                              class="w-10 h-10 rounded-sm shrink-0 flex items-center justify-center"
-                              style={{ backgroundColor: getChannelColor(item.channel.name) }}
-                            >
-                              <div class="text-white text-sm font-bold">
-                                {getChannelInitials(item.channel.name)}
-                              </div>
-                            </div>
-                          )}
+                          <ChannelLogo
+                            src={logoUrl}
+                            name={item.channel.name}
+                            alt={item.channel.name}
+                            imgClass="w-10 h-10 rounded-sm shrink-0 object-cover bg-gray-900"
+                            fallbackClass="w-10 h-10 rounded-sm shrink-0 flex items-center justify-center"
+                            textClass="text-sm"
+                          />
                           <div class="flex-1 min-w-0">
                             <h4 class="font-medium truncate">{item.channel.name}</h4>
                             <p class="text-xs text-gray-400 truncate">{item.channel.group || 'Uncategorized'}</p>
@@ -343,36 +321,14 @@ export default function WatchHistory() {
                         }}
                         class="flex items-center p-4 hover:bg-gray-700 transition-colors relative group"
                       >
-                        {logoUrl ? (
-                          <img 
-                            src={logoUrl}
-                            alt={item.channel.name} 
-                            class="w-12 h-12 rounded-md shrink-0 object-cover bg-gray-900 mr-3"
-                            onError={(e) => {
-                              e.target.onerror = null;
-                              e.target.style.display = 'none';
-                              e.target.parentNode.innerHTML = `
-                                <div 
-                                  class="w-12 h-12 rounded-md shrink-0 flex items-center justify-center mr-3"
-                                  style="background-color: ${getChannelColor(item.channel.name)}"
-                                >
-                                  <div class="text-white text-lg font-bold">
-                                    ${getChannelInitials(item.channel.name)}
-                                  </div>
-                                </div>
-                              `;
-                            }}
-                          />
-                        ) : (
-                          <div 
-                            class="w-12 h-12 rounded-md shrink-0 flex items-center justify-center mr-3"
-                            style={{ backgroundColor: getChannelColor(item.channel.name) }}
-                          >
-                            <div class="text-white text-lg font-bold">
-                              {getChannelInitials(item.channel.name)}
-                            </div>
-                          </div>
-                        )}
+                        <ChannelLogo
+                          src={logoUrl}
+                          name={item.channel.name}
+                          alt={item.channel.name}
+                          imgClass="w-12 h-12 rounded-md shrink-0 object-cover bg-gray-900 mr-3"
+                          fallbackClass="w-12 h-12 rounded-md shrink-0 flex items-center justify-center mr-3"
+                          textClass="text-lg"
+                        />
                         
                         <div class="flex-1">
                           <h4 class="font-medium">{item.channel.name}</h4>

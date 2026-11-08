@@ -156,6 +156,22 @@ export function VirtualList({
     }
   }, [keyboardNavigation, items, keyboardNavSelectionCallback]);
 
+  // More efficient item selection logic
+  const isItemSelected = useCallback((item) => {
+    if (!selectedItem || !item) return false;
+    
+    // For simple values, direct equality
+    if (typeof item !== 'object' || typeof selectedItem !== 'object') {
+      return item === selectedItem;
+    }
+    
+    // For objects, check common ID fields
+    return (
+      (item.id && selectedItem.id && item.id === selectedItem.id) || 
+      (item.code && selectedItem.code && item.code === selectedItem.code)
+    );
+  }, [selectedItem]);
+
   // If there are no items, return an empty container with proper height
   if (!items.length) {
     return <div className={containerClassName} style={{ height: `${containerHeight}px` }}></div>;
@@ -173,21 +189,6 @@ export function VirtualList({
     }
   }
 
-  // More efficient item selection logic
-  const isItemSelected = useCallback((item) => {
-    if (!selectedItem || !item) return false;
-    
-    // For simple values, direct equality
-    if (typeof item !== 'object' || typeof selectedItem !== 'object') {
-      return item === selectedItem;
-    }
-    
-    // For objects, check common ID fields
-    return (
-      (item.id && selectedItem.id && item.id === selectedItem.id) || 
-      (item.code && selectedItem.code && item.code === selectedItem.code)
-    );
-  }, [selectedItem]);
 
   return (
     <div

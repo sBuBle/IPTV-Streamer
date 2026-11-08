@@ -677,10 +677,12 @@ export default function SettingsPage() {
         ) : (
           <div class="space-y-4">
             {playlists.map(playlist => (
-              <div key={playlist.id} class="flex items-center justify-between p-4 bg-gray-700 rounded-lg">
-                <div>
-                  <h4 class="font-medium">{playlist.name}</h4>
-                  <p class="text-sm text-gray-400">{playlist.url}</p>
+              <div key={playlist.id} class="flex items-center justify-between gap-2 p-4 bg-gray-700 rounded-lg">
+                <div class="min-w-0">
+                  <a href={`/playlist/${encodeURIComponent(playlist.id)}`} class="font-medium hover:text-blue-400 hover:underline">
+                    {playlist.name}
+                  </a>
+                  <p class="text-sm text-gray-400 break-all">{playlist.url}</p>
                   <p class="text-xs text-gray-500">
                     Added: {new Date(playlist.addedAt).toLocaleDateString()}
                     {playlist.lastRefreshed && ` • Refreshed: ${new Date(playlist.lastRefreshed).toLocaleDateString()}`}

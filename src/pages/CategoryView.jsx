@@ -12,7 +12,7 @@ import {
   Tag,
 } from "lucide-preact";
 import { getCategories, getAllChannels } from "../utils/playlist";
-import { getChannelColor, getChannelInitials } from "../utils/logoService";
+import ChannelLogo from "../components/ChannelLogo";
 import { get, set, has } from '../utils/idbStorage';
 import * as apiClient from "../utils/apiClient";
 
@@ -133,20 +133,14 @@ export default function CategoryView(props) {
       let uniqueGroups = [];
 
       try {
-        const apiPromise = new Promise(async (resolve, reject) => {
-          try {
-            const channels = await apiClient.getChannels({
-              category: categoryId.toLowerCase(),
-              signal
-            });
-            resolve(channels);
-          } catch (err) {
-            reject(err);
-          }
-        });
+        const apiPromise = apiClient.getChannels(
+          { category: categoryId.toLowerCase() },
+          { signal }
+        );
 
         const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("API call timed out")), 5000)
+          // The first download of the channel list can be slow; it is cached afterwards
+          setTimeout(() => reject(new Error("API call timed out")), 30000)
         );
 
         categoryChannels = await Promise.race([
@@ -533,10 +527,14 @@ export default function CategoryView(props) {
                       )}`}
                       class="bg-gray-800 p-4 rounded-lg hover:bg-gray-700 transition-colors"
                     >
-                      {/* ...existing channel card content... */}
                       <div class="flex items-center gap-3 mb-3">
-                        {/* Logo/initials display */}
-                        {/* ...existing logo code... */}
+                        <ChannelLogo
+                          src={channel.logo}
+                          name={channel.name}
+                          imgClass="w-12 h-12 rounded-md shrink-0 object-cover bg-gray-900"
+                          fallbackClass="w-12 h-12 rounded-md shrink-0 flex items-center justify-center"
+                          textClass="text-sm"
+                        />
                         <div class="flex-1 min-w-0">
                           <h3 class="font-medium truncate">
                             {channel.name || "Unnamed Channel"}
@@ -596,37 +594,14 @@ export default function CategoryView(props) {
                       )}`}
                       class="flex items-center p-4 hover:bg-gray-700 transition-colors border-b border-gray-700 last:border-0"
                     >
-                      {channel.logo ? (
-                        <img
-                          src={channel.logo}
-                          alt={channel.name || "Channel logo"}
-                          class="w-12 h-12 rounded-md mr-3 object-cover bg-gray-900"
-                          loading="lazy"
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.style.display = "none";
-                            e.target.parentNode.innerHTML = `
-                              <div class="w-12 h-12 rounded-md mr-3 shrink-0 flex items-center justify-center"
-                                   style="background-color: ${getChannelColor(channel.name)}">
-                                <div class="text-white text-sm font-bold">
-                                  ${getChannelInitials(channel.name)}
-                                </div>
-                              </div>
-                            `;
-                          }}
-                        />
-                      ) : (
-                        <div
-                          class="w-12 h-12 rounded-md mr-3 shrink-0 flex items-center justify-center"
-                          style={{
-                            backgroundColor: getChannelColor(channel.name)
-                          }}
-                        >
-                          <div class="text-white text-sm font-bold">
-                            {getChannelInitials(channel.name)}
-                          </div>
-                        </div>
-                      )}
+                      <ChannelLogo
+                        src={channel.logo}
+                        name={channel.name}
+                        alt={channel.name || "Channel logo"}
+                        imgClass="w-12 h-12 rounded-md mr-3 object-cover bg-gray-900"
+                        fallbackClass="w-12 h-12 rounded-md mr-3 shrink-0 flex items-center justify-center"
+                        textClass="text-sm"
+                      />
                       
                       <div class="flex-1 min-w-0">
                         <h3 class="font-medium truncate">

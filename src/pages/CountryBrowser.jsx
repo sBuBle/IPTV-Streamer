@@ -4,7 +4,7 @@ import { memo } from 'preact/compat';
 import { route } from 'preact-router';
 import { Globe, Search, Loader, AlertCircle, PlayCircle, Download, Check, Tv2, BookOpen, RefreshCw, Plus, Filter, Grid, List, Wifi, WifiOff, ArrowDown, ArrowUp, SortDesc } from 'lucide-preact';
 import { getPlaylists, savePlaylist, fetchPlaylist, formatLogoUrl } from '../utils/playlist';
-import { getChannelColor, getChannelInitials } from '../utils/logoService';
+import ChannelLogo from '../components/ChannelLogo';
 import { getCountries, getCategories, getLanguages, getChannelsByCountry, getStreams, getChannels } from '../utils/apiClient';
 import * as apiClient from '../utils/apiClient';
 import { debounce, throttle, memoize } from '../utils/performance';
@@ -12,6 +12,8 @@ import { EnhancedVirtualList } from '../components/EnhancedVirtualList';
 import { useNavState } from '../utils/historyManager';
 import { getFavorites, toggleFavorite } from '../utils/favorites'; // Import favorites utilities
 import 'flag-icons/css/flag-icons.min.css';
+
+const TAB_SINGULAR = { countries: 'country', categories: 'category', languages: 'language' };
 
 // Memoized simple components for better performance
 const CountryListItem = memo(({ item, selectedItem, streamInfo, loadingStreamCounts, onClick }) => {
@@ -85,16 +87,13 @@ const ChannelGridItem = memo(({ channel, index, isFavorite, onFavoriteToggle }) 
     >
       <div class="flex items-center gap-3 mb-2">
         <div class="w-12 h-12 rounded-md shrink-0 relative overflow-hidden">
-          <img
+          <ChannelLogo
             src={logoSrc}
+            name={channel.name}
             alt={channel.name || 'Channel logo'}
-            class="w-12 h-12 rounded-md object-contain bg-gray-900"
-            loading="lazy"
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.style.display = 'none';
-              e.target.parentNode.innerHTML = `<div class="w-12 h-12 bg-gray-800 rounded-md flex items-center justify-center" style="background-color: ${getChannelColor(channel.name)}"><div class="text-white text-sm font-bold">${getChannelInitials(channel.name)}</div></div>`;
-            }}
+            imgClass="w-12 h-12 rounded-md object-contain bg-gray-900"
+            fallbackClass="w-12 h-12 rounded-md flex items-center justify-center"
+            textClass="text-sm"
           />
         </div>
         <div class="flex-1 min-w-0">
@@ -174,16 +173,13 @@ const ChannelListItem = memo(({ channel, index, isFavorite, onFavoriteToggle }) 
       onClick={e => !hasStream && e.preventDefault()}
     >
       <div class="w-10 h-10 rounded-md shrink-0 relative overflow-hidden">
-        <img
+        <ChannelLogo
           src={logoSrc}
+          name={channel.name}
           alt={channel.name || 'Channel logo'}
-          class="w-10 h-10 rounded-md object-contain bg-gray-900"
-          loading="lazy"
-          onError={(e) => {
-            e.target.onerror = null;
-            e.target.style.display = 'none';
-            e.target.parentNode.innerHTML = `<div class="w-10 h-10 bg-gray-800 rounded-md flex items-center justify-center" style="background-color: ${getChannelColor(channel.name)}"><div class="text-white text-xs font-bold">${getChannelInitials(channel.name)}</div></div>`;
-          }}
+          imgClass="w-10 h-10 rounded-md object-contain bg-gray-900"
+          fallbackClass="w-10 h-10 rounded-md flex items-center justify-center"
+          textClass="text-xs"
         />
       </div>
       <div class="flex-1 min-w-0">
@@ -270,6 +266,8 @@ export default function CountryBrowser() {
   
   // Optimization: Use a ref to track if stream counts are already being loaded
   const [streamCountsLoading, setStreamCountsLoading] = useState(false);
+  // Load counts automatically only once, so a failed download doesn't retry in a loop
+  const streamCountsAttemptedRef = useRef(false);
   
   // Optimization: Cache the batch size for stream count loading
   const STREAM_COUNT_BATCH_SIZE = 10;
@@ -361,7 +359,7 @@ export default function CountryBrowser() {
         setLoading(true);
         
         switch (activeTab) {
-          case 'countries':
+          case 'countries': {
             // Try loading from cache first
             let cachedCountries;
             try {
@@ -394,8 +392,9 @@ export default function CountryBrowser() {
               }
             }
             break;
+          }
             
-          case 'categories':
+          case 'categories': {
             // Same caching logic for categories
             let cachedCategories;
             try {
@@ -426,8 +425,9 @@ export default function CountryBrowser() {
               }
             }
             break;
+          }
             
-          case 'languages':
+          case 'languages': {
             // Same caching logic for languages
             let cachedLanguages;
             try {
@@ -458,6 +458,7 @@ export default function CountryBrowser() {
               }
             }
             break;
+          }
         }
       } catch (err) {
         setError(`Failed to load ${activeTab}`);
@@ -505,15 +506,39 @@ export default function CountryBrowser() {
           return;
         }
         
-        // Rest of the original batch loading logic
-        // ...existing code...
-        
-        // Cache the results when done
-        try {
-          localStorage.setItem(streamCountsCacheKey, JSON.stringify(countriesWithStreamCounts));
-          localStorage.setItem(`${streamCountsCacheKey}-timestamp`, Date.now().toString());
-        } catch (cacheError) {
-          console.warn('Error caching stream counts:', cacheError);
+        // Count channels and playable streams per country in one pass
+        const [allChannels, allStreams] = await Promise.all([getChannels(), getStreams()]);
+        const channelCountry = new Map();
+        const channelCounts = {};
+        for (const ch of allChannels || []) {
+          if (!ch?.country) continue;
+          const code = ch.country.toUpperCase();
+          channelCountry.set(ch.id, code);
+          channelCounts[code] = (channelCounts[code] || 0) + 1;
+        }
+        const streamCounts = {};
+        for (const stream of allStreams || []) {
+          const code = stream?.channel && channelCountry.get(stream.channel);
+          if (code) streamCounts[code] = (streamCounts[code] || 0) + 1;
+        }
+        const results = countriesList.map(country => {
+          const code = (country.code || '').toUpperCase();
+          return {
+            code: country.code,
+            streamCount: streamCounts[code] || 0,
+            channelCount: channelCounts[code] || 0
+          };
+        });
+        setCountriesWithStreamCounts(results);
+
+        // Cache the results (only when we actually got data)
+        if (allChannels?.length) {
+          try {
+            localStorage.setItem(streamCountsCacheKey, JSON.stringify(results));
+            localStorage.setItem(`${streamCountsCacheKey}-timestamp`, Date.now().toString());
+          } catch (cacheError) {
+            console.warn('Error caching stream counts:', cacheError);
+          }
         }
       } catch (err) {
         console.error('Error loading country stream counts:', err);
@@ -586,9 +611,12 @@ export default function CountryBrowser() {
   useEffect(() => {
     if (activeTab === 'countries' && countries.length > 0 && 
         countriesWithStreamCounts.length === 0 && 
-        !streamCountsLoading) {
+        !streamCountsLoading && !streamCountsAttemptedRef.current) {
       // Small delay before loading to avoid UI freezes on tab change
-      const timerId = setTimeout(() => loadCountryStreamCounts(countries), 300);
+      const timerId = setTimeout(() => {
+        streamCountsAttemptedRef.current = true;
+        loadCountryStreamCounts(countries);
+      }, 300);
       return () => clearTimeout(timerId);
     }
   }, [activeTab, countries, countriesWithStreamCounts.length, loadCountryStreamCounts, streamCountsLoading]);
@@ -898,7 +926,7 @@ export default function CountryBrowser() {
             ? (a.name || '').localeCompare(b.name || '')
             : (b.name || '').localeCompare(a.name || '');
             
-        case 'streams':
+        case 'streams': {
           // For stream sorting, prioritize channels with URLs
           const aHasStream = !!a.url;
           const bHasStream = !!b.url;
@@ -923,7 +951,8 @@ export default function CountryBrowser() {
           return channelSortOrder === 'asc'
             ? (a.name || '').localeCompare(b.name || '')
             : (b.name || '').localeCompare(a.name || '');
-            
+        }
+
         default:
           return 0;
       }
@@ -1298,9 +1327,9 @@ export default function CountryBrowser() {
           {!selectedItem ? (
             <div class="flex flex-col items-center justify-center h-full text-center">
               {getTabIcon(activeTab)}
-              <h3 class="text-xl font-semibold text-gray-400 mt-4">Select a {activeTab.slice(0, -1)}</h3>
+              <h3 class="text-xl font-semibold text-gray-400 mt-4">Select a {TAB_SINGULAR[activeTab] || 'item'}</h3>
               <p class="text-gray-500 mt-2">
-                Choose a {activeTab.slice(0, -1)} from the list to view channels
+                Choose a {TAB_SINGULAR[activeTab] || 'item'} from the list to view channels
               </p>
             </div>
           ) : (
@@ -1480,7 +1509,7 @@ export default function CountryBrowser() {
                 <div class="bg-gray-800 rounded-lg p-6 text-center text-gray-400">
                   <AlertCircle class="w-12 h-12 mx-auto mb-2 text-yellow-500 opacity-70" />
                   <p>No channels found for {selectedItem.name}</p>
-                  <p class="text-sm mt-2">Try selecting another {activeTab.slice(0, -1)} or check your connection.</p>
+                  <p class="text-sm mt-2">Try selecting another {TAB_SINGULAR[activeTab] || 'item'} or check your connection.</p>
                 </div>
               ) : fetchingStreams ? (
                 <div class="bg-gray-800/50 rounded-lg p-6 flex justify-center items-center">

@@ -15,8 +15,8 @@ const API_ENDPOINTS = {
   REGIONS: 'https://iptv-org.github.io/api/regions.json',
   SUBDIVISIONS: 'https://iptv-org.github.io/api/subdivisions.json',
   
-  // Logos endpoint (used for channel logos)
-  LOGOS: 'https://iptv-org.github.io/api/logos',
+  // Channel logos ({ channel, feed, url, ... } entries)
+  LOGOS: 'https://iptv-org.github.io/api/logos.json',
   
   // Remove the non-existent endpoint
   // UPDATED: 'https://iptv-org.github.io/api/updated.json'
@@ -57,11 +57,8 @@ async function fetchWithCache(url, cacheKey, options = {}) {
     
     // Fetch new data
     const response = await fetch(url, {
-      headers: {
-        'Accept': 'application/json',
-        'User-Agent': 'IPTV-Viewer-App',
-      },
-      ...options,
+      headers: { 'Accept': 'application/json' },
+      signal: options.signal,
     });
     
     if (!response.ok) {
@@ -88,17 +85,48 @@ async function fetchWithCache(url, cacheKey, options = {}) {
   }
 }
 
+// Channel ID -> logo URL, filled from logos.json by loadLogos()
+let logoMap = null;
+let logoMapPromise = null;
+
+/**
+ * Load the iptv-org logo index (once per session)
+ * @returns {Promise<Map<string,string>>}
+ */
+export async function loadLogos(options = {}) {
+  if (logoMap) return logoMap;
+  if (!logoMapPromise) {
+    logoMapPromise = fetchWithCache(API_ENDPOINTS.LOGOS, 'api_logos', options)
+      .then((logos) => {
+        const map = new Map();
+        if (Array.isArray(logos)) {
+          for (const logo of logos) {
+            if (!logo?.channel || !logo.url) continue;
+            // Prefer the channel-wide logo over feed-specific ones
+            if (!map.has(logo.channel) || !logo.feed) map.set(logo.channel, logo.url);
+          }
+        }
+        logoMap = map;
+        return map;
+      })
+      .catch((err) => {
+        console.warn('Could not load channel logos:', err);
+        logoMapPromise = null;
+        return new Map();
+      });
+  }
+  return logoMapPromise;
+}
+
 /**
  * Get logo URL for a channel
- * @param {string} channelName - Channel name
- * @returns {string} URL to channel logo
+ * @param {string} channelId - iptv-org channel ID (e.g. "CNN.us")
+ * @returns {string|null} Logo URL, or null when none is known
  */
-export function getLogoUrl(channelName) {
-  const baseUrl = 'https://example.com/logos/'; // Replace with actual logo API URL
-  const encodedName = encodeURIComponent(channelName);
-  const url = `${baseUrl}${encodedName}.png`;
-  
-  return formatLogoUrl(url);
+export function getLogoUrl(channelId) {
+  if (!channelId || !logoMap) return null;
+  const url = logoMap.get(channelId);
+  return url ? formatLogoUrl(url) : null;
 }
 
 /**
@@ -157,7 +185,8 @@ export async function getChannels(filters = {}, options = {}) {
     // Load channels, streams, and any needed lookup data
     const [channels, streams] = await Promise.all([
       fetchWithCache(API_ENDPOINTS.CHANNELS, 'api_channels', options),
-      fetchWithCache(API_ENDPOINTS.STREAMS, 'api_streams', options)
+      fetchWithCache(API_ENDPOINTS.STREAMS, 'api_streams', options),
+      loadLogos(options)
     ]);
     
     // If no channels or streams, return empty array
@@ -231,6 +260,7 @@ export async function getChannels(filters = {}, options = {}) {
       return {
         ...channel,
         url: bestStream ? bestStream.url : null,
+        logo: channel.logo || getLogoUrl(channel.id),
         resolution: bestStream ? bestStream.resolution : null,
         status: bestStream ? bestStream.status : null,
         httpReferrer: bestStream ? bestStream.http_referrer : null,
@@ -362,7 +392,8 @@ export async function getChannelsByCountry(countryCode, options = {}) {
   try {
     const [channels, streams] = await Promise.all([
       fetchWithCache(API_ENDPOINTS.CHANNELS, 'api_channels', options),
-      fetchWithCache(API_ENDPOINTS.STREAMS, 'api_streams', options)
+      fetchWithCache(API_ENDPOINTS.STREAMS, 'api_streams', options),
+      loadLogos(options)
     ]);
     
     if (!channels || !Array.isArray(channels) || channels.length === 0) {
@@ -414,7 +445,7 @@ export async function getChannelsByCountry(countryCode, options = {}) {
       return {
         ...channel,
         url: bestStream ? bestStream.url : null,
-        logo: channel.logo || `${API_ENDPOINTS.LOGOS}/${channel.id}.png`,
+        logo: channel.logo || getLogoUrl(channel.id),
         resolution: bestStream ? bestStream.resolution : null,
         status: bestStream ? bestStream.status : null,
         httpReferrer: bestStream ? bestStream.http_referrer : null,
