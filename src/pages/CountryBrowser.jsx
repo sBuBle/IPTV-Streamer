@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { useState, useEffect, useCallback, useMemo, useRef } from 'preact/hooks';
 import { memo } from 'preact/compat';
 import { route } from 'preact-router';
-import { Globe, Search, Loader, AlertCircle, PlayCircle, Download, Check, Tv2, BookOpen, RefreshCw, Plus, Filter, Grid, List, Wifi, WifiOff, ArrowDown, ArrowUp, SortDesc } from 'lucide-preact';
+import { Globe, Search, Loader, AlertCircle, PlayCircle, Download, Check, Tv2, BookOpen, RefreshCw, Plus, Filter, Grid, List, Wifi, WifiOff, ArrowDown, ArrowUp, SortDesc, ChevronRight } from 'lucide-preact';
 import { getPlaylists, savePlaylist, fetchPlaylist, formatLogoUrl } from '../utils/playlist';
 import ChannelLogo from '../components/ChannelLogo';
 import CountryFlag from '../components/CountryFlag';
@@ -31,27 +31,32 @@ const CountryListItem = memo(({ item, selectedItem, streamInfo, loadingStreamCou
           e.preventDefault();
         }
       }}
-      class={`w-full text-left p-3 rounded-lg flex items-center ${
-        isSelected ? 'bg-blue-700' : 'hover:bg-gray-700'
+      class={`group w-full text-left px-3 min-h-14 rounded-xl flex items-center border transition ${
+        isSelected
+          ? 'bg-violet-500/15 border-violet-500/50 text-white'
+          : 'border-transparent hover:bg-[var(--color-card-hover)] hover:border-violet-500/30'
       }`}
       aria-selected={isSelected}
       role="option"
       aria-label={`Select ${item.name}`}
     >
       <div class="flex items-center gap-3 w-full">
-        <div class="w-8 h-6 shrink-0 overflow-hidden rounded-sm shadow-xs bg-gray-900">
-          {countryCode && (
+        {countryCode ? (
+          <div class="w-7 h-5 shrink-0 overflow-hidden rounded-[4px] bg-gray-900 ring-1 ring-white/10">
             <CountryFlag code={countryCode} />
-          )}
-        </div>
-        <span class="flex-1">{item.name} {item.code && <span class="text-gray-400 text-sm">({item.code.toUpperCase()})</span>}</span>
+          </div>
+        ) : (
+          <img src={`/brand/icons/cat-${item.id}.svg`} alt="" width="28" height="28" class="w-7 h-7 shrink-0"
+            onError={(e) => { e.currentTarget.src = '/brand/channel-fallback.svg'; }} />
+        )}
+        <span class="flex-1 min-w-0 truncate text-sm font-semibold">{item.name} {item.code && <span class="text-[var(--color-subtle)] text-xs font-normal">{item.code.toUpperCase()}</span>}</span>
         
         {/* Enhanced stream count display */}
         {streamInfo && (
-          <div class={`flex items-center gap-1 text-xs px-2 py-1 rounded ${
-            streamInfo.streamCount > 0 ? 'bg-green-900/30 text-green-300' : 'bg-gray-700 text-gray-400'
+          <div class={`flex items-center gap-1 text-[11px] font-medium px-2 h-6 rounded-full ${
+            streamInfo.streamCount > 0 ? 'bg-white/8 text-[var(--color-muted)]' : 'bg-white/5 text-[var(--color-subtle)]'
           }`}>
-            <Wifi class={`w-3 h-3 ${streamInfo.streamCount > 0 ? 'text-green-400' : 'text-gray-500'}`} />
+            <Wifi class={`w-3 h-3 ${streamInfo.streamCount > 0 ? 'text-emerald-400' : 'text-gray-500'}`} />
             <span>{streamInfo.streamCount}</span>
             {streamInfo.channelCount > 0 && streamInfo.channelCount !== streamInfo.streamCount && (
               <span class="text-gray-400">/{streamInfo.channelCount}</span>
@@ -63,6 +68,7 @@ const CountryListItem = memo(({ item, selectedItem, streamInfo, loadingStreamCou
             <Loader class="w-3 h-3 animate-spin" />
           </div>
         )}
+        <ChevronRight class={`w-4 h-4 shrink-0 transition ${isSelected ? 'text-white' : 'text-[var(--color-subtle)] group-hover:text-white'}`} aria-hidden="true" />
       </div>
     </button>
   );
@@ -81,7 +87,7 @@ const ChannelGridItem = memo(({ channel, index, isFavorite, onFavoriteToggle }) 
 
   return (
     <div
-      class={`bg-gray-700 p-3 rounded-lg transition-colors flex flex-col ${hasStream ? 'hover:bg-gray-600' : 'opacity-60'}`}
+      class={`bg-[var(--color-card)] border border-[var(--color-hairline)] p-3 rounded-[14px] transition flex flex-col ${hasStream ? 'hover:bg-[var(--color-card-hover)] hover:border-violet-500/40 hover:shadow-[var(--shadow-card-hover)]' : 'opacity-60'}`}
     >
       <div class="flex items-center gap-3 mb-2">
         <div class="w-12 h-12 rounded-md shrink-0 relative overflow-hidden">
@@ -89,8 +95,8 @@ const ChannelGridItem = memo(({ channel, index, isFavorite, onFavoriteToggle }) 
             src={logoSrc}
             name={channel.name}
             alt={channel.name || 'Channel logo'}
-            imgClass="w-12 h-12 rounded-md object-contain bg-gray-900"
-            fallbackClass="w-12 h-12 rounded-md flex items-center justify-center"
+            imgClass="w-12 h-12 rounded-xl object-contain bg-white/5 p-1"
+            fallbackClass="w-12 h-12 rounded-xl flex items-center justify-center"
             textClass="text-sm"
           />
         </div>

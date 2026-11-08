@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { useState, useEffect } from 'preact/hooks';
-import { getChannelColor, getChannelInitials } from '../utils/logoService';
+import { getChannelGradient, getChannelInitials } from '../utils/logoService';
 
 /**
  * Channel logo with a coloured-initials fallback.
@@ -29,7 +29,7 @@ export default function ChannelLogo({ src, name, alt, imgClass = '', fallbackCla
   }
 
   return (
-    <div class={fallbackClass} style={{ backgroundColor: getChannelColor(name || '') }} aria-hidden="true">
+    <div class={fallbackClass} style={{ backgroundImage: getChannelGradient(name || '') }} aria-hidden="true">
       <div class={`text-white font-bold ${textClass}`}>{getChannelInitials(name || '')}</div>
     </div>
   );

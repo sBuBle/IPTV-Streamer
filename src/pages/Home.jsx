@@ -1,12 +1,11 @@
 import { h } from 'preact';
 import { useState, useEffect } from 'preact/hooks';
 import { get } from '../utils/idbStorage';
-import { Tv2, Clock, Heart, List, Globe, Film, Music, Trophy } from 'lucide-preact';
+import { Play, Globe, ChevronRight, ListPlus } from 'lucide-preact';
 import { getPlaylists } from '../utils/playlist';
-import ChannelLogo from '../components/ChannelLogo';
+import ChannelCard from '../components/ChannelCard';
+import { CATEGORY_CHIPS } from '../components/categories';
 import * as apiClient from '../utils/apiClient';
-import { Link } from 'preact-router';
-import { History, Settings as SettingsIcon } from 'lucide-preact';
 
 export default function Home() {
   const [playlists, setPlaylists] = useState([]);
@@ -68,265 +67,137 @@ export default function Home() {
     loadData();
   }, []);
 
-  // Featured categories - static list for quick access
-  const featuredCategories = [
-    { id: 'news', name: 'News', icon: <Globe className="w-6 h-6" />, tint: 'from-sky-500/30' },
-    { id: 'sports', name: 'Sports', icon: <Trophy className="w-6 h-6" />, tint: 'from-emerald-500/30' },
-    { id: 'movies', name: 'Movies', icon: <Film className="w-6 h-6" />, tint: 'from-rose-500/30' },
-    { id: 'music', name: 'Music', icon: <Music className="w-6 h-6" />, tint: 'from-amber-500/30' },
-  ];
+  const favoriteIds = new Set(favorites.map(f => f && f.id));
 
-  // Recently Watched section rendering
-  const renderChannelItem = (item, showTimestamp = false) => {
-    if (!item || !item.id) {
-      console.warn('Invalid channel item:', item);
-      return null; // Skip rendering invalid items
-    }
-    
-    // Try to get logo from API client if available
-    const logoUrl = item.logo || (item.name && apiClient.getLogoUrl(item.name));
-    
+  const card = (channel, meta) => {
+    if (!channel || !channel.id) return null;
     return (
-      <a
-        key={item.id}
-        href={`/watch/${encodeURIComponent(item.id)}`}
-        className="bg-gray-800 p-4 rounded-xl flex items-center gap-3 hover:bg-gray-700 hover:-translate-y-0.5 transition"
-      >
-        <ChannelLogo
-          src={logoUrl}
-          name={item.name}
-          alt={item.name || 'Channel logo'}
-          imgClass="w-12 h-12 rounded-md shrink-0 object-cover bg-gray-900"
-          fallbackClass="w-12 h-12 rounded-md shrink-0 flex items-center justify-center"
-          textClass="text-sm"
-        />
-        <div className="flex-1 min-w-0">
-          <h3 className="font-medium truncate">
-            {item.name || 'Unnamed Channel'}
-          </h3>
-          <p className="text-xs text-gray-400 truncate">{item.group || 'Uncategorized'}</p>
-          {showTimestamp && item.timestamp && (
-            <p className="text-xs text-gray-500 mt-1">
-              {new Date(item.timestamp).toLocaleString(undefined, {
-                dateStyle: 'short',
-                timeStyle: 'short'
-              })}
-            </p>
-          )}
-        </div>
-      </a>
+      <ChannelCard
+        key={channel.id}
+        href={`/watch/${encodeURIComponent(channel.id)}`}
+        name={channel.name}
+        logo={channel.logo || (channel.name && apiClient.getLogoUrl(channel.name))}
+        group={channel.group}
+        country={channel.country}
+        favorite={favoriteIds.has(channel.id)}
+        meta={meta}
+      />
     );
   };
 
+  const Section = ({ title, href, children }) => (
+    <section className="mb-8">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl font-semibold">{title}</h2>
+        {href && (
+          <a href={href} className="see-all">See all <ChevronRight size={16} /></a>
+        )}
+      </div>
+      {children}
+    </section>
+  );
+
+  const Empty = ({ art, title, children }) => (
+    <div className="rounded-[14px] border border-[var(--color-hairline)] bg-[var(--color-card)] p-6 text-center text-[var(--color-muted)]">
+      <img src={art} alt="" width="320" height="200" className="w-36 h-auto mx-auto mb-1" />
+      <p className="text-[var(--color-text)] font-medium">{title}</p>
+      {children}
+    </div>
+  );
+
+  const grid = 'grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4';
+
   return (
-    <div>
+    <div className="max-w-[1200px]">
       {/* Hero */}
-      <section className="hero relative overflow-hidden rounded-2xl mb-8 px-6 py-10 md:px-10 md:py-14 border border-white/10">
+      <section className="hero relative overflow-hidden rounded-2xl mb-8 px-6 py-10 md:px-12 md:py-12 md:min-h-[296px] flex items-center border border-[var(--color-hairline)]">
         <div className="relative max-w-xl">
-          <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-blue-200 bg-white/10 rounded-full px-3 py-1 mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--color-signal)] animate-pulse" aria-hidden="true" />
-            Live now
+          <span className="live-badge mb-4 uppercase">
+            Live{stats.totalChannels > 0 ? ` · ${stats.totalChannels} in your library` : ' now'}
           </span>
-          <h1 className="text-4xl md:text-5xl font-extrabold leading-[1.05] mb-3">
-            Thousands of channels, <span className="brand-text">one remote.</span>
+          <h1 className="text-4xl md:text-5xl font-bold leading-[1.05] tracking-[-0.02em] mb-3">
+            Live TV from every <span className="brand-text">corner of the world</span>
           </h1>
-          <p className="text-gray-300 mb-7">
-            Free live TV from around the world, plus your own M3U playlists, in one place.
+          <p className="text-[var(--color-muted)] mb-7">
+            Free, public channels from 190+ countries: news, sport, movies and more.
           </p>
           <div className="flex flex-wrap gap-3">
-            <a
-              href="/countries"
-              className="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-3 px-5 rounded-xl flex items-center gap-2 transition-colors"
-            >
-              <Globe className="w-5 h-5" />
-              Browse All Channels
+            <a href={recentlyWatched[0] ? `/watch/${encodeURIComponent(recentlyWatched[0].channel.id)}` : '/countries'} className="btn btn-primary">
+              <Play size={18} className="fill-white" />
+              {recentlyWatched[0] ? 'Continue watching' : 'Start watching'}
             </a>
-            <a
-              href="/settings"
-              className="bg-white/10 hover:bg-white/15 backdrop-blur text-white font-semibold py-3 px-5 rounded-xl flex items-center gap-2 transition-colors"
-            >
-              <List className="w-5 h-5" />
-              Manage Playlists
+            <a href="/countries" className="btn btn-secondary">
+              <Globe size={18} />
+              Browse countries
             </a>
           </div>
         </div>
       </section>
-      
-      {/* Quick Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-        <div className="bg-gray-800 p-4 rounded-lg flex items-center gap-4">
-          <div className="bg-blue-900/50 p-3 rounded-lg">
-            <Tv2 className="w-6 h-6 text-blue-400" />
+
+      <Section title="Continue watching" href={recentlyWatched.length ? '/history' : undefined}>
+        {loading ? (
+          <div className={grid}>{[0, 1, 2, 3].map(i => <div key={i} className="h-20 rounded-[14px] bg-[var(--color-card)] animate-pulse" />)}</div>
+        ) : recentlyWatched.length === 0 ? (
+          <Empty art="/brand/pages/empty-history.svg" title="Nothing watched yet">
+            <a href="/countries" className="see-all mt-1">Browse channels to get started <ChevronRight size={16} /></a>
+          </Empty>
+        ) : (
+          <div className={grid}>
+            {recentlyWatched.slice(0, 4).map(item => card(item.channel, item.timestamp
+              ? new Date(item.timestamp).toLocaleString(undefined, { dateStyle: 'short', timeStyle: 'short' })
+              : undefined))}
           </div>
-          <div>
-            <div className="text-2xl font-bold">{stats.totalChannels}</div>
-            <div className="text-xs text-gray-400">Channels</div>
-          </div>
-        </div>
-        
-        <div className="bg-gray-800 p-4 rounded-lg flex items-center gap-4">
-          <div className="bg-purple-900/50 p-3 rounded-lg">
-            <List className="w-6 h-6 text-purple-400" />
-          </div>
-          <div>
-            <div className="text-2xl font-bold">{stats.totalPlaylists}</div>
-            <div className="text-xs text-gray-400">Playlists</div>
-          </div>
-        </div>
-        
-        <div className="bg-gray-800 p-4 rounded-lg flex items-center gap-4">
-          <div className="bg-green-900/50 p-3 rounded-lg">
-            <Globe className="w-6 h-6 text-green-400" />
-          </div>
-          <div>
-            <div className="text-2xl font-bold">{stats.countriesCount}</div>
-            <div className="text-xs text-gray-400">Countries</div>
-          </div>
-        </div>
-        
-        <div className="bg-gray-800 p-4 rounded-lg flex items-center gap-4">
-          <div className="bg-orange-900/50 p-3 rounded-lg">
-            <Film className="w-6 h-6 text-orange-400" />
-          </div>
-          <div>
-            <div className="text-2xl font-bold">{stats.categoriesCount}</div>
-            <div className="text-xs text-gray-400">Categories</div>
-          </div>
-        </div>
-      </div>
-      
-      {/* Featured Categories */}
-      <div className="mb-10">
-        <h2 className="text-xl font-bold mb-4">Featured Categories</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {featuredCategories.map(category => (
+        )}
+      </Section>
+
+      <Section title="Favorites" href={favorites.length ? '/favorites' : undefined}>
+        {loading ? null : favorites.length === 0 ? (
+          <Empty art="/brand/pages/empty-favorites.svg" title="No favorite channels yet">
+            <p className="text-sm mt-1">Tap the heart while watching a channel to keep it here.</p>
+          </Empty>
+        ) : (
+          <div className={grid}>{favorites.slice(0, 8).map(ch => card(ch))}</div>
+        )}
+      </Section>
+
+      <Section title="Browse by category">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
+          {CATEGORY_CHIPS.map(cat => (
             <a
-              key={category.id}
-              href={`/category/${category.id}`}
-              className={`group relative overflow-hidden bg-gray-800 rounded-xl p-5 h-28 flex flex-col justify-between bg-gradient-to-br ${category.tint} to-transparent hover:-translate-y-0.5 hover:bg-gray-700 transition`}
+              key={cat.id}
+              href={`/category/${cat.id}`}
+              className="flex items-center gap-3 p-3 rounded-[14px] border border-[var(--color-hairline)] bg-[var(--color-card)] hover:bg-[var(--color-card-hover)] hover:border-violet-500/40 transition"
             >
-              <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center group-hover:scale-105 transition-transform">
-                {category.icon}
-              </div>
-              <div className="font-display font-semibold text-lg">{category.name}</div>
+              <img src={cat.icon} alt="" width="40" height="40" className="w-10 h-10 shrink-0" />
+              <span className="text-sm font-semibold truncate">{cat.name}</span>
             </a>
           ))}
         </div>
-      </div>
-      
-      {/* Recently Watched */}
-      <div className="mb-10">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold">Recently Watched</h2>
-          <a href="/history" className="text-blue-400 hover:underline flex items-center gap-1">
-            <Clock className="w-4 h-4" />
-            View All
-          </a>
-        </div>
-        
-        {loading ? (
-          <div className="bg-gray-800 p-6 rounded-lg text-center text-gray-400">
-            <p>Loading recently watched channels...</p>
-          </div>
-        ) : recentlyWatched.length === 0 ? (
-          <div className="bg-gray-800 p-6 rounded-lg text-center text-gray-400">
-            <img src="/brand/pages/empty-history.svg" alt="" width="320" height="200" className="w-36 h-auto mx-auto mb-1" />
-            <p>No recently watched channels</p>
-            <a href="/countries" className="text-blue-400 hover:underline text-sm">
-              Browse channels to get started
-            </a>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {recentlyWatched.slice(0, 6).map((item, index) => 
-              item && item.channel ? renderChannelItem(item.channel, true) : (
-                <div key={`error-${index}`} className="bg-gray-800 p-4 rounded-lg text-red-400">
-                  Invalid channel data
-                </div>
-              )
-            )}
-          </div>
-        )}
-      </div>
-      
-      {/* Favorites */}
-      <div className="mb-10">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold">Favorites</h2>
-          <a href="/favorites" className="text-blue-400 hover:underline flex items-center gap-1">
-            <Heart className="w-4 h-4" />
-            View All
-          </a>
-        </div>
-        
-        {loading ? (
-          <div className="bg-gray-800 p-6 rounded-lg text-center text-gray-400">
-            <p>Loading favorite channels...</p>
-          </div>
-        ) : favorites.length === 0 ? (
-          <div className="bg-gray-800 p-6 rounded-lg text-center text-gray-400">
-            <img src="/brand/pages/empty-favorites.svg" alt="" width="320" height="200" className="w-36 h-auto mx-auto mb-1" />
-            <p>No favorite channels yet</p>
-            <p className="text-sm mt-1">
-              Add favorites by clicking the heart icon while watching a channel
-            </p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {favorites.slice(0, 6).map((channel, index) => 
-              channel ? renderChannelItem(channel) : (
-                <div key={`error-${index}`} className="bg-gray-800 p-4 rounded-lg text-red-400">
-                  Invalid channel data
-                </div>
-              )
-            )}
-          </div>
-        )}
-      </div>
-      
-      {/* Your Playlists */}
-      <div>
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold">Your Playlists</h2>
-          <a href="/settings" className="text-blue-400 hover:underline flex items-center gap-1">
-            <List className="w-4 h-4" />
-            Manage
-          </a>
-        </div>
-        
+      </Section>
+
+      <Section title="Your playlists" href="/settings">
         {playlists.length === 0 ? (
-          <div className="bg-gray-800 p-6 rounded-lg text-center text-gray-400">
-            <img src="/brand/pages/empty-channels.svg" alt="" width="320" height="200" className="w-36 h-auto mx-auto mb-1" />
-            <p>No playlists added yet</p>
-            <a href="/settings" className="text-blue-400 hover:underline text-sm">
-              Add your first playlist
-            </a>
-          </div>
+          <Empty art="/brand/pages/empty-channels.svg" title="No playlists added yet">
+            <a href="/settings" className="btn btn-secondary mt-3"><ListPlus size={18} /> Add playlist</a>
+          </Empty>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {playlists.map(playlist => (
-              <div
+              <a
                 key={playlist.id}
-                className="bg-gray-800 p-4 rounded-lg"
+                href={`/playlist/${encodeURIComponent(playlist.id)}`}
+                className="p-4 rounded-[14px] border border-[var(--color-hairline)] bg-[var(--color-card)] hover:bg-[var(--color-card-hover)] hover:border-violet-500/40 transition"
               >
-                <h3 className="font-medium">{playlist.name}</h3>
-                <p className="text-sm text-gray-400 truncate mt-1">{playlist.url}</p>
-                <div className="flex justify-between items-center mt-3">
-                  <span className="text-xs text-gray-500">
-                    Added {new Date(playlist.addedAt).toLocaleDateString()}
-                  </span>
-                  <a 
-                    href={`/playlist/${encodeURIComponent(playlist.id)}`}
-                    className="text-sm text-blue-400 hover:underline"
-                  >
-                    View channels
-                  </a>
-                </div>
-              </div>
+                <h3 className="font-semibold">{playlist.name}</h3>
+                <p className="text-sm text-[var(--color-muted)] truncate mt-1">{playlist.url}</p>
+                <span className="text-xs text-[var(--color-subtle)] mt-2 block">
+                  Added {new Date(playlist.addedAt).toLocaleDateString()}
+                </span>
+              </a>
             ))}
           </div>
         )}
-      </div>
+      </Section>
     </div>
   );
 }

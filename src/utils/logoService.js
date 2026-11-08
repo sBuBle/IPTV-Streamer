@@ -1,5 +1,22 @@
 import * as apiClient from './apiClient';
 
+// Gradient tile for channels without a logo (FigCraft ChannelCard): a
+// two-stop gradient picked per channel from the brand family
+const TILE_GRADIENTS = [
+  ['#6366f1', '#8b5cf6'], ['#f97316', '#f43f5e'], ['#a855f7', '#ec4899'],
+  ['#10b981', '#14b8a6'], ['#ec4899', '#f43f5e'], ['#3b82f6', '#06b6d4'],
+  ['#f59e0b', '#f97316'], ['#8b5cf6', '#6366f1'], ['#14b8a6', '#0ea5e9'],
+];
+
+export function getChannelGradient(name) {
+  let hash = 0;
+  for (let i = 0; i < (name || '').length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const [a, b] = TILE_GRADIENTS[Math.abs(hash) % TILE_GRADIENTS.length];
+  return `linear-gradient(135deg, ${a}, ${b})`;
+}
+
 /**
  * Generate a color based on a channel name
  * @param {string} name - Channel name

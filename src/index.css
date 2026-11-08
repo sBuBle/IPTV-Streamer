@@ -34,6 +34,21 @@
   --color-blue-950: oklch(0.27 0.11 290);
 
   --color-signal: oklch(0.72 0.19 15);
+
+  /* FigCraft tokens (design/figcraft/code/tokens.css) */
+  --color-ink: #12111d;
+  --color-surface: #17161f;
+  --color-card: #1c1b2b;
+  --color-card-hover: #25243a;
+  --color-hairline: rgb(255 255 255 / 0.06);
+  --color-line: rgb(255 255 255 / 0.1);
+  --color-text: #f4f3fa;
+  --color-muted: #a19fb6;
+  --color-subtle: #6f6d87;
+  --color-lilac: #a78bfa;
+  --color-live: #fb7185;
+  --shadow-glow: 0 8px 24px -4px rgb(139 92 246 / 0.45);
+  --shadow-card-hover: 0 12px 32px -8px rgb(0 0 0 / 0.4);
 }
 
 /*
@@ -105,6 +120,66 @@ h1, h2, h3 {
 .bg-blue-600 {
   box-shadow: 0 6px 20px -8px oklch(0.575 0.23 290 / 0.7);
 }
+
+/* FigCraft buttons: 44px, radius 12 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 44px;
+  padding: 0 1.25rem;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: filter 0.15s, background-color 0.15s, transform 0.15s;
+}
+.btn-primary {
+  color: #fff;
+  background-image: linear-gradient(135deg, #8b5cf6, #f43f5e);
+  box-shadow: var(--shadow-glow);
+}
+.btn-primary:hover { filter: brightness(1.08); transform: translateY(-1px); }
+.btn-secondary {
+  color: var(--color-text);
+  background: rgb(255 255 255 / 0.06);
+  border: 1px solid rgb(255 255 255 / 0.12);
+  backdrop-filter: blur(16px);
+}
+.btn-secondary:hover { background: rgb(255 255 255 / 0.1); }
+
+/* LIVE badge */
+.live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: rgb(244 63 94 / 0.15);
+  color: var(--color-live);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.live-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--color-live);
+  box-shadow: 0 0 6px rgb(251 113 133 / 0.7);
+}
+
+/* Section header link ("See all") */
+.see-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  color: var(--color-lilac);
+  font-size: 14px;
+  font-weight: 500;
+}
+.see-all:hover { color: #c4b5fd; }
 
 /* Brand gradient used for the logo mark and headline accents */
 .brand-gradient {
