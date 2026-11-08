@@ -1,769 +1,828 @@
 import { h } from 'preact';
 import { useState, useEffect, useRef } from 'preact/hooks';
-import { Trash2, Plus, RefreshCw, Globe, AlertCircle, Upload } from 'lucide-preact';
-import { getPlaylists, removePlaylist } from '../utils/playlist';
-import { fetchPlaylist } from '../utils/simpleParser';
+import {
+  Trash2, Plus, RefreshCw, AlertCircle, Upload, Link2, ListVideo, PlayCircle, History,
+  DatabaseBackup, Keyboard, Pencil, Check, X, Copy, Download, RotateCcw, ChevronRight, CheckCircle2,
+} from 'lucide-preact';
+import { getPlaylists, removePlaylist, renamePlaylist, refreshPlaylist, savePlaylist, generateStablePlaylistId } from '../utils/playlist';
+import { fetchPlaylist, parseM3U8 } from '../utils/simpleParser';
 import { get, set } from '../utils/idbStorage';
+import { useSettings, updateSettings, resetSettings, DEFAULT_SETTINGS } from '../utils/settings';
 
-export default function SettingsPage() {
-  const [playlists, setPlaylists] = useState([]);
-  const [newPlaylistUrl, setNewPlaylistUrl] = useState('');
-  const [newPlaylistName, setNewPlaylistName] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [refreshingId, setRefreshingId] = useState(null);
-  const [refreshSuccess, setRefreshSuccess] = useState(null);
-  const [refreshError, setRefreshError] = useState(null);
-  const [storageInfo, setStorageInfo] = useState(null);
-  const [uploadedFile, setUploadedFile] = useState(null);
-  const [uploadedFileName, setUploadedFileName] = useState('');
+// ---------------------------------------------------------------------------
+// FigCraft building blocks (tokens from src/index.css)
+// ---------------------------------------------------------------------------
+
+const field = 'w-full h-11 px-4 rounded-xl bg-[var(--color-ink)] border border-white/8 text-sm text-[var(--color-text)] placeholder:text-[var(--color-subtle)] focus:outline-none focus:border-violet-400/70 focus:ring-2 focus:ring-violet-500/25 transition';
+const iconButton = 'h-9 w-9 rounded-[10px] flex items-center justify-center text-[var(--color-muted)] hover:text-white hover:bg-white/8 transition disabled:opacity-40 disabled:pointer-events-none';
+const pill = 'shrink-0 inline-flex items-center h-[22px] px-2 rounded-full bg-white/6 text-[11px] font-semibold text-[var(--color-muted)] whitespace-nowrap';
+
+const SECTIONS = [
+  { id: 'playlists', label: 'Playlists', icon: ListVideo },
+  { id: 'playback', label: 'Playback', icon: PlayCircle },
+  { id: 'history', label: 'History & privacy', icon: History },
+  { id: 'backup', label: 'Backup', icon: DatabaseBackup },
+  { id: 'shortcuts', label: 'Shortcuts', icon: Keyboard },
+];
+
+function Section({ id, icon: Icon, title, description, action, children }) {
+  return (
+    <section id={id} class="scroll-mt-6">
+      <div class="flex items-end gap-3 mb-3">
+        <div class="flex-1 min-w-0">
+          <h3 class="flex items-center gap-2 text-xl font-semibold text-[var(--color-text)]">
+            <Icon class="w-5 h-5 text-[var(--color-lilac)]" aria-hidden="true" />
+            {title}
+          </h3>
+          {description && <p class="mt-1 text-sm text-[var(--color-muted)]">{description}</p>}
+        </div>
+        {action}
+      </div>
+      {children}
+    </section>
+  );
+}
+
+function Card({ children, class: extra = '' }) {
+  return (
+    <div class={`rounded-2xl bg-[var(--color-card)] border border-[var(--color-hairline)] ${extra}`}>
+      {children}
+    </div>
+  );
+}
+
+// One preference: label + hint on the left, control on the right
+function Row({ title, hint, children, stack = false }) {
+  return (
+    <div class={`flex ${stack ? 'flex-col sm:flex-row sm:items-center' : 'items-center'} gap-3 sm:gap-6 px-5 py-4 border-t border-[var(--color-hairline)] first:border-t-0`}>
+      <div class="flex-1 min-w-0">
+        <div class="text-sm font-semibold text-[var(--color-text)]">{title}</div>
+        {hint && <div class="mt-0.5 text-[13px] text-[var(--color-muted)]">{hint}</div>}
+      </div>
+      <div class="shrink-0">{children}</div>
+    </div>
+  );
+}
+
+function Toggle({ checked, onChange, label }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      aria-label={label}
+      onClick={() => onChange(!checked)}
+      class={`relative w-11 h-6 rounded-full transition ${
+        checked ? 'bg-[linear-gradient(135deg,#8b5cf6,#f43f5e)] shadow-[var(--shadow-glow)]' : 'bg-white/10 ring-1 ring-inset ring-white/10'
+      }`}
+    >
+      <span class={`absolute top-1 left-1 w-4 h-4 rounded-full bg-white shadow transition-transform ${checked ? 'translate-x-5' : ''}`} />
+    </button>
+  );
+}
+
+function Segmented({ options, value, onChange, label }) {
+  return (
+    <div class="inline-flex flex-wrap p-1 gap-1 rounded-xl bg-[var(--color-ink)] border border-[var(--color-hairline)]" role="radiogroup" aria-label={label}>
+      {options.map(option => (
+        <button
+          key={String(option.value)}
+          type="button"
+          role="radio"
+          aria-checked={value === option.value}
+          onClick={() => onChange(option.value)}
+          class={`h-8 px-3 rounded-[9px] flex items-center gap-1.5 text-[13px] font-semibold transition ${
+            value === option.value ? 'bg-white/10 text-white' : 'text-[var(--color-muted)] hover:text-white'
+          }`}
+        >
+          {option.icon && <option.icon class="w-4 h-4" aria-hidden="true" />}
+          {option.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function Notice({ notice, onClose }) {
+  if (!notice) return null;
+  const ok = notice.type === 'success';
+  return (
+    <div
+      role="status"
+      class={`flex items-start gap-3 p-4 rounded-2xl border text-sm ${
+        ok ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-100' : 'bg-rose-500/10 border-rose-500/30 text-rose-100'
+      }`}
+    >
+      {ok
+        ? <CheckCircle2 class="w-5 h-5 shrink-0 text-emerald-400" />
+        : <AlertCircle class="w-5 h-5 shrink-0 text-[var(--color-live)]" />}
+      <p class="flex-1 whitespace-pre-line">{notice.text}</p>
+      <button type="button" onClick={onClose} class="shrink-0 opacity-60 hover:opacity-100" aria-label="Dismiss">
+        <X class="w-4 h-4" />
+      </button>
+    </div>
+  );
+}
+
+const formatDate = (value) => (value ? new Date(value).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' }) : '');
+
+function downloadJson(data, fileName) {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = fileName;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+// Fetch a remote playlist directly first, then through public CORS proxies
+async function loadRemotePlaylist(url) {
+  const attempts = [
+    { url, useProxy: false },
+    { url: `https://corsproxy.io/?${encodeURIComponent(url)}`, useProxy: true },
+  ];
+  let lastError;
+  for (const attempt of attempts) {
+    try {
+      const data = await fetchPlaylist(attempt.url);
+      if (data?.segments?.length > 0) return attempt.useProxy;
+      lastError = new Error('The playlist has no channels');
+    } catch (err) {
+      lastError = err;
+    }
+  }
+  throw lastError || new Error('Could not load the playlist');
+}
+
+function friendlyAddError(err, url) {
+  const message = err?.message || String(err);
+  if (/already exists/i.test(message)) return 'This playlist is already in your list.';
+  if (/not found|404/i.test(message)) return `Couldn't find a playlist at that address. Check the URL and try again.`;
+  if (/valid M3U8|no channels/i.test(message)) {
+    let text = "That address doesn't contain an M3U playlist.";
+    if (url.includes('github.com') && !url.includes('raw.githubusercontent.com')) {
+      text += ' For GitHub files, use the "Raw" link.';
+    }
+    return text;
+  }
+  return `Couldn't add the playlist: ${message}`;
+}
+
+// ---------------------------------------------------------------------------
+// Playlists
+// ---------------------------------------------------------------------------
+
+function AddPlaylist({ onAdded }) {
+  const [mode, setMode] = useState('url');
+  const [name, setName] = useState('');
+  const [url, setUrl] = useState('');
+  const [file, setFile] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const [notice, setNotice] = useState(null);
   const fileInputRef = useRef(null);
 
+  // /settings?url=… (from "Add to playlists" links) pre-fills the form
   useEffect(() => {
-    loadPlaylists();
-    checkStorageUsage();
-    
-    // Check for URL param and pre-fill form
     try {
-      const params = new URLSearchParams(window.location.search);
-      const urlParam = params.get('url');
-      
-      if (urlParam) {
-        setNewPlaylistUrl(urlParam);
-        // Try to generate a reasonable name from the URL
-        const urlObj = new URL(urlParam);
-        const hostName = urlObj.hostname.replace('www.', '').split('.')[0];
-        setNewPlaylistName(`${hostName.charAt(0).toUpperCase() + hostName.slice(1)} Playlist`);
-        
-        // Clear the URL parameter to avoid reapplying on refresh
-        window.history.replaceState(window.history.state, document.title, '/settings');
-      }
-    } catch (err) {
-      console.error('Error parsing URL parameters:', err);
-    }
+      const urlParam = new URLSearchParams(window.location.search).get('url');
+      if (!urlParam) return;
+      setUrl(urlParam);
+      const host = new URL(urlParam).hostname.replace(/^www\./, '').split('.')[0];
+      setName(`${host.charAt(0).toUpperCase()}${host.slice(1)} Playlist`);
+      window.history.replaceState(window.history.state, document.title, '/settings');
+    } catch { /* ignore a bad link */ }
   }, []);
 
-  async function loadPlaylists() {
-    try {
-      const savedPlaylists = await getPlaylists();
-      setPlaylists(savedPlaylists);
-    } catch (err) {
-      console.error('Failed to load playlists:', err);
-      setError('Failed to load playlists. Please try again.');
-    }
+  function pickFile(event) {
+    const picked = event.target.files?.[0];
+    if (!picked) return;
+    setFile(picked);
+    if (!name) setName(picked.name.replace(/\.(m3u8?|txt)$/i, '') || 'Local Playlist');
   }
 
-  async function checkStorageUsage() {
-    try {
-      // Check if we're in a browser that supports the estimate() API
-      if (navigator.storage && navigator.storage.estimate) {
-        const estimate = await navigator.storage.estimate();
-        setStorageInfo({
-          usage: estimate.usage,
-          quota: estimate.quota,
-          percent: Math.round((estimate.usage / estimate.quota) * 100)
-        });
-      }
-    } catch (err) {
-      console.error("Error checking storage usage", err);
+  async function addFromUrl() {
+    let target = url.trim();
+    if (!/^https?:\/\/.+/i.test(target)) throw new Error('Enter a link that starts with http:// or https://');
+    // GitHub raw links copied with refs/heads/ in them
+    if (target.includes('raw.githubusercontent.com') && target.includes('/refs/heads/')) {
+      target = target.replace('/refs/heads/', '/');
     }
+    const useProxy = await loadRemotePlaylist(target);
+    const saved = await savePlaylist(target, name.trim() || 'My Playlist', useProxy);
+    const channels = (await get('channels')) || {};
+    return { name: saved.name, count: channels[saved.id]?.length || 0 };
   }
 
-  async function handleAddPlaylist(e) {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+  async function addFromFile() {
+    if (!file) throw new Error('Choose a playlist file first');
+    const text = await file.text();
+    if (!text.includes('#EXTINF') && !text.includes('http')) {
+      throw new Error("This file doesn't look like an M3U playlist.");
+    }
+    const manifest = parseM3U8(text);
+    if (!manifest.segments?.length) throw new Error('No channels found in this file.');
 
+    const pseudoUrl = `file://${file.name}_${Date.now()}`;
+    const playlistId = generateStablePlaylistId(pseudoUrl);
+    const playlistName = name.trim() || 'Local Playlist';
+    const channels = manifest.segments.map((segment, index) => ({
+      id: `${playlistId}_${index}`,
+      name: segment.title || `Channel ${index + 1}`,
+      url: segment.uri || '',
+      group: segment.attributes?.['group-title'] || 'Uncategorized',
+      playlistId,
+      attributes: segment.attributes || {},
+      tvgId: segment.attributes?.['tvg-id'],
+      tvgName: segment.attributes?.['tvg-name'],
+      tvgLogo: segment.attributes?.['tvg-logo'],
+    }));
+
+    const playlists = (await get('playlists')) || [];
+    await set('playlists', [...playlists, {
+      id: playlistId,
+      url: pseudoUrl,
+      name: playlistName,
+      addedAt: new Date().toISOString(),
+      isLocal: true,
+      fileSize: file.size,
+      fileName: file.name,
+      channelCount: channels.length,
+    }]);
+    const allChannels = (await get('channels')) || {};
+    allChannels[playlistId] = channels;
+    await set('channels', allChannels);
+    const raw = (await get('rawPlaylists')) || {};
+    raw[playlistId] = manifest;
+    await set('rawPlaylists', raw);
+    return { name: playlistName, count: channels.length };
+  }
+
+  async function submit(event) {
+    event.preventDefault();
+    setBusy(true);
+    setNotice(null);
     try {
-      // Validate URL format
-      if (!newPlaylistUrl.match(/^https?:\/\/.+/i)) {
-        throw new Error('Please enter a valid URL starting with http:// or https://');
-      }
-
-      // Auto-correct common URL format issues
-      let correctedUrl = newPlaylistUrl;
-      
-      // Fix GitHub raw URLs with refs/heads/ in them (common mistake)
-      if (correctedUrl.includes('raw.githubusercontent.com') && correctedUrl.includes('refs/heads/')) {
-        const originalUrl = correctedUrl;
-        correctedUrl = correctedUrl.replace('/refs/heads/', '/');
-        console.log(`Corrected GitHub URL format: ${originalUrl} -> ${correctedUrl}`);
-        setError(`Corrected URL format to: ${correctedUrl}`);
-      }
-
-      // Check if URL exists before trying to parse it as a playlist
-      try {
-        const testResponse = await fetch(correctedUrl, { 
-          method: 'HEAD',
-          headers: { 'User-Agent': 'Mozilla/5.0' },
-          mode: 'no-cors' // Try to at least check if resource exists
-        });
-        console.log('Resource check response:', testResponse);
-      } catch (e) {
-        console.warn('Resource existence check failed:', e);
-        // Continue anyway as this is just a preliminary check
-      }
-      
-      console.log('Adding playlist:', { url: correctedUrl, name: newPlaylistName });
-      
-      // Try to fetch with CORS proxy first if it's a GitHub raw URL (common source of CORS issues)
-      let playlistData;
-      let useProxy = false;
-      
-      // Try all available methods sequentially
-      const fetchMethods = [
-        { name: 'Direct fetch', url: correctedUrl, useProxy: false },
-        { name: 'CORS proxy', url: `https://corsproxy.io/?${encodeURIComponent(correctedUrl)}`, useProxy: true },
-        { name: 'Alternative proxy', url: `https://cors-anywhere.herokuapp.com/${correctedUrl}`, useProxy: true },
-        { name: 'IPTV-org API', url: `https://api.iptv-org.workers.dev/?url=${encodeURIComponent(correctedUrl)}`, useProxy: true }
-      ];
-      
-      let successfulMethod = null;
-      let lastError = null;
-      
-      for (const method of fetchMethods) {
-        try {
-          console.log(`Trying ${method.name}: ${method.url}`);
-          playlistData = await fetchPlaylist(method.url);
-          
-          if (playlistData?.segments && playlistData.segments.length > 0) {
-            console.log(`${method.name} successful with ${playlistData.segments.length} channels`);
-            successfulMethod = method;
-            useProxy = method.useProxy;
-            break;
-          } else {
-            console.warn(`${method.name} returned empty playlist`);
-          }
-        } catch (err) {
-          console.warn(`${method.name} failed:`, err);
-          lastError = err;
-        }
-      }
-      
-      if (!successfulMethod) {
-        throw new Error(`Could not load playlist from any source. Last error: ${lastError?.message}`);
-      }
-      
-      // Import necessary function to save playlist
-      const { savePlaylist } = await import('../utils/playlist');
-      
-      // Pass the proxy flag to savePlaylist if we needed to use it
-      const savedPlaylist = await savePlaylist(correctedUrl, newPlaylistName || 'My Playlist', useProxy);
-      console.log('Playlist saved successfully:', savedPlaylist);
-      
-      // Verify channels were saved
-      const allChannels = await get('channels') || {};
-      const channelCount = allChannels[savedPlaylist.id]?.length || 0;
-      console.log(`Channels saved for playlist ${savedPlaylist.id}: ${channelCount}`);
-      
-      await loadPlaylists();
-      
-      // Clear form after successful addition and show a more helpful success message
-      setNewPlaylistUrl('');
-      setNewPlaylistName('');
-      setError(`Added playlist successfully with ${channelCount} channels. Click on it to view.`);
-      
-      // After 3 seconds, clear the success message
-      setTimeout(() => {
-        setError('');
-      }, 3000);
+      const result = mode === 'url' ? await addFromUrl() : await addFromFile();
+      setNotice({ type: 'success', text: `Added “${result.name}” with ${result.count.toLocaleString()} channels.` });
+      setName('');
+      setUrl('');
+      setFile(null);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+      onAdded();
     } catch (err) {
       console.error('Failed to add playlist:', err);
-      
-      // Provide helpful suggestions based on the error
-      let errorMessage = `Failed to add playlist: ${err.message}`;
-      
-      if (err.message.includes('Not Found') || err.message.includes('404')) {
-        errorMessage += "\n\nThe specified URL does not exist. Please verify it's correct.";
-      } else if (err.message.includes('valid M3U8')) {
-        errorMessage += "\n\nThe content at this URL is not a valid M3U8 playlist. Try viewing the URL in your browser to see what's there.";
-        
-        // For GitHub files, suggest checking the raw URL
-        if (newPlaylistUrl.includes('github.com') && !newPlaylistUrl.includes('raw.githubusercontent.com')) {
-          errorMessage += "\n\nFor GitHub files, try using the 'Raw' view URL instead of the repository URL.";
-        }
-      } else if (err.message.includes('CORS')) {
-        errorMessage += "\n\nCORS policy prevents accessing this URL. Try using a publicly accessible URL.";
-      }
-      
-      setError(errorMessage);
+      setNotice({ type: 'error', text: mode === 'url' ? friendlyAddError(err, url) : err.message });
     } finally {
-      setLoading(false);
-    }
-  }
-
-  async function handleRemovePlaylist(id) {
-    try {
-      await removePlaylist(id);
-      await loadPlaylists();
-    } catch (err) {
-      console.error('Failed to remove playlist:', err);
-      setError(`Failed to remove playlist: ${err.message}`);
-    }
-  }
-
-  async function handleRefreshPlaylist(playlistId) {
-    setRefreshingId(playlistId);
-    setRefreshError(null);
-    
-    try {
-      const playlist = playlists.find(p => p.id === playlistId);
-      if (!playlist) {
-        throw new Error('Playlist not found');
-      }
-      
-      // Import refreshPlaylist function
-      const { refreshPlaylist } = await import('../utils/playlist');
-      await refreshPlaylist(playlistId);
-      
-      // Update the playlist's last refreshed timestamp
-      const updatedPlaylists = playlists.map(p => 
-        p.id === playlistId ? { ...p, lastRefreshed: new Date().toISOString() } : p
-      );
-      
-      setPlaylists(updatedPlaylists);
-      setRefreshSuccess(playlistId);
-      setTimeout(() => setRefreshSuccess(null), 3000);
-    } catch (err) {
-      console.error('Failed to refresh playlist:', err);
-      setRefreshError(`Failed to refresh: ${err.message}`);
-    } finally {
-      setRefreshingId(null);
-    }
-  }
-
-  async function clearAllData() {
-    if (confirm('This will delete all playlists and cached data. This action cannot be undone. Continue?')) {
-      try {
-        // Get all keys and clear them
-        const keys = await get('playlists') || [];
-        await set('playlists', []);
-        await set('channels', {});
-        await set('rawPlaylists', {});
-        await set('favorites', []);
-        
-        // You might want to keep watchHistory for user convenience
-        
-        loadPlaylists();
-        alert('All data has been cleared successfully.');
-      } catch (err) {
-        console.error('Failed to clear data:', err);
-        alert('Failed to clear data: ' + err.message);
-      }
-    }
-  }
-
-  async function verifyStorage() {
-    try {
-      const allData = {
-        playlists: await get('playlists') || [],
-        channels: await get('channels') || {},
-        rawPlaylists: await get('rawPlaylists') || {}
-      };
-      
-      console.log('IndexedDB storage contents:', allData);
-      
-      // Create a report that can be copied by the user
-      const dataReport = {
-        playlists: allData.playlists.map(p => ({
-          id: p.id,
-          name: p.name,
-          url: p.url,
-          addedAt: p.addedAt,
-          lastRefreshed: p.lastRefreshed
-        })),
-        channelCounts: Object.entries(allData.channels).map(([playlistId, channels]) => ({
-          playlistId,
-          channelCount: channels?.length || 0
-        }))
-      };
-      
-      alert(`Storage check complete. See console (F12) for details.\n\nFound ${dataReport.playlists.length} playlists and ${dataReport.channelCounts.length} channel groups.`);
-      
-      return allData;
-    } catch (err) {
-      console.error('Error verifying storage:', err);
-      alert(`Error accessing storage: ${err.message}`);
-      return null;
-    }
-  }
-
-  async function handleFileUpload(e) {
-    console.log('File input change event triggered');
-    
-    const file = e.target.files[0];
-    if (!file) {
-      console.log('No file selected');
-      return;
-    }
-
-    // Validate file type
-    const validTypes = ['.m3u', '.m3u8', '.txt', 'text/plain', 'application/octet-stream', 'application/x-mpegurl'];
-    const fileType = file.type || file.name.split('.').pop();
-    
-    console.log('File selected:', {
-      name: file.name,
-      type: file.type,
-      size: file.size,
-      extension: file.name.split('.').pop()
-    });
-    
-    setUploadedFile(file);
-    setUploadedFileName(file.name);
-    
-    // Pre-fill the playlist name field with the file name (without extension)
-    const nameWithoutExt = file.name.replace(/\.(m3u8?|txt)$/i, '');
-    setNewPlaylistName(nameWithoutExt || 'Local Playlist');
-  }
-
-  async function handleAddLocalPlaylist(e) {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-
-    try {
-      if (!uploadedFile) {
-        throw new Error('No file selected');
-      }
-
-      console.log('Processing file:', uploadedFile.name);
-      
-      // Create a file reader
-      const fileReader = new FileReader();
-      
-      // Use a promise to handle file reading
-      const fileContents = await new Promise((resolve, reject) => {
-        fileReader.onload = (event) => resolve(event.target.result);
-        fileReader.onerror = (error) => reject(new Error('Failed to read file: ' + error.message));
-        fileReader.readAsText(uploadedFile);
-      });
-      
-      if (!fileContents || fileContents.length === 0) {
-        throw new Error('File is empty');
-      }
-
-      console.log(`Successfully read file: ${fileContents.length} bytes`);
-      
-      // Basic validation of file content
-      if (!fileContents.includes('#EXTINF') && !fileContents.includes('http')) {
-        throw new Error('File does not appear to be a valid playlist - missing #EXTINF tags or URLs');
-      }
-
-      // Parse the content
-      const { parseM3U8 } = await import('../utils/simpleParser');
-      console.log('Parsing playlist content...');
-      const manifest = parseM3U8(fileContents);
-      console.log('Parse result:', { 
-        hasSegments: !!manifest.segments, 
-        segmentCount: manifest.segments?.length || 0 
-      });
-      
-      if (!manifest.segments || manifest.segments.length === 0) {
-        throw new Error('No channels found in the file. Check format and try again.');
-      }
-      
-      // Generate unique identifiers for this playlist
-      const timestamp = Date.now();
-      const pseudoUrl = `file://${uploadedFile.name}_${timestamp}`;
-      const { generateStablePlaylistId } = await import('../utils/playlist');
-      const playlistId = generateStablePlaylistId(pseudoUrl);
-      
-      console.log(`Generated playlist ID: ${playlistId}`);
-      
-      // Create a playlist object
-      const newPlaylist = {
-        id: playlistId,
-        url: pseudoUrl,
-        name: newPlaylistName || 'Local Playlist',
-        addedAt: new Date().toISOString(),
-        isLocal: true,
-        fileSize: uploadedFile.size,
-        fileName: uploadedFile.name
-      };
-      
-      // Create channel objects manually
-      const channels = manifest.segments.map((segment, index) => {
-        // Create a unique ID for each channel
-        const uniqueId = `${playlistId}_${index}`;
-        
-        return {
-          id: uniqueId,
-          name: segment.title || `Channel ${index + 1}`,
-          url: segment.uri || '',
-          group: segment.attributes?.['group-title'] || 'Uncategorized',
-          playlistId: playlistId,
-          attributes: segment.attributes || {},
-          tvgId: segment.attributes?.['tvg-id'],
-          tvgName: segment.attributes?.['tvg-name'],
-          tvgLogo: segment.attributes?.['tvg-logo']
-        };
-      });
-      
-      console.log(`Created ${channels.length} channels`);
-      
-      // Save everything to IndexedDB in sequence
-      try {
-        // 1. Save playlist metadata
-        const existingPlaylists = await get('playlists') || [];
-        console.log('Saving playlist metadata...');
-        await set('playlists', [...existingPlaylists, newPlaylist]);
-        
-        // 2. Save channels data
-        console.log('Saving channel data...');
-        const allChannels = await get('channels') || {};
-        allChannels[playlistId] = channels;
-        await set('channels', allChannels);
-        
-        // 3. Save raw playlist data
-        console.log('Saving raw playlist data...');
-        const rawPlaylists = await get('rawPlaylists') || {};
-        rawPlaylists[playlistId] = manifest;
-        await set('rawPlaylists', rawPlaylists);
-        
-        console.log('All data saved successfully!');
-      } catch (storageError) {
-        console.error('Failed to save data to IndexedDB:', storageError);
-        throw new Error(`Storage error: ${storageError.message}. Try clearing browser data.`);
-      }
-      
-      await loadPlaylists();
-      
-      // Clear form and show success message
-      setUploadedFile(null);
-      setUploadedFileName('');
-      setNewPlaylistName('');
-      setError(`Playlist "${newPlaylistName}" added with ${channels.length} channels. Click on it to view.`);
-      
-      setTimeout(() => setError(''), 3000);
-    } catch (err) {
-      console.error('Error processing local file:', err);
-      setError(`Error adding local playlist: ${err.message}`);
-    } finally {
-      setLoading(false);
+      setBusy(false);
     }
   }
 
   return (
-    <div class="max-w-4xl mx-auto">
-      <div class="page-banner banner-settings mb-8">
-        <h2 class="text-3xl font-bold mb-2">Playlist Management</h2>
-        <p class="text-gray-300">Add, refresh and organise your M3U playlists.</p>
-      </div>
-      
-      <div class="bg-gray-800 rounded-lg p-6 mb-8">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-semibold">Add New Playlist</h3>
-          <a 
-            href="/countries" 
-            class="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 transition-colors"
-          >
-            <Globe class="w-4 h-4" />
-            Browse by Country
-          </a>
+    <Card class="p-5">
+      <form onSubmit={submit} class="flex flex-col gap-4">
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="text-sm font-semibold text-[var(--color-text)] flex-1">Add a playlist</div>
+          <Segmented
+            label="Add from"
+            value={mode}
+            onChange={value => { setMode(value); setNotice(null); }}
+            options={[{ value: 'url', label: 'From URL', icon: Link2 }, { value: 'file', label: 'From file', icon: Upload }]}
+          />
         </div>
-        
-        <div class="flex items-center justify-between mb-6">
-          <div class="flex justify-start space-x-4">
-            <button
-              type="button" // Add type="button" to prevent form submission
-              class={`px-3 py-1 rounded-lg ${!uploadedFile ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300'}`}
-              onClick={() => setUploadedFile(null)}
-            >
-              From URL
-            </button>
-            <button
-              type="button" // Add type="button" to prevent form submission
-              class={`px-3 py-1 rounded-lg ${uploadedFile ? 'bg-blue-600 text-white' : 'bg-gray-700 text-gray-300'}`}
-              onClick={() => {
-                // More robust file input activation with fallbacks
-                try {
-                  if (fileInputRef.current) {
-                    console.log('Triggering file input click using ref');
-                    fileInputRef.current.click();
-                  } else {
-                    console.warn('File input ref is null, trying alternative methods');
-                    
-                    // Fallback 1: Try to get by ID
-                    const fileInput = document.getElementById('file-upload');
-                    if (fileInput) {
-                      console.log('Found input by ID, clicking');
-                      fileInput.click();
-                      return;
-                    }
-                    
-                    // Fallback 2: Create a temporary input
-                    console.log('Creating temporary file input');
-                    const tempInput = document.createElement('input');
-                    tempInput.type = 'file';
-                    tempInput.accept = '.m3u,.m3u8,.txt';
-                    tempInput.style.display = 'none';
-                    tempInput.onchange = handleFileUpload;
-                    
-                    document.body.appendChild(tempInput);
-                    tempInput.click();
-                    
-                    // Clean up after selection
-                    setTimeout(() => {
-                      document.body.removeChild(tempInput);
-                    }, 5000);
-                  }
-                } catch (err) {
-                  console.error('Error opening file dialog:', err);
-                  alert('Could not open file selector. Please try the "Browse" button instead.');
-                }
-              }}
-            >
-              From File
-            </button>
-          </div>
-        </div>
-        
-        {!uploadedFile ? (
-          <form onSubmit={handleAddPlaylist} class="space-y-4">
-            <div>
-              <label class="block text-sm font-medium mb-2">Playlist Name</label>
-              <input
-                type="text"
-                value={newPlaylistName}
-                onInput={e => setNewPlaylistName(e.target.value)}
-                placeholder="My Playlist"
-                class="w-full px-4 py-2 bg-gray-700 rounded-lg border border-gray-600"
-                required
-              />
-            </div>
 
-            <div>
-              <label class="block text-sm font-medium mb-2">M3U8 Playlist URL</label>
-              <input
-                type="url"
-                value={newPlaylistUrl}
-                onInput={e => setNewPlaylistUrl(e.target.value)}
-                placeholder="https://example.com/playlist.m3u8"
-                class="w-full px-4 py-2 bg-gray-700 rounded-lg border border-gray-600"
-                required
-              />
-            </div>
-            
-            {error && (
-              <div class="text-red-400 text-sm whitespace-pre-line">{error}</div>
-            )}
-            
-            <button
-              type="submit"
-              disabled={loading}
-              class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
-            >
-              {loading ? <RefreshCw class="w-4 h-4 animate-spin" /> : <Plus class="w-4 h-4" />}
-              Add Playlist
-            </button>
-          </form>
-        ) : (
-          <form onSubmit={handleAddLocalPlaylist} class="space-y-4">
-            <div>
-              <label class="block text-sm font-medium mb-2">Playlist Name</label>
-              <input
-                type="text"
-                value={newPlaylistName}
-                onInput={e => setNewPlaylistName(e.target.value)}
-                placeholder="My Local Playlist"
-                class="w-full px-4 py-2 bg-gray-700 rounded-lg border border-gray-600"
-                required
-              />
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium mb-2">M3U8 File</label>
-              <div class="flex flex-col">
-                <div class="bg-gray-700 rounded-lg border border-gray-600 px-4 py-2 flex items-center justify-between">
-                  <div class="flex items-center">
-                    <Upload class="w-4 h-4 text-gray-400 mr-2" />
-                    <span class={uploadedFileName ? 'text-white' : 'text-gray-400'}>
-                      {uploadedFileName || 'Select an M3U8 file...'}
-                    </span>
-                  </div>
-                  <button 
-                    type="button" 
-                    onClick={() => {
-                      try {
-                        // Try ref first
-                        if (fileInputRef.current) {
-                          fileInputRef.current.click();
-                          return;
-                        }
-                        
-                        // Try by ID next
-                        const fileInput = document.getElementById('file-upload');
-                        if (fileInput) {
-                          fileInput.click();
-                          return;
-                        }
-                        
-                        // Last resort - create temporary input
-                        const tempInput = document.createElement('input');
-                        tempInput.type = 'file';
-                        tempInput.accept = '.m3u,.m3u8,.txt';
-                        tempInput.style.display = 'none';
-                        tempInput.onchange = handleFileUpload;
-                        document.body.appendChild(tempInput);
-                        tempInput.click();
-                        
-                        // Clean up
-                        setTimeout(() => document.body.removeChild(tempInput), 5000);
-                      } catch (err) {
-                        console.error('Browse button error:', err);
-                      }
-                    }}
-                    class="text-blue-400 text-sm hover:text-blue-300"
-                  >
-                    Browse
-                  </button>
-                </div>
+        <div class="grid grid-cols-1 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-3">
+          <label class="flex flex-col gap-1.5">
+            <span class="text-xs font-semibold text-[var(--color-muted)]">Name</span>
+            <input class={field} value={name} onInput={e => setName(e.target.value)} placeholder="My Playlist" />
+          </label>
+          {mode === 'url' ? (
+            <label class="flex flex-col gap-1.5">
+              <span class="text-xs font-semibold text-[var(--color-muted)]">M3U / M3U8 link</span>
+              <input type="url" required class={field} value={url} onInput={e => setUrl(e.target.value)} placeholder="https://example.com/playlist.m3u8" />
+            </label>
+          ) : (
+            <div class="flex flex-col gap-1.5">
+              <span class="text-xs font-semibold text-[var(--color-muted)]">Playlist file (.m3u, .m3u8, .txt)</span>
+              <label class={`${field} flex items-center gap-2 cursor-pointer hover:border-violet-400/40`}>
+                <Upload class="w-4 h-4 shrink-0 text-[var(--color-muted)]" aria-hidden="true" />
+                <span class={`flex-1 truncate ${file ? '' : 'text-[var(--color-subtle)]'}`}>{file ? file.name : 'Choose a file…'}</span>
+                <span class="text-[13px] font-semibold text-[var(--color-lilac)]">Browse</span>
                 <input
+                  ref={fileInputRef}
                   type="file"
-                  ref={fileInputRef} // Use ref instead of id
-                  id="file-upload" // Keep the ID for backward compatibility
-                  name="file-upload" // Added name attribute
-                  accept=".m3u,.m3u8,.txt,text/plain,application/octet-stream,application/x-mpegurl"
-                  class="hidden"
-                  onChange={handleFileUpload}
+                  accept=".m3u,.m3u8,.txt,text/plain,application/x-mpegurl,audio/x-mpegurl"
+                  class="sr-only"
+                  onChange={pickFile}
                 />
-                <p class="text-xs text-gray-400 mt-1">
-                  Accepts .m3u, .m3u8, and .txt files
-                </p>
-              </div>
+              </label>
             </div>
-            
-            {error && (
-              <div class="text-red-400 text-sm whitespace-pre-line">{error}</div>
-            )}
-            
-            <button
-              type="submit"
-              disabled={loading || !uploadedFile}
-              class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 disabled:opacity-50"
-            >
-              {loading ? <RefreshCw class="w-4 h-4 animate-spin" /> : <Plus class="w-4 h-4" />}
-              Add Local Playlist
-            </button>
+          )}
+        </div>
+
+        <Notice notice={notice} onClose={() => setNotice(null)} />
+
+        <div class="flex flex-wrap items-center gap-3">
+          <button type="submit" disabled={busy || (mode === 'file' && !file)} class="btn btn-primary disabled:opacity-50 disabled:pointer-events-none">
+            {busy ? <RefreshCw class="w-4 h-4 animate-spin" /> : <Plus class="w-4 h-4" />}
+            {busy ? 'Adding…' : 'Add playlist'}
+          </button>
+          <a href="/countries" class="see-all">Or browse free channels by country <ChevronRight class="w-4 h-4" /></a>
+        </div>
+      </form>
+    </Card>
+  );
+}
+
+function PlaylistRow({ playlist, refreshing, onRefresh, onRemove, onRename }) {
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState(playlist.name);
+  const [confirming, setConfirming] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  async function saveName(event) {
+    event.preventDefault();
+    if (draft.trim() && draft.trim() !== playlist.name) await onRename(draft);
+    setEditing(false);
+  }
+
+  async function copyUrl() {
+    try {
+      await navigator.clipboard.writeText(playlist.url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch { /* clipboard blocked */ }
+  }
+
+  const meta = [
+    playlist.channelCount ? `${playlist.channelCount.toLocaleString()} channels` : null,
+    `Added ${formatDate(playlist.addedAt)}`,
+    playlist.lastRefreshed ? `Updated ${formatDate(playlist.lastRefreshed)}` : null,
+  ].filter(Boolean).join(' · ');
+
+  return (
+    <div class="flex items-center gap-3 px-4 py-3 border-t border-[var(--color-hairline)] first:border-t-0">
+      <div class="w-10 h-10 shrink-0 rounded-xl brand-gradient flex items-center justify-center text-white">
+        {playlist.isLocal ? <Upload class="w-[18px] h-[18px]" /> : <ListVideo class="w-[18px] h-[18px]" />}
+      </div>
+      <div class="flex-1 min-w-0">
+        {editing ? (
+          <form onSubmit={saveName} class="flex items-center gap-1">
+            <input
+              class={`${field} h-9 px-3`}
+              value={draft}
+              onInput={e => setDraft(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Escape') { setDraft(playlist.name); setEditing(false); } }}
+              aria-label="Playlist name"
+              autoFocus
+            />
+            <button type="submit" class={iconButton} title="Save name" aria-label="Save name"><Check class="w-4 h-4" /></button>
+            <button type="button" class={iconButton} onClick={() => { setDraft(playlist.name); setEditing(false); }} title="Cancel" aria-label="Cancel"><X class="w-4 h-4" /></button>
           </form>
+        ) : (
+          <a href={`/playlist/${encodeURIComponent(playlist.id)}`} class="block truncate text-sm font-semibold text-[var(--color-text)] hover:text-[var(--color-lilac)]">
+            {playlist.name}
+          </a>
         )}
-        {uploadedFile && (
-          <div class="mt-4 text-sm text-gray-400">
-            Having trouble with file upload? 
-            <button
-              type="button"
-              onClick={() => {
-                const tempInput = document.createElement('input');
-                tempInput.type = 'file';
-                tempInput.accept = '.m3u,.m3u8,.txt';
-                tempInput.onchange = handleFileUpload;
-                document.body.appendChild(tempInput);
-                tempInput.click();
-                setTimeout(() => document.body.removeChild(tempInput), 5000);
-              }}
-              class="ml-2 text-blue-400 underline hover:text-blue-300"
-            >
-              Try alternative upload method
-            </button>
-          </div>
-        )}
+        <div class="mt-0.5 truncate text-[12px] text-[var(--color-subtle)]" title={playlist.isLocal ? playlist.fileName : playlist.url}>
+          {playlist.isLocal ? `Local file · ${playlist.fileName || 'playlist'}` : playlist.url}
+        </div>
+        <div class="mt-0.5 text-[12px] text-[var(--color-muted)]">{meta}</div>
       </div>
 
-      <div class="bg-gray-800 rounded-lg p-6 mb-8">
-        <h3 class="text-lg font-semibold mb-4">Managed Playlists</h3>
-        
-        {playlists.length === 0 ? (
-          <div class="flex items-center gap-4 bg-gray-700 p-4 rounded-lg">
-            <AlertCircle class="w-6 h-6 text-yellow-400" />
-            <p class="text-gray-300">No playlists added yet. Add your first playlist above.</p>
+      {confirming ? (
+        <div class="flex items-center gap-2 shrink-0">
+          <span class="hidden sm:inline text-[13px] text-[var(--color-muted)]">Remove?</span>
+          <button type="button" onClick={onRemove} class="h-9 px-3 rounded-[10px] text-[13px] font-semibold text-white bg-rose-500/80 hover:bg-rose-500 transition">Remove</button>
+          <button type="button" onClick={() => setConfirming(false)} class="h-9 px-3 rounded-[10px] text-[13px] font-semibold text-[var(--color-muted)] hover:text-white hover:bg-white/8 transition">Keep</button>
+        </div>
+      ) : (
+        <div class="flex items-center gap-0.5 shrink-0">
+          {!playlist.isLocal && (
+            <button type="button" onClick={onRefresh} disabled={refreshing} class={iconButton} title="Update now" aria-label={`Update ${playlist.name}`}>
+              <RefreshCw class={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+            </button>
+          )}
+          {!playlist.isLocal && (
+            <button type="button" onClick={copyUrl} class={`${iconButton} hidden sm:flex`} title={copied ? 'Copied' : 'Copy link'} aria-label="Copy playlist link">
+              {copied ? <Check class="w-4 h-4 text-emerald-400" /> : <Copy class="w-4 h-4" />}
+            </button>
+          )}
+          <button type="button" onClick={() => setEditing(true)} class={iconButton} title="Rename" aria-label={`Rename ${playlist.name}`}>
+            <Pencil class="w-4 h-4" />
+          </button>
+          <button type="button" onClick={() => setConfirming(true)} class={`${iconButton} hover:text-[var(--color-live)]`} title="Remove" aria-label={`Remove ${playlist.name}`}>
+            <Trash2 class="w-4 h-4" />
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Backup
+// ---------------------------------------------------------------------------
+
+const BACKUP_VERSION = 1;
+
+async function buildBackup() {
+  const [playlists, favorites, watchHistory, channels] = await Promise.all([
+    get('playlists'), get('favorites'), get('watchHistory'), get('channels'),
+  ]);
+  const list = Array.isArray(playlists) ? playlists : [];
+  // Local file playlists can't be downloaded again, so keep their channels
+  const localChannels = Object.fromEntries(
+    list.filter(p => p.isLocal).map(p => [p.id, channels?.[p.id] || []])
+  );
+  let preferences = {};
+  try { preferences = JSON.parse(localStorage.getItem('app-settings') || '{}'); } catch { /* none */ }
+  return {
+    app: 'iptv-streamer',
+    version: BACKUP_VERSION,
+    exportedAt: new Date().toISOString(),
+    settings: preferences,
+    playlists: list,
+    localChannels,
+    favorites: Array.isArray(favorites) ? favorites : [],
+    watchHistory: Array.isArray(watchHistory) ? watchHistory : [],
+  };
+}
+
+async function restoreBackup(data) {
+  if (!data || data.app !== 'iptv-streamer') throw new Error("This file isn't an IPTV Streamer backup.");
+  const summary = { playlists: 0, failed: 0, favorites: 0, history: 0 };
+
+  if (data.settings && typeof data.settings === 'object') updateSettings(data.settings);
+
+  // Favorites and history: merge, keeping what's already here
+  const favorites = (await get('favorites')) || [];
+  const favoriteIds = new Set(favorites.map(f => f.id));
+  const newFavorites = (data.favorites || []).filter(f => f?.id && !favoriteIds.has(f.id));
+  if (newFavorites.length) await set('favorites', [...favorites, ...newFavorites]);
+  summary.favorites = newFavorites.length;
+
+  const history = (await get('watchHistory')) || [];
+  const seen = new Set(history.map(item => item?.channel?.id));
+  const newHistory = (data.watchHistory || []).filter(item => item?.channel?.id && !seen.has(item.channel.id));
+  if (newHistory.length) {
+    await set('watchHistory', [...history, ...newHistory].sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)));
+  }
+  summary.history = newHistory.length;
+
+  // Playlists: local ones come with their channels, URL ones are downloaded again
+  const existing = (await get('playlists')) || [];
+  const existingUrls = new Set(existing.map(p => p.url));
+  for (const playlist of data.playlists || []) {
+    if (!playlist?.url || existingUrls.has(playlist.url)) continue;
+    try {
+      if (playlist.isLocal) {
+        const channels = data.localChannels?.[playlist.id];
+        if (!Array.isArray(channels)) throw new Error('missing channels');
+        const current = (await get('playlists')) || [];
+        await set('playlists', [...current, playlist]);
+        const all = (await get('channels')) || {};
+        all[playlist.id] = channels;
+        await set('channels', all);
+      } else {
+        await savePlaylist(playlist.url, playlist.name, !!playlist.useProxy);
+      }
+      existingUrls.add(playlist.url);
+      summary.playlists++;
+    } catch (err) {
+      console.warn(`Could not restore ${playlist.name}:`, err);
+      summary.failed++;
+    }
+  }
+  return summary;
+}
+
+// ---------------------------------------------------------------------------
+// Page
+// ---------------------------------------------------------------------------
+
+export default function SettingsPage() {
+  const settings = useSettings();
+  const [playlists, setPlaylists] = useState([]);
+  const [refreshingIds, setRefreshingIds] = useState(() => new Set());
+  const [listNotice, setListNotice] = useState(null);
+  const [counts, setCounts] = useState({ history: 0, favorites: 0 });
+  const [confirmClear, setConfirmClear] = useState(null); // 'history' | 'favorites'
+  const [backupBusy, setBackupBusy] = useState(false);
+  const [backupNotice, setBackupNotice] = useState(null);
+  const importRef = useRef(null);
+
+  useEffect(() => {
+    loadPlaylists();
+    loadCounts();
+  }, []);
+
+  async function loadPlaylists() {
+    try {
+      setPlaylists(await getPlaylists());
+    } catch (err) {
+      console.error('Failed to load playlists:', err);
+      setListNotice({ type: 'error', text: 'Your playlists could not be loaded. Reload the page to try again.' });
+    }
+  }
+
+  async function loadCounts() {
+    const [history, favorites] = await Promise.all([get('watchHistory'), get('favorites')]);
+    setCounts({
+      history: Array.isArray(history) ? history.length : 0,
+      favorites: Array.isArray(favorites) ? favorites.length : 0,
+    });
+  }
+
+  const setRefreshing = (id, on) => setRefreshingIds(prev => {
+    const next = new Set(prev);
+    if (on) next.add(id); else next.delete(id);
+    return next;
+  });
+
+  async function refreshOne(playlist) {
+    setRefreshing(playlist.id, true);
+    try {
+      const result = await refreshPlaylist(playlist.id);
+      setListNotice({ type: 'success', text: `Updated “${playlist.name}”: ${result.channelCount.toLocaleString()} channels.` });
+      return true;
+    } catch (err) {
+      setListNotice({ type: 'error', text: `Couldn't update “${playlist.name}”: ${err.message}` });
+      return false;
+    } finally {
+      setRefreshing(playlist.id, false);
+      loadPlaylists();
+    }
+  }
+
+  async function refreshAll() {
+    const remote = playlists.filter(p => !p.isLocal);
+    setListNotice(null);
+    remote.forEach(p => setRefreshing(p.id, true));
+    let ok = 0;
+    for (const playlist of remote) {
+      try {
+        await refreshPlaylist(playlist.id);
+        ok++;
+      } catch (err) {
+        console.warn(`Refresh failed for ${playlist.name}:`, err);
+      } finally {
+        setRefreshing(playlist.id, false);
+      }
+    }
+    await loadPlaylists();
+    setListNotice(ok === remote.length
+      ? { type: 'success', text: `Updated ${ok} playlist${ok === 1 ? '' : 's'}.` }
+      : { type: 'error', text: `Updated ${ok} of ${remote.length} playlists. The others couldn't be reached.` });
+  }
+
+  async function remove(playlist) {
+    try {
+      await removePlaylist(playlist.id);
+      await loadPlaylists();
+    } catch (err) {
+      setListNotice({ type: 'error', text: `Couldn't remove the playlist: ${err.message}` });
+    }
+  }
+
+  async function rename(playlist, name) {
+    try {
+      await renamePlaylist(playlist.id, name);
+      await loadPlaylists();
+    } catch (err) {
+      setListNotice({ type: 'error', text: err.message });
+    }
+  }
+
+  async function clearStore(kind) {
+    await set(kind === 'history' ? 'watchHistory' : 'favorites', []);
+    setConfirmClear(null);
+    loadCounts();
+  }
+
+  async function exportBackup() {
+    setBackupBusy(true);
+    setBackupNotice(null);
+    try {
+      const data = await buildBackup();
+      downloadJson(data, `iptv-streamer-backup-${new Date().toISOString().slice(0, 10)}.json`);
+      setBackupNotice({
+        type: 'success',
+        text: `Saved ${data.playlists.length} playlists, ${data.favorites.length} favorites and ${data.watchHistory.length} history items.`,
+      });
+    } catch (err) {
+      setBackupNotice({ type: 'error', text: `Couldn't create the backup: ${err.message}` });
+    } finally {
+      setBackupBusy(false);
+    }
+  }
+
+  async function importBackup(event) {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+    setBackupBusy(true);
+    setBackupNotice(null);
+    try {
+      const summary = await restoreBackup(JSON.parse(await file.text()));
+      await Promise.all([loadPlaylists(), loadCounts()]);
+      setBackupNotice({
+        type: summary.failed ? 'error' : 'success',
+        text: `Restored ${summary.playlists} playlists, ${summary.favorites} favorites and ${summary.history} history items.` +
+          (summary.failed ? `\n${summary.failed} playlist${summary.failed === 1 ? '' : 's'} couldn't be downloaded.` : ''),
+      });
+    } catch (err) {
+      setBackupNotice({ type: 'error', text: err instanceof SyntaxError ? "This file isn't a valid backup." : err.message });
+    } finally {
+      setBackupBusy(false);
+    }
+  }
+
+  const remoteCount = playlists.filter(p => !p.isLocal).length;
+  const isDefault = Object.keys(DEFAULT_SETTINGS).every(key => settings[key] === DEFAULT_SETTINGS[key]);
+
+  return (
+    <div class="max-w-4xl mx-auto pb-12">
+      {/* Header, as in the FigCraft frames */}
+      <div class="mb-6">
+        <h2 class="text-3xl md:text-4xl font-bold tracking-[-0.015em] text-[var(--color-text)]">Settings</h2>
+        <p class="mt-2 text-base text-[var(--color-muted)]">Manage your playlists, playback and data on this device.</p>
+      </div>
+
+      {/* Section chips */}
+      <nav class="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1 mb-8" aria-label="Settings sections">
+        {SECTIONS.map(({ id, label, icon: Icon }) => (
+          <a
+            key={id}
+            href={`#${id}`}
+            onClick={e => { e.preventDefault(); document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }}
+            class="shrink-0 h-9 px-4 rounded-full inline-flex items-center gap-1.5 text-[13px] text-[var(--color-muted)] bg-white/[0.04] border border-[var(--color-line)] hover:text-white hover:border-violet-400/40 transition"
+          >
+            <Icon class="w-4 h-4" aria-hidden="true" />
+            {label}
+          </a>
+        ))}
+      </nav>
+
+      <div class="flex flex-col gap-10">
+        <Section
+          id="playlists"
+          icon={ListVideo}
+          title="Playlists"
+          description="Add M3U playlists from a link or a file on this device."
+          action={remoteCount > 0 && (
+            <button type="button" onClick={refreshAll} disabled={refreshingIds.size > 0} class="btn btn-secondary h-9 px-3 disabled:opacity-50">
+              <RefreshCw class={`w-4 h-4 ${refreshingIds.size > 0 ? 'animate-spin' : ''}`} />
+              <span class="hidden sm:inline">Update all</span>
+            </button>
+          )}
+        >
+          <div class="flex flex-col gap-4">
+            <AddPlaylist onAdded={loadPlaylists} />
+
+            <Notice notice={listNotice} onClose={() => setListNotice(null)} />
+
+            <Card>
+              <div class="flex items-center gap-2 px-5 pt-4 pb-3">
+                <span class="text-sm font-semibold text-[var(--color-text)] flex-1">Your playlists</span>
+                <span class={pill}>{playlists.length}</span>
+              </div>
+              {playlists.length === 0 ? (
+                <div class="mx-4 mb-4 rounded-xl border border-dashed border-[var(--color-line)] p-5 text-sm text-[var(--color-muted)]">
+                  No playlists yet. Add one above, or <a href="/countries" class="text-[var(--color-lilac)] hover:underline">browse channels by country</a>.
+                </div>
+              ) : (
+                <div class="border-t border-[var(--color-hairline)]">
+                  {playlists.map(playlist => (
+                    <PlaylistRow
+                      key={playlist.id}
+                      playlist={playlist}
+                      refreshing={refreshingIds.has(playlist.id)}
+                      onRefresh={() => refreshOne(playlist)}
+                      onRemove={() => remove(playlist)}
+                      onRename={name => rename(playlist, name)}
+                    />
+                  ))}
+                </div>
+              )}
+            </Card>
+
+            <Card>
+              <Row title="Update automatically" hint="When the app opens, download playlists again if they're older than this. Local files are skipped." stack>
+                <Segmented
+                  label="Update automatically"
+                  value={settings.autoRefreshDays}
+                  onChange={value => updateSettings({ autoRefreshDays: value })}
+                  options={[{ value: 0, label: 'Off' }, { value: 1, label: 'Daily' }, { value: 7, label: 'Weekly' }]}
+                />
+              </Row>
+            </Card>
           </div>
-        ) : (
-          <div class="space-y-4">
-            {playlists.map(playlist => (
-              <div key={playlist.id} class="flex items-center justify-between gap-2 p-4 bg-gray-700 rounded-lg">
-                <div class="min-w-0">
-                  <a href={`/playlist/${encodeURIComponent(playlist.id)}`} class="font-medium hover:text-blue-400 hover:underline">
-                    {playlist.name}
-                  </a>
-                  <p class="text-sm text-gray-400 break-all">{playlist.url}</p>
-                  <p class="text-xs text-gray-500">
-                    Added: {new Date(playlist.addedAt).toLocaleDateString()}
-                    {playlist.lastRefreshed && ` • Refreshed: ${new Date(playlist.lastRefreshed).toLocaleDateString()}`}
-                  </p>
-                  {refreshSuccess === playlist.id && (
-                    <p class="text-xs text-green-400 mt-1">Refreshed successfully!</p>
-                  )}
-                  {refreshError && refreshingId === playlist.id && (
-                    <p class="text-xs text-red-400 mt-1">{refreshError}</p>
-                  )}
-                </div>
-                <div class="flex items-center gap-2">
-                  <button
-                    onClick={() => handleRefreshPlaylist(playlist.id)}
-                    disabled={refreshingId === playlist.id}
-                    class={`p-2 ${refreshingId === playlist.id ? 'text-gray-500' : 'text-blue-400 hover:text-blue-300'} transition-colors`}
-                    title="Refresh playlist"
-                  >
-                    <RefreshCw class={`w-5 h-5 ${refreshingId === playlist.id ? 'animate-spin' : ''}`} />
+        </Section>
+
+        <Section id="playback" icon={PlayCircle} title="Playback" description="How channels start and stream in the player.">
+          <Card>
+            <Row title="Start muted" hint="Channels begin without sound. Tap the speaker to turn it on.">
+              <Toggle label="Start muted" checked={settings.startMuted} onChange={value => updateSettings({ startMuted: value })} />
+            </Row>
+            <Row title="Low-latency mode" hint="Stay closer to the live edge. Turn off if streams stutter.">
+              <Toggle label="Low-latency mode" checked={settings.lowLatency} onChange={value => updateSettings({ lowLatency: value })} />
+            </Row>
+            <Row title="Buffer size" hint="A larger buffer rides out a slow connection but uses more memory." stack>
+              <Segmented
+                label="Buffer size"
+                value={settings.bufferSize}
+                onChange={value => updateSettings({ bufferSize: value })}
+                options={[{ value: 'small', label: 'Small' }, { value: 'balanced', label: 'Balanced' }, { value: 'large', label: 'Large' }]}
+              />
+            </Row>
+            <Row title="Show “Up next”" hint="List other channels from the same country next to the player.">
+              <Toggle label="Show Up next" checked={settings.showUpNext} onChange={value => updateSettings({ showUpNext: value })} />
+            </Row>
+          </Card>
+        </Section>
+
+        <Section id="history" icon={History} title="History & privacy" description="Everything stays in this browser. Nothing is sent anywhere.">
+          <Card>
+            <Row title="Remember watched channels" hint="Keep a list of what you watched in History and on Home.">
+              <Toggle label="Remember watched channels" checked={settings.recordHistory} onChange={value => updateSettings({ recordHistory: value })} />
+            </Row>
+            <Row title="Keep up to" hint="Older channels drop off the history list." stack>
+              <Segmented
+                label="History length"
+                value={settings.historyLimit}
+                onChange={value => updateSettings({ historyLimit: value })}
+                options={[25, 50, 100, 200].map(n => ({ value: n, label: String(n) }))}
+              />
+            </Row>
+            {[
+              { kind: 'history', title: 'Watch history', count: counts.history, noun: 'channel' },
+              { kind: 'favorites', title: 'Favorites', count: counts.favorites, noun: 'favorite' },
+            ].map(({ kind, title, count, noun }) => (
+              <Row key={kind} title={title} hint={`${count.toLocaleString()} ${noun}${count === 1 ? '' : 's'} saved`}>
+                {confirmClear === kind ? (
+                  <div class="flex items-center gap-2">
+                    <button type="button" onClick={() => clearStore(kind)} class="h-9 px-3 rounded-[10px] text-[13px] font-semibold text-white bg-rose-500/80 hover:bg-rose-500 transition">Clear</button>
+                    <button type="button" onClick={() => setConfirmClear(null)} class="h-9 px-3 rounded-[10px] text-[13px] font-semibold text-[var(--color-muted)] hover:text-white hover:bg-white/8 transition">Cancel</button>
+                  </div>
+                ) : (
+                  <button type="button" disabled={count === 0} onClick={() => setConfirmClear(kind)} class="btn btn-secondary h-9 px-3 disabled:opacity-40 disabled:pointer-events-none">
+                    <Trash2 class="w-4 h-4" /> Clear
                   </button>
-                  <button
-                    onClick={() => handleRemovePlaylist(playlist.id)}
-                    class="p-2 text-red-400 hover:text-red-300 transition-colors"
-                    title="Remove playlist"
-                  >
-                    <Trash2 class="w-5 h-5" />
-                  </button>
-                </div>
+                )}
+              </Row>
+            ))}
+          </Card>
+        </Section>
+
+        <Section id="backup" icon={DatabaseBackup} title="Backup" description="Move your playlists, favorites, history and settings to another browser or device.">
+          <div class="flex flex-col gap-4">
+            <Card class="p-5 flex flex-col sm:flex-row gap-3">
+              <button type="button" onClick={exportBackup} disabled={backupBusy} class="btn btn-primary justify-center disabled:opacity-50">
+                <Download class="w-4 h-4" /> Export backup
+              </button>
+              <button type="button" onClick={() => importRef.current?.click()} disabled={backupBusy} class="btn btn-secondary justify-center disabled:opacity-50">
+                {backupBusy ? <RefreshCw class="w-4 h-4 animate-spin" /> : <Upload class="w-4 h-4" />} Import backup
+              </button>
+              <input ref={importRef} type="file" accept="application/json,.json" class="sr-only" onChange={importBackup} tabIndex={-1} />
+              <p class="sm:self-center text-[13px] text-[var(--color-muted)]">Importing adds to what's here. Nothing is overwritten.</p>
+            </Card>
+            <Notice notice={backupNotice} onClose={() => setBackupNotice(null)} />
+            <Card>
+              <Row title="Reset settings" hint="Put playback, history and update options back to their defaults. Your playlists and favorites stay.">
+                <button type="button" disabled={isDefault} onClick={resetSettings} class="btn btn-secondary h-9 px-3 disabled:opacity-40 disabled:pointer-events-none">
+                  <RotateCcw class="w-4 h-4" /> Reset
+                </button>
+              </Row>
+            </Card>
+          </div>
+        </Section>
+
+        <Section id="shortcuts" icon={Keyboard} title="Keyboard shortcuts" description="Work in the player and on the Browse page.">
+          <Card class="p-2 grid grid-cols-1 sm:grid-cols-2">
+            {[
+              [['Space', 'K'], 'Play / pause'],
+              [['F'], 'Full screen'],
+              [['M'], 'Mute / unmute'],
+              [['↑', '↓'], 'Volume up / down'],
+              [['←', '→'], 'Skip 10 s (recordings)'],
+              [['I'], 'Stream details'],
+              [['/'], 'Search on Browse'],
+              [['Esc'], 'Close the menu'],
+            ].map(([keys, label]) => (
+              <div key={label} class="flex items-center gap-3 px-3 py-2.5">
+                <span class="flex gap-1 w-24 shrink-0">
+                  {keys.map(key => (
+                    <kbd key={key} class="h-6 min-w-6 px-1.5 inline-flex items-center justify-center rounded-md border border-[var(--color-line)] bg-white/[0.04] text-xs font-semibold text-[var(--color-text)] font-sans">{key}</kbd>
+                  ))}
+                </span>
+                <span class="text-sm text-[var(--color-muted)]">{label}</span>
               </div>
             ))}
-          </div>
-        )}
-      </div>
-      
-      <div class="bg-gray-800 rounded-lg p-6">
-        <h3 class="text-lg font-semibold mb-4">Storage Management</h3>
-        
-        {storageInfo && (
-          <div class="mb-4">
-            <div class="w-full bg-gray-700 h-2 rounded-lg overflow-hidden mb-2">
-              <div 
-                class={`h-full ${storageInfo.percent > 80 ? 'bg-red-500' : 'bg-blue-500'}`}
-                style={{ width: `${storageInfo.percent}%` }}
-              ></div>
-            </div>
-            <div class="text-sm text-gray-400">
-              {Math.round(storageInfo.usage / (1024 * 1024))} MB used of {Math.round(storageInfo.quota / (1024 * 1024))} MB ({storageInfo.percent}%)
-            </div>
-          </div>
-        )}
-        
-        <div className="flex items-center gap-3 mt-6">
-          <button
-            onClick={clearAllData}
-            class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-          >
-            Clear All Data
-          </button>
-          
-          <button
-            onClick={verifyStorage}
-            class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-          >
-            Verify Storage
-          </button>
-        </div>
-        
-        <div className="mt-6 p-4 bg-gray-700 rounded-lg">
-          <h4 className="font-medium mb-2">Troubleshooting</h4>
-          <p className="text-sm text-gray-300 mb-3">If playlists aren't showing up:</p>
-          <ol className="text-sm text-gray-400 list-decimal pl-5 space-y-1">
-            <li>Try refreshing the page</li>
-            <li>Check your browser's console for errors (F12)</li>
-            <li>Use the "Verify Storage" button to check if data was saved properly</li>
-            <li>Try adding the playlist again with a different name</li>
-            <li>Some playlists may not work due to CORS restrictions</li>
-          </ol>
-        </div>
+          </Card>
+        </Section>
       </div>
     </div>
   );
