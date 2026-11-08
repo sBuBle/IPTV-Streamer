@@ -5,8 +5,8 @@ import { Play, Globe, ChevronRight, ListPlus } from 'lucide-preact';
 import { getPlaylists } from '../utils/playlist';
 import ChannelCard from '../components/ChannelCard';
 import { CATEGORY_CHIPS } from '../components/categories';
-import * as apiClient from '../utils/apiClient';
 import { watchPath } from '../utils/watchLinks';
+import { useChannelLogos } from '../utils/channelLogos';
 
 export default function Home() {
   const [playlists, setPlaylists] = useState([]);
@@ -69,6 +69,8 @@ export default function Home() {
   }, []);
 
   const favoriteIds = new Set(favorites.map(f => f && f.id));
+  const historyLogo = useChannelLogos(recentlyWatched, item => item?.channel);
+  const favoriteLogo = useChannelLogos(favorites);
 
   const card = (channel, meta) => {
     if (!channel || !channel.id) return null;
@@ -77,7 +79,7 @@ export default function Home() {
         key={channel.id}
         href={watchPath(channel)}
         name={channel.name}
-        logo={channel.logo || (channel.name && apiClient.getLogoUrl(channel.name))}
+        logo={historyLogo(channel) || favoriteLogo(channel)}
         group={channel.group}
         country={channel.country}
         favorite={favoriteIds.has(channel.id)}

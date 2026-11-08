@@ -5,8 +5,8 @@ import { get, set } from '../utils/idbStorage';
 import { toggleFavorite as toggleFavoriteUtil } from '../utils/favorites'; // Add favorites utility import
 import { History, Search, Trash2, PlayCircle, Calendar, Clock, Heart, AlertCircle, Filter, Grid, List as ListIcon } from 'lucide-preact';
 import ChannelLogo from '../components/ChannelLogo';
-import * as apiClient from '../utils/apiClient';
 import { watchPath } from '../utils/watchLinks';
+import { useChannelLogos } from '../utils/channelLogos';
 
 export default function WatchHistory() {
   const [history, setHistory] = useState([]);
@@ -97,10 +97,7 @@ export default function WatchHistory() {
     }
   }
 
-  const getChannelLogo = (channel) => {
-    if (channel.logo) return channel.logo;
-    return apiClient.getLogoUrl(channel.channelId || channel.name);
-  };
+  const getChannelLogo = useChannelLogos(history, item => item?.channel);
 
   const filteredHistory = history.filter(item => {
     try {
