@@ -1,0 +1,298 @@
+[
+ {
+  "command": "file.new",
+  "params": {
+   "width": 320,
+   "height": 200,
+   "units": "Pixels",
+   "name": "Empty: no results"
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 10.0,
+   "y": 5.0,
+   "width": 300,
+   "height": 190
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "radial",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#8b5cf6",
+      "opacity": 0.35
+     },
+     {
+      "offset": 1,
+      "color": "#8b5cf6",
+      "opacity": 0
+     }
+    ],
+    "aspect": 63.33333333333333
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 92,
+   "y": 62,
+   "width": 38,
+   "height": 32,
+   "radius": 8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#ffffff"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 8
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 92,
+   "y": 104,
+   "width": 38,
+   "height": 32,
+   "radius": 8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#ffffff"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 8
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 138,
+   "y": 62,
+   "width": 38,
+   "height": 32,
+   "radius": 8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#ffffff"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 8
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 138,
+   "y": 104,
+   "width": 38,
+   "height": 32,
+   "radius": 8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#ffffff"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 8
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 184,
+   "y": 62,
+   "width": 38,
+   "height": 32,
+   "radius": 8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#ffffff"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 8
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 184,
+   "y": 104,
+   "width": 38,
+   "height": 32,
+   "radius": 8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#ffffff"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 8
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 134,
+   "y": 60,
+   "width": 68,
+   "height": 68
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "angle": -30,
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#8b5cf6"
+     },
+     {
+      "offset": 1,
+      "color": "#f43f5e"
+     }
+    ]
+   }
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 4,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 90
+  }
+ },
+ {
+  "command": "shape.line",
+  "params": {
+   "x1": 193,
+   "y1": 119,
+   "x2": 218,
+   "y2": 144
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#ffffff"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 7,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "transparency.set",
+  "params": {
+   "opacity": 90
+  }
+ }
+]

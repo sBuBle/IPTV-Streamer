@@ -142,9 +142,9 @@ export default function WatchHistory() {
 
   return (
     <div>
-      <div class="mb-8">
+      <div class="page-banner banner-history mb-8">
         <h2 class="text-3xl font-bold flex items-center gap-3 mb-2">
-          <History class="text-blue-500" />
+          <History class="text-blue-300" />
           <span>Watch History</span>
         </h2>
         <p class="text-gray-400">
@@ -215,7 +215,7 @@ export default function WatchHistory() {
         </div>
       ) : history.length === 0 ? (
         <div class="text-center py-12 bg-gray-800 rounded-lg">
-          <History class="w-16 h-16 mx-auto mb-4 text-gray-600" />
+          <img src="/brand/pages/empty-history.svg" alt="" width="320" height="200" class="w-48 h-auto mx-auto mb-2" />
           <h3 class="text-xl font-medium mb-2">No watch history</h3>
           <p class="text-gray-400 mb-6">
             Start watching channels to build your history.

@@ -445,7 +445,10 @@ export default function SettingsPage() {
 
   return (
     <div class="max-w-4xl mx-auto">
-      <h2 class="text-2xl font-bold mb-6">Playlist Management</h2>
+      <div class="page-banner banner-settings mb-8">
+        <h2 class="text-3xl font-bold mb-2">Playlist Management</h2>
+        <p class="text-gray-300">Add, refresh and organise your M3U playlists.</p>
+      </div>
       
       <div class="bg-gray-800 rounded-lg p-6 mb-8">
         <div class="flex items-center justify-between mb-4">

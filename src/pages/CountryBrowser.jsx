@@ -1168,10 +1168,11 @@ export default function CountryBrowser() {
     <div>
       <div class="mb-8">
         {/* Title and description */}
-        <h2 class="text-3xl font-bold mb-4">
+        <div class="page-banner banner-countries mb-6">
+        <h2 class="text-3xl font-bold mb-2">
           Browse IPTV Playlists
         </h2>
-        <p class="text-gray-400 mb-4">
+        <p class="text-gray-300">
           Browse and import playlists from the iptv-org repository.
           <a
             href="https://github.com/iptv-org/iptv#playlists"
@@ -1182,6 +1183,7 @@ export default function CountryBrowser() {
             View Source
           </a>
         </p>
+        </div>
         
         {/* Tabs */}
         <div class="flex border-b border-gray-700 mb-6">
@@ -1294,6 +1296,7 @@ export default function CountryBrowser() {
               {/* Error state for virtualized list */}
               {!sortedList || sortedList.length === 0 ? (
                 <div class="text-center py-12">
+                  <img src="/brand/pages/empty-search.svg" alt="" width="320" height="200" class="w-40 h-auto mx-auto mb-3" />
                   <p class="text-gray-400">No results to display</p>
                 </div>
               ) : (
@@ -1501,7 +1504,7 @@ export default function CountryBrowser() {
                 </div>
               ) : sortedAndFilteredChannels.length === 0 ? (
                 <div class="bg-gray-800 rounded-lg p-6 text-center text-gray-400">
-                  <AlertCircle class="w-12 h-12 mx-auto mb-2 text-yellow-500 opacity-70" />
+                  <img src="/brand/pages/empty-search.svg" alt="" width="320" height="200" class="w-40 h-auto mx-auto mb-3" />
                   <p>No channels found for {selectedItem.name}</p>
                   <p class="text-sm mt-2">Try selecting another {TAB_SINGULAR[activeTab] || 'item'} or check your connection.</p>
                 </div>
