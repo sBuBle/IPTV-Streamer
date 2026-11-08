@@ -1,4 +1,42 @@
 @import 'tailwindcss';
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/inter-tight';
+
+/*
+  Design tokens. The app's markup uses Tailwind's gray-* and blue-* classes
+  everywhere, so the refresh retunes those two scales: gray becomes a deep
+  violet-tinted "night" ink, blue becomes the brand's electric violet.
+*/
+@theme {
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Inter Tight Variable', 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+
+  --color-gray-50: oklch(0.985 0.004 285);
+  --color-gray-100: oklch(0.962 0.007 285);
+  --color-gray-200: oklch(0.915 0.012 285);
+  --color-gray-300: oklch(0.85 0.018 285);
+  --color-gray-400: oklch(0.71 0.025 285);
+  --color-gray-500: oklch(0.56 0.03 285);
+  --color-gray-600: oklch(0.43 0.035 285);
+  --color-gray-700: oklch(0.325 0.035 285);
+  --color-gray-800: oklch(0.235 0.03 285);
+  --color-gray-900: oklch(0.165 0.024 285);
+  --color-gray-950: oklch(0.125 0.02 285);
+
+  --color-blue-50: oklch(0.97 0.02 290);
+  --color-blue-100: oklch(0.94 0.045 290);
+  --color-blue-200: oklch(0.89 0.08 290);
+  --color-blue-300: oklch(0.81 0.12 290);
+  --color-blue-400: oklch(0.73 0.165 290);
+  --color-blue-500: oklch(0.65 0.205 290);
+  --color-blue-600: oklch(0.575 0.23 290);
+  --color-blue-700: oklch(0.5 0.22 290);
+  --color-blue-800: oklch(0.43 0.19 290);
+  --color-blue-900: oklch(0.36 0.15 290);
+  --color-blue-950: oklch(0.27 0.11 290);
+
+  --color-signal: oklch(0.72 0.19 15);
+}
 
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
@@ -30,7 +68,55 @@
 }
 
 body {
-  @apply bg-gray-900;
+  @apply bg-gray-900 font-sans antialiased;
+  background-image:
+    radial-gradient(60rem 40rem at 100% -10%, oklch(0.575 0.23 290 / 0.10), transparent 70%),
+    radial-gradient(40rem 30rem at -10% 110%, oklch(0.72 0.19 15 / 0.06), transparent 70%);
+  background-attachment: fixed;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.015em;
+}
+
+::selection {
+  background: oklch(0.575 0.23 290 / 0.45);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-blue-400);
+  outline-offset: 2px;
+}
+
+/* Thin, quiet scrollbars that match the ink palette */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gray-700) transparent;
+}
+
+/* Cards: every bg-gray-800 rounded panel gets a hairline edge and soft depth */
+.bg-gray-800.rounded-lg,
+.bg-gray-800.rounded-xl {
+  box-shadow:
+    inset 0 0 0 1px oklch(1 0 0 / 0.06),
+    0 1px 2px oklch(0 0 0 / 0.25);
+}
+
+/* Primary buttons glow faintly in the brand color */
+.bg-blue-600 {
+  box-shadow: 0 6px 20px -8px oklch(0.575 0.23 290 / 0.7);
+}
+
+/* Brand gradient used for the logo mark and headline accents */
+.brand-gradient {
+  background-image: linear-gradient(135deg, var(--color-blue-500), var(--color-signal));
+}
+.brand-text {
+  background-image: linear-gradient(90deg, var(--color-blue-300), var(--color-signal));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 /* Add animation for play button */
@@ -72,4 +158,16 @@ body {
 /* Make the player fill the screen when fullscreen */
 .player-container:fullscreen .video-player {
   object-fit: contain;
+}
+/* Home hero: layered gradients now; an ArtCraft image can sit underneath via --hero-art */
+.hero {
+  background-color: var(--color-gray-900);
+  background-image:
+    linear-gradient(90deg, oklch(0.14 0.03 285 / 0.95) 0%, oklch(0.14 0.03 285 / 0.75) 45%, oklch(0.14 0.03 285 / 0.1) 100%),
+    var(--hero-art, none),
+    radial-gradient(28rem 20rem at 85% 30%, oklch(0.65 0.205 290 / 0.55), transparent 70%),
+    radial-gradient(22rem 18rem at 65% 110%, oklch(0.72 0.19 15 / 0.45), transparent 70%),
+    linear-gradient(135deg, oklch(0.2 0.05 285), oklch(0.13 0.03 285));
+  background-size: cover;
+  background-position: center right;
 }
