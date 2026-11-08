@@ -1010,9 +1010,11 @@ export default function Player({ id, preview = false }) {
   const bufferedProgress = duration > 0 ? Math.min(100, (bufferedEnd / duration) * 100) : 0;
   const controlsVisible = playerState.showControls || !!error || loading;
   const displayName = channel?.name || (streamUrl ? nameFromUrl(streamUrl) : '');
+  // Height left for the video once the breadcrumb (3.5rem), the info card
+  // (6rem), the gap (1rem) and the page padding (4rem) fit on screen
   const containerClass = preview
     ? 'relative w-full h-full overflow-hidden bg-black'
-    : 'relative w-full aspect-video max-h-[calc(100vh-12rem)] overflow-hidden bg-black rounded-2xl ring-1 ring-[var(--color-hairline)]';
+    : 'relative w-full aspect-video md:max-h-[calc(100dvh-14.5rem)] min-h-48 shrink-0 overflow-hidden bg-black rounded-2xl ring-1 ring-[var(--color-hairline)]';
   const showOverlayTitle = !preview && playerState.isFullscreen;
   const ctlButton = 'w-9 h-9 rounded-full flex items-center justify-center text-white/90 hover:text-white hover:bg-white/10 transition-colors';
 
@@ -1296,7 +1298,7 @@ export default function Player({ id, preview = false }) {
                   </div>
                 )}
 
-                {showOverlayTitle && (
+                {!preview && (
                   <button
                     onClick={toggleFavorite}
                     disabled={!channel}
@@ -1345,7 +1347,7 @@ export default function Player({ id, preview = false }) {
   return (
     <div className="pb-8">
       {/* Top bar: back + breadcrumb */}
-      <div className="flex items-center gap-3 mb-5 min-w-0">
+      <div className="flex items-center gap-3 h-9 mb-5 min-w-0">
         <button onClick={() => goBack()} className="btn h-9 px-3 text-[var(--color-muted)] hover:text-white hover:bg-white/6">
           <ChevronLeft className="w-4 h-4" /> Back
         </button>
@@ -1365,7 +1367,7 @@ export default function Player({ id, preview = false }) {
           {videoBox}
 
           {/* Channel info */}
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 sm:px-5 sm:min-h-24 rounded-2xl bg-[var(--color-card)] border border-[var(--color-hairline)]">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 sm:px-5 sm:h-24 shrink-0 rounded-2xl bg-[var(--color-card)] border border-[var(--color-hairline)]">
             <div className="flex items-center gap-4 flex-1 min-w-0">
               {channel?.logo && !logoFailed ? (
                 <img src={channel.logo} alt="" className="w-14 h-14 shrink-0 rounded-xl object-contain bg-white/5 p-1.5" onError={() => setLogoFailed(true)} />
@@ -1396,7 +1398,7 @@ export default function Player({ id, preview = false }) {
         </div>
 
         {/* Up next: the other channels of the same country */}
-        <aside className="flex flex-col gap-3 min-w-0 xl:sticky xl:top-6">
+        <aside className="flex flex-col gap-3 min-w-0 xl:h-[calc(100dvh-7.5rem)]">
           <div className="flex items-center gap-2 min-w-0">
             <h2 className="text-base font-semibold text-[var(--color-text)] shrink-0">Up next</h2>
             {upNext && (
@@ -1416,7 +1418,7 @@ export default function Player({ id, preview = false }) {
           </div>
           {upNext?.items.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-3 xl:max-h-[calc(100vh-10rem)] xl:overflow-y-auto xl:pr-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 content-start gap-3 xl:flex-1 xl:min-h-0 xl:overflow-y-auto xl:pr-1">
                 {upNext.items.slice(0, upNextShown).map(item => (
                   <ChannelCard
                     key={item.url}
